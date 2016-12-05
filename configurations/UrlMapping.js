@@ -20,7 +20,7 @@
 				}
 			],
 			"/api/v1/privateBalance": [{
-					method: "POST",
+					method: "GET",
 					action: controllers.privateEthereumController.accountBalance,
 					views: {
 						json: views.jsonView
@@ -38,6 +38,7 @@
 				"/api/v1/privateRunContract": [{
 					method: "POST",
 					action: controllers.privateEthereumController.sponsorContract,
+						middleware:[validater(validationFile.privateRunContract)],
 					views: {
 						json: views.jsonView
 					}
@@ -46,6 +47,7 @@
 			"/api/v1/privateCreateContract": [{
 					method: "POST",
 					action: controllers.privateEthereumController.smartContract,
+					middleware:[validater(validationFile.privateCreateContract)],
 					views: {
 						json: views.jsonView
 					}
@@ -54,6 +56,7 @@
 			"/api/v1/privateSendether": [{
 					method: "POST",
 					action: controllers.privateEthereumController.privateSendether,
+						middleware:[validater(validationFile.privateSendether)],
 					views: {
 						json: views.jsonView
 					}
@@ -62,6 +65,7 @@
 			"/api/v1/privatecreateaccount": [{
 					method: "POST",
 					action: controllers.privateEthereumController.createAccount,
+					middleware:[validater(validationFile.createAccount)],
 					views: {
 						json: views.jsonView
 					}
@@ -85,7 +89,7 @@
 				}
 			],
 			"/api/v1/privatetxConfirmations": [{
-					method: "POST",
+					method: "GET",
 					action: controllers.privateEthereumController.transactionConfirmations,
 					views: {
 						json: views.jsonView

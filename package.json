@@ -20,6 +20,7 @@
     "errorhandler": "1.4.2",
     "express": "4.13.3",
     "express-session": "1.11.3",
+    "express-validation": "^1.0.1",
     "go-ipfs": "^0.3.11",
     "if-async": "3.7.4",
     "ipfs": "^0.17.0",

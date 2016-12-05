@@ -2,8 +2,8 @@ var encrypt = require('../../../application-utilities/EncryptionUtility');
 module.exports = function () {
 
 	var accountBalance = function (req, res,callback) {
-			var address=req.body.address;
-			Logger.info(	this.services.privateEthereumDetail);
+			var address=req.query.address;
+			Logger.info(	"address",address);
 			this.services.privateEthereumDetail.accountBalance(address, res, callback);
 
 			//ethereumService
@@ -33,7 +33,7 @@ var smartContract = function (req, res,callback) {
   }
 
   var transactionConfirmations = function (req, res,callback) {
-    var tranxHash=req.body.tranxHash;
+    var tranxHash=req.query.tranxHash;
 		this.services.privateEthereumDetail.transactionConfirmations(tranxHash,res,callback);
   }
 
@@ -61,7 +61,8 @@ var smartContract = function (req, res,callback) {
 
  }
   	return {
-			coinbaseBalance  :coinbaseBalance,
+
+		coinbaseBalance  :coinbaseBalance,
 		accountBalance: accountBalance,
 		contractForAssets: contractForAssets,
 		saveFileAndGenerateHash: saveFileAndGenerateHash,
