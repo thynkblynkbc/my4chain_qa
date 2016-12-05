@@ -1,0 +1,64 @@
+/*
+ * @author himasnhu
+ * Requirement - include all the global variables and module required by the application
+ */
+
+   global.express = require('express');
+   global.errorHandler = require('errorhandler')
+   global.bodyParser = require('body-parser')
+//   global.ipfs = require('ipfs');
+   var ipfsAPI = require('ipfs-api')
+
+// connect to ipfs daemon API server
+global.ipfs = ipfsAPI('localhost', '5001', {protocol: 'http'})
+   global.Promise = require('node-promise').Promise
+   global.async = require('async')
+   global.crypto = require('crypto')
+   global.uuid = require('node-uuid');
+   global.winston = require('winston');
+   global.ifAsync = require('if-async')
+       global.dbConnection = require('./PgDatasource.js').getDbConnection()
+   // Database dependencies and Connection setting
+   global.mongoose = require('mongoose');
+   global.Promise = require("bluebird");
+  global.mongooseSchema = mongoose.Schema;
+  global.objection = require('objection');
+  global.Model = objection.Model;
+  var knexReq = require('knex');
+  // Initialize knex connection.
+global.knex = knexReq({client: 'pg',  useNullAsDefault: true,
+connection: {
+  host : 'localhost',
+  port:"5432",
+  user : 'oodles',
+  password : 'oodles',
+  database : 'student'
+}});
+//global.knex = Promise.promisifyAll(global.knex);
+
+// Give the connection to objection.
+Model.knex(knex);
+   //global.dbConnection = require('./Datasource.js').getDbConnection()
+
+   global.dbConnection = require('./PgDatasource.js')
+   //Ethereum_Web3 Library dependency
+   global.web3_extended = require('web3_ipc');
+
+   //global variable to hold all the environment specific configuration
+   global.configurationHolder = {}
+
+   // Application specific configuration details
+   configurationHolder.config = require('./Conf.js').configVariables()
+
+    //Application specific intial program to execute when server starts
+    configurationHolder.Bootstrap = require('./Bootstrap.js')
+
+   // Application specific security authorization middleware
+   configurationHolder.security = require('../application-middlewares/AuthorizationMiddleware').AuthorizationMiddleware
+
+   //UTILITY CLASSES
+   configurationHolder.EmailUtil = require('../application-utilities/EmailUtility')
+   configurationHolder.errorMessage = require('./ApplicationMessages').appErrorMessages
+   global.Logger = require('../application-utilities/LoggerUtility').logger
+
+   module.exports = configurationHolder
