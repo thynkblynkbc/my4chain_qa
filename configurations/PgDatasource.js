@@ -6,17 +6,17 @@
 var getDbConnection = function () {
     switch (process.env.NODE_ENV) {
     case 'development':
-      var db = process.env.DATABASE_URL || 'postgres://oodles:oodles@localhost:5432/student';
+      var db = process.env.DATABASE_URL || 'postgres://oodles:oodles@localhost:5432/my4chain';
       return checkMongooseConnection(db)
      case 'staging':
-        var db = process.env.DATABASE_URL || 'postgres://oodles:oodles@localhost:5432/student';
+        var db = process.env.DATABASE_URL || 'postgres://oodles:oodles@localhost:5432/my4chain';
         return checkMongooseConnection(db)
     case 'production':
-      var db = process.env.DATABASE_URL || 'postgres://localhost:5432/student';
+      var db = process.env.DATABASE_URL || 'postgres://oodles:oodles@localhost:5432/my4chain';
        return checkMongooseConnection(db)
 
     case 'test':
-    var db = process.env.DATABASE_URL || 'postgres://oodles:oodles@localhost:5432/student';
+    var db = process.env.DATABASE_URL || 'postgres://oodles:oodles@localhost:5432/my4chain';
     return checkMongooseConnection(db)
     }
 }
