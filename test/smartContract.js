@@ -22,8 +22,8 @@ module.exports.smartContract = function(){
                 chai.request(server)
                     .post('/api/v1/privateCreateContract')
                     .send({
-                        "owner": "0x872ea563b2194f6b5362b3e85ac8dcc6970268e8",
-                        "password": "nivi11yogi77"
+                        "owner": "0xe908c0a14ff6cc5e46c0ada652af2c193b1191b1",
+                        "password": "mypasswd"
                     })
                     .end(function(err, res) {
                         res.should.have.status(200);

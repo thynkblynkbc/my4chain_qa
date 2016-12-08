@@ -10,11 +10,12 @@ class ContractMethordCall{
   }
   // call different methord of smart contract
 contractMethodCall(method, adminAddress, accountAddress, action, ss, callback, textValue, conAddress, val) {
+  console.log("This is the action",method);
   switch (method) {
       case "assignAction":
           ss.assignAction(accountAddress,action,  {
               from: adminAddress,
-              gasPrice:4000000
+              gas:4000000
           }, function(err, data) {
             console.log(data);
             var newData={};
@@ -25,7 +26,7 @@ contractMethodCall(method, adminAddress, accountAddress, action, ss, callback, t
       case "getUserAction":
           ss.getUserAction.call(accountAddress, {
               from: adminAddress,
-              gasPrice:4000000
+              gas:4000000
           }, (err, data) => {
               Logger.info("getUserAction: ", data);
 
@@ -39,7 +40,7 @@ contractMethodCall(method, adminAddress, accountAddress, action, ss, callback, t
           case "checkroleAction":
           ss.checkroleAction.call(accountAddress,action, {
               from: adminAddress,
-              gasPrice:4000000
+              gas:4000000
           }, (err, data) => {
               Logger.info("getUserAction: ", data);
 
@@ -54,7 +55,7 @@ contractMethodCall(method, adminAddress, accountAddress, action, ss, callback, t
           Logger.info("inside remove action");
           ss.removeAction(accountAddress, action, {
               from: adminAddress,
-              gasPrice:11067000000000000
+              gas:4000000
           }, (err, data) => {
               Logger.info(err, data);
               var newData={};
@@ -128,9 +129,9 @@ contractMethodCall(method, adminAddress, accountAddress, action, ss, callback, t
           break;
           case "eventLog":
                   console.log("eventlog");
-                  var event = ss.getname(function(error, result) {
+                  var event = ss.GetValue(function(error, result) {
                       if (!error) {
-                          Logger.info(result, "Hello ", result.args.str);
+                          Logger.info(result, "Hello ", result.args);
                          callback(error, result);
                           event.stopWatching();
                       } else {

@@ -21,9 +21,9 @@ describe('Contract Transaction', function() {
                 .post('/api/v1/privateRunContract')
                 .send({
                     "contractAddress": tableData.contractAddress,
-                    "adminAddress": "0x872ea563b2194f6b5362b3e85ac8dcc6970268e8",
-                    "password": "nivi11yogi77",
-                    "accountAddress": "0x913acf833866dd1b0e90981b3ce08544cbc4b504",
+                    "adminAddress": "0xe908c0a14ff6cc5e46c0ada652af2c193b1191b1",
+                    "password": "nivi11yo",
+                    "accountAddress": "0x67b0a7666e48503913f5dd3e00a0575547405709",
                     "action": "CAN_REVOKE",
                     "method": "assignAction",
                     "val": 4,
@@ -51,9 +51,9 @@ describe('Contract Transaction', function() {
                 .post('/api/v1/privateRunContract')
                 .send({
                     "contractAddress":  tableData.contractAddress,
-                    "adminAddress": "0x872ea563b2194f6b5362b3e85ac8dcc6970268e8",
-                    "password": "nivi11yogi77",
-                    "accountAddress": "0x913acf833866dd1b0e90981b3ce08544cbc4b504",
+                    "adminAddress": "0xe908c0a14ff6cc5e46c0ada652af2c193b1191b1",
+                    "password": "nivi11yo",
+                    "accountAddress": "0x67b0a7666e48503913f5dd3e00a0575547405709",
                     "action": "CAN_ACCEPT",
                     "method": "assignAction",
                     "val": 4,
@@ -81,9 +81,10 @@ describe('Contract Transaction', function() {
                 .post('/api/v1/privateRunContract')
                 .send({
                     "contractAddress": tableData.contractAddress,
-                    "adminAddress": "0x872ea563b2194f6b5362b3e85ac8dcc6970268e8",
-                    "password": "nivi11yogi77",
-                    "accountAddress": "0x913acf833866dd1b0e90981b3ce08544cbc4b504",
+                    "adminAddress": "0xe908c0a14ff6cc5e46c0ada652af2c193b1191b1",
+                    "password": "nivi11yo",
+                    "accountAddress": "0x67b0a7666e48503913f5dd3e00a0575547405709",
+                    "action": "CAN_ACCEPT",
                     "method": "getUserAction",
                     "val": 4,
                     "textValue": "Hello"

@@ -14,32 +14,33 @@
         //  convert abi defination of contract
         convertToAbi(cb) {
             let fs = require('fs');
-            var words = fs.readFile(__dirname + '/test6.sol', 'utf8', function(err, solidityCode) {
+            var words = fs.readFile(__dirname + '/testNew.sol', 'utf8', function(err, solidityCode) {
                 if (err) {
                     console.log("error in reading file: ", err);
                     return;
                 } else {
                     //console.log("words: ", solidityCode);
-                    Logger.info("File Path: ", __dirname + '/test6.sol');
+                    Logger.info("File Path: ", __dirname + '/testNew.sol');
                     Logger.info("-----compling solidity code ----------",new Date());
-                  //  var srcCompiled = privateWeb3.eth.compile.solidity(solidityCode);
-                    var solc = require('solc');
-                    // var input = {
-                    //     'file.sol': solidityCode
-                    // };
-                      var compiled = solc.compile(solidityCode, 1).contracts.documentAccessMapping;
-                    Logger.info("-----complile complete ----------",new Date());
+                    var srcCompiled = privateWeb3.eth.compile.solidity(solidityCode);
+                    // var solc = require('solc');
+                    // // var input = {
+                    // //     'file.sol': solidityCode
+                    // // };
+                    //   var compiled = solc.compile(solidityCode, 1).contracts.documentAccessMapping;
+                    // Logger.info("-----complile complete ----------",new Date());
                 //    Logger.info(srcCompiled)
                   //  const compiled = solc.compile(source, 1);
-
-                const abi = JSON.parse(compiled.interface)
-                const bytecode = compiled.bytecode
-                    fs.writeFile('/home/himanshu/Documents/project/ethereum/application/controller-service-layer/services/PrivateBlockchain/data.json', JSON.stringify(abi), 'utf-8', function(err, done) {
+                //  let srcCompiled = privateWeb3.eth.compile.solidity(words);
+                              let smartSponsor = privateWeb3.eth.contract(srcCompiled.documentAccessMapping.info.abiDefinition);
+                // const abi = JSON.parse(compiled.interface)
+                // const bytecode = compiled.bytecode
+                    fs.writeFile('/home/himanshu/Documents/project/ethereum/application/controller-service-layer/services/PrivateBlockchain/data.json', JSON.stringify(srcCompiled.documentAccessMapping.info.abiDefinition), 'utf-8', function(err, done) {
                         console.log("hi", err, done)
                     });
-                    var smartSponsor = privateWeb3.eth.contract(abi);
+                //    var smartSponsor = privateWeb3.eth.contract(abi);
 
-                    cb(bytecode, smartSponsor, abi);
+                    cb(srcCompiled.documentAccessMapping.code, smartSponsor, srcCompiled.documentAccessMapping.info.abiDefinition);
                 }
             });
 
@@ -138,18 +139,7 @@
                 var abiDefinition = selectData;
                 //       console.log(smartSponsor);
                 var ss = smartSponsor.at(contractAddress);
-                var event = ss.getname();
-                Logger.info("event trigger");
-                event.watch(function(error, result) {
-                    if (!error) {
-                        Logger.info("args of getname ", result.args.str);
-                        //  callback(error, result);
-                        event.stopWatching();
-                    } else {
-                        Logger.info("error", error);
-                    }
-                });
-                Logger.info("hello next");
+
                 this.unlockAccount(adminAddress, password, 30, (error, result) => {
                     var data = {
                         method: method,
