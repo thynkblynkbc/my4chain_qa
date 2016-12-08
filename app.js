@@ -25,6 +25,10 @@ app.use(mongoosemask(function (result, mask, done) {
 	done(null, masked);
 }));
 
+app.get("/",function(req,res){
+res.send("server working.");
+});
+
 Layers = require('./application-utilities/layers').Express;
 var wiring = require('./configurations/UrlMapping');
 new Layers(app, router, __dirname + '/application/controller-service-layer', wiring);
