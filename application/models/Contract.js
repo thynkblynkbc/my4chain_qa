@@ -17,6 +17,15 @@ var schemaPromise = knex.schema.createTableIfNotExists('Contract', function(tabl
              });
          }
     });
+    knex.schema.hasColumn('Contract', 'bytecode').then((isColumn) => {
+         if (isColumn != true) {
+             knex.schema.table('Contract', function(table) {
+                table.text('bytecode');
+              }).then(function(data) {
+                 console.log("bytecode Column added to Contract Table");
+             });
+         }
+    });
 });
 
 // knex.schema.hasColumn('Contract', 'abi').then((isColumn) => {
@@ -43,7 +52,8 @@ Contract.jsonSchema = {
     contractAddress: {type: 'string'},
     transactionHash:{type:'string'},
     ethAddress:{type:'string'},
-    abi:{type:'string'}
+    abi:{type:'string'},
+    bytecode:{type:'string'}
     }
 };
 // Basic ES6 compatible prototypal inheritance.

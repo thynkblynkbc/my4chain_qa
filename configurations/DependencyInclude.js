@@ -28,6 +28,8 @@ global.Promise = require("bluebird");
 global.mongooseSchema = mongoose.Schema;
 global.objection = require('objection');
 global.Model = objection.Model;
+global.fs = require('fs');
+global.solc = require('solc');
 var knexReq = require('knex');
 // Initialize knex connection.
 global.knex = knexReq({
@@ -38,7 +40,7 @@ global.knex = knexReq({
         port: "5432",
         user: 'oodles',
         password: 'oodles',
-        database: 'student'
+        database: 'my4chain'
     }
 });
 //global.knex = Promise.promisifyAll(global.knex);

@@ -10,41 +10,56 @@
             });
 
         }
-
-        //  convert abi defination of contract
+        estimateGas(account, bytecode, cb) {
+                privateWeb3.eth.estimateGas({
+                    from: account,
+                    data: bytecode
+                }, function(error, gas) {
+                    Logger.info("gas: ", error, gas);
+                    cb(error, gas);
+                });
+            }
+            //  convert abi defination of contract
         convertToAbi(cb) {
-            let fs = require('fs');
-            var words = fs.readFile(__dirname + '/testNew.sol', 'utf8', function(err, solidityCode) {
+            fs.readFile(__dirname + '/testNew.sol', 'utf8', function(err, solidityCode) {
                 if (err) {
                     console.log("error in reading file: ", err);
                     return;
                 } else {
                     //console.log("words: ", solidityCode);
                     Logger.info("File Path: ", __dirname + '/testNew.sol');
-                    Logger.info("-----compling solidity code ----------",new Date());
-                    var srcCompiled = privateWeb3.eth.compile.solidity(solidityCode);
-                    // var solc = require('solc');
-                    // // var input = {
-                    // //     'file.sol': solidityCode
-                    // // };
-                    //   var compiled = solc.compile(solidityCode, 1).contracts.documentAccessMapping;
-                    // Logger.info("-----complile complete ----------",new Date());
-                //    Logger.info(srcCompiled)
-                  //  const compiled = solc.compile(source, 1);
-                //  let srcCompiled = privateWeb3.eth.compile.solidity(words);
-                              let smartSponsor = privateWeb3.eth.contract(srcCompiled.documentAccessMapping.info.abiDefinition);
-                // const abi = JSON.parse(compiled.interface)
-                // const bytecode = compiled.bytecode
-                    fs.writeFile('/home/himanshu/Documents/project/ethereum/application/controller-service-layer/services/PrivateBlockchain/data.json', JSON.stringify(srcCompiled.documentAccessMapping.info.abiDefinition), 'utf-8', function(err, done) {
-                        console.log("hi", err, done)
-                    });
-                //    var smartSponsor = privateWeb3.eth.contract(abi);
-
-                    cb(srcCompiled.documentAccessMapping.code, smartSponsor, srcCompiled.documentAccessMapping.info.abiDefinition);
+                    Logger.info(new Date());
+                    Logger.info("-----compling solidity code ----------");
+                    Logger.info(new Date());
+                    //var srcCompiled = privateWeb3.eth.compile.solidity(solidityCode);
+                    var compiled = solc.compile(solidityCode, 1).contracts.documentAccessMapping;
+                    Logger.info("-----complile complete ----------");
+                    Logger.info(new Date());
+                    const abi = JSON.parse(compiled.interface);
+                    Logger.info("bytecode: ", typeof compiled.bytecode, compiled.bytecode.length);
+                    const bytecode = compiled.bytecode;
+                    var smartSponsor = privateWeb3.eth.contract(abi);
+                    cb(bytecode, smartSponsor, abi);
                 }
             });
 
-
+        }
+        createContract(smartSponsor, owner, bytecode, gas, abi, callback) {
+            var ss = smartSponsor.new({
+                from: owner,
+                data: bytecode,
+                gas: gas,
+                gasPrice: 11067000000000000
+            }, (err, contract) => {
+                if (err) {
+                    console.error(err);
+                    return;
+                } else if (contract.address) {
+                    this.saveToDb(contract.address, contract.transactionHash, abi, owner, bytecode, gas, callback);
+                } else {
+                    Logger.info("A transmitted, waiting for mining...");
+                }
+            });
         }
 
         contractForAssets(ihash, res, callback) {
@@ -53,58 +68,43 @@
 
         // create a  smart contract
         smartContract(req, res, callback) {
-
-            Logger.info("abiDefinition: ");
             let owner = req.body.owner;
             let password = req.body.password;
             // call a function to covert abi defination of contract
-            this.convertToAbi((srcCompiled, smartSponsor, abi) => {
-                Logger.info("smartSponsor: ", typeof smartSponsor);
-                Logger.info("srcCompiled: ", typeof srcCompiled);
+            this.convertToAbi((bytecode, smartSponsor, abi) => {
+                Logger.info("Unlocking account -----------");
                 this.unlockAccount(owner, password, 30, (error, result) => {
-                    var gasUsed = privateWeb3.eth.estimateGas({
-                        from: owner,
-                        data: srcCompiled,
-                    });
-                    //  Logger.info("result: ---->", result);
-                    var ss = smartSponsor.new({
-                        from: owner,
-                        data: srcCompiled,
-                        gas: gasUsed
-                    }, function(err, contract) {
-                        if (err) {
-                            console.error(err);
-                            return;
-                        } else if (contract.address) {
-                            domain.Contract.query().insert({
-                                contractAddress: contract.address,
-                                transactionHash: contract.transactionHash,
-                                abi: JSON.stringify(abi),
-                                ethAddress: owner
-                            }).then(function(databaseReturn) {
-                                //    console.log("Inserted data: ", databaseReturn);
-                                var arr = {};
-                                arr.contractAddress = contract.address;
-                                arr.gasUsed = gasUsed;
-                                arr.contract = contract;
-                                arr.InsertedData = databaseReturn;
-
-                                //  Logger.info("contractAddress: ", arr);
-                            });
-
-                            var aAddress = contract.address;
-                            var arr = {};
-
-                            arr.contractAddress = aAddress;
-                            arr.tranHash = contract.transactionHash;
-                            Logger.info("contractAddress: ", arr);
-                            callback(err, arr);
-                        } else {
-                            Logger.info("A transmitted, waiting for mining...");
-                        }
-
-                    });
+                    if (error) {
+                        callback(error, result);
+                        return;
+                    } else {
+                        this.estimateGas(owner, bytecode, (error, gas) => {
+                            if (error) {
+                                callback(error, gas);
+                                return;
+                            } else {
+                                this.createContract(smartSponsor, owner, bytecode, gas, abi, callback);
+                            }
+                        });
+                    }
                 });
+            });
+        }
+
+        saveToDb(contractAddress, transactionHash, abi, owner, bytecode, gas, callback) {
+            domain.Contract.query().insert({
+                contractAddress: contractAddress,
+                transactionHash: transactionHash,
+                abi: JSON.stringify(abi),
+                ethAddress: owner,
+                bytecode: bytecode
+            }).then(function(databaseReturn) {
+                console.log("Inserted data: ", databaseReturn);
+                var arr = {};
+                arr.contractAddress = contractAddress;
+                arr.gasUsed = gas;
+                Logger.info("contractAddress: ", arr.contractAddress);
+                callback(null, arr);
             });
         }
 
@@ -112,10 +112,9 @@
                 domain.Contract.query().where({
                     'contractAddress': contractAddress
                 }).select().then(function(data) {
-                    //  console.log("Inserted data: ", data);
-                    let contData = JSON.parse(JSON.stringify(data));
-                    //  console.log("new data: ", contData);
-                    cb(contData[0].abi);
+                    let contData = data;
+                    Logger.info("contData: ",contData);
+                    cb(contData[0].abi, contData[0].bytecode);
                 });
             }
             // assign role to smart contract
@@ -128,32 +127,26 @@
             let method = req.body.method;
             let textValue = req.body.textValue;
             console.log("Inside spnosor the contract function");
-            let fs = require('fs');
-            this.selectForDataBase(contractAddress, (selectData) => {
+            this.selectForDataBase(contractAddress, (selectData,bytecode) => {
                 selectData = JSON.parse(selectData);
-
-
                 let smartSponsor = privateWeb3.eth.contract(selectData);
-                // console.log(smartSponsor);
-                //      this.convertToAbi((srcCompiled, smartSponsor,abi) => {
-                var abiDefinition = selectData;
-                //       console.log(smartSponsor);
                 var ss = smartSponsor.at(contractAddress);
-
+                Logger.info("Unlock Account ----------------");
                 this.unlockAccount(adminAddress, password, 30, (error, result) => {
-                    var data = {
-                        method: method,
-                        adminAddress: adminAddress,
-                        accountAddress: accountAddress,
-                        action: action
-                    };
-                    Logger.info(error, result);
-                    contractMethordCall.contractMethodCall(method, adminAddress, accountAddress, action, ss, callback, textValue, contractAddress, req.body.val);
+                    if (error) {
+                        callback(error, result);
+                        return;
+                    } else {
+                        this.estimateGas(adminAddress, bytecode, (error, gas) => {
+                            if (error) {
+                                callback(error, gas);
+                                return;
+                            } else {
+                                contractMethordCall.contractMethodCall(method, adminAddress, accountAddress, action, ss, callback, textValue, contractAddress, req.body.val, gas);
+                            }
+                        });
+                    }
                 });
-
-
-                //    });
-
             });
         }
 
