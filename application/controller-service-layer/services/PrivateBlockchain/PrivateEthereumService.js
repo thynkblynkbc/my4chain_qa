@@ -45,14 +45,14 @@
 
         }
         createContract(smartSponsor, owner, bytecode, gas, abi, callback) {
+            Logger.info("-----Contract creation ----------",gas);
             var ss = smartSponsor.new({
                 from: owner,
                 data: bytecode,
-                gas: gas,
-                gasPrice: 11067000000000000
+                gas: gas
             }, (err, contract) => {
                 if (err) {
-                    console.error(err);
+                    console.error(err,"error");
                     return;
                 } else if (contract.address) {
                     this.saveToDb(contract.address, contract.transactionHash, abi, owner, bytecode, gas, callback);
@@ -103,6 +103,7 @@
                 var arr = {};
                 arr.contractAddress = contractAddress;
                 arr.gasUsed = gas;
+                arr.tranHash= transactionHash;
                 Logger.info("contractAddress: ", arr.contractAddress);
                 callback(null, arr);
             });

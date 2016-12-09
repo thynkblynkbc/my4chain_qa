@@ -19,11 +19,16 @@ module.exports.smartContract = function(){
             it('should create contract /privateCreateContract POST', function(done) {
                 this.timeout(200000);
 
+         domain.User.query().orderBy('id', 'asc').limit(2).select().then(function(Usdata) {
+  
+        let UserData =  JSON.parse(JSON.stringify(Usdata));
+        console.log("UserData[0]==",UserData[0]);
+
                 chai.request(server)
                     .post('/api/v1/privateCreateContract')
                     .send({
-                        "owner": "0xe908c0a14ff6cc5e46c0ada652af2c193b1191b1",
-                        "password": "mypasswd"
+                        "owner": UserData[0].ethAddress,
+                        "password": UserData[0].password
                     })
                     .end(function(err, res) {
                         res.should.have.status(200);
@@ -35,6 +40,8 @@ module.exports.smartContract = function(){
                         res.body.object.should.have.property('tranHash');
                         done();
                     });
+            });
+
             });
 
         });
