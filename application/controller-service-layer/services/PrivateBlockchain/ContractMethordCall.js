@@ -1,139 +1,147 @@
 'use strict ';
 
-class ContractMethordCall{
+class ContractMethordCall {
 
-  callEvent(ss, callback, data) {
-          var event = ss.GetValue(function(error, result) {
-              if (!error) {
-                  Logger.info("Event result", result.args);
-                  var arr = {};
-                  arr.transactionHash = data;
-                  arr.result = result.args;
-                  callback(error, arr);
-                  event.stopWatching();
-              } else {
-                  Logger.info("error", error);
-                  callback(error, result);
-                  event.stopWatching();
-              }
-          });
- }
-  // call different methord of smart contract
-contractMethodCall(method, adminAddress, accountAddress, action, ss, callback, textValue, conAddress, val,gas) {
-  console.log("This is the action",method);
-  switch (method) {
-    case "expire":
-        ss.expire.call({
-            from: adminAddress,
-            gas: gas,
-            gasPrice: 11067000000000000
-        }, (err, data) => {
-            Logger.info("expire: ", data);
-            callback(err, data);
+    callEvent(ss, callback, data) {
+        var event = ss.usersLog(function(error, result) {
+            if (!error) {
+                Logger.info("Event result", result.args);
+                var arr = {};
+                arr.transactionHash = data;
+                arr.result = result.args;
+                callback(error, arr);
+                event.stopWatching();
+            } else {
+                Logger.info("error", error);
+                callback(error, result);
+                event.stopWatching();
+            }
         });
-        break;
-    case "assignAction":
-        ss.assignAction(accountAddress, action, {
-            from: adminAddress,
-            gas: gas,
-            gasPrice: 11067000000000000
-        }, (err, data) => {
-            Logger.info("assignAction: ", data);
+    }
+    MethodCallBack(err, data, ss, callback, methodName) {
+        if (err) {
+            Logger.info("error: ", err, data);
+            callback(err, err);
+            return;
+        } else {
+            Logger.info(methodName, data);
             Logger.info("event Call ------------");
             this.callEvent(ss, callback, data);
-        });
-        break;
-    case "getUserAction":
-        ss.getUserAction.call(accountAddress, {
-            from: adminAddress,
-            gas: gas,
-            gasPrice: 11067000000000000
-        }, (err, data) => {
-            Logger.info("getUserAction: ", data);
-            callback(err, data);
-        });
-        break;
-    case "removeAction":
-        Logger.info("inside remove action");
-        ss.removeAction(accountAddress, action, {
-            from: adminAddress,
-            gas: gas,
-            gasPrice: 11067000000000000
-        }, (err, data) => {
-            Logger.info(err, data);
-            callback(err, data);
-        });
-        break;
-    case "acknowledge":
-        Logger.info("inside remove action");
-        ss.acknowledge({
-            from: adminAddress,
-            gas: gas,
-            gasPrice: 11067000000000000
-        }, (err, data) => {
-            Logger.info(err, data);
-            callback(err, data);
-        });
-        break;
-    case "review":
-        ss.review(accountAddress, val, {
-            from: adminAddress,
-            gas: gas,
-            gasPrice: 11067000000000000
-        }, (err, data) => {
-            Logger.info("review: ", data);
-            callback(err, data);
-        });
-        break;
-    case "addInfo":
-        ss.addInfo(accountAddress, {
-            from: adminAddress,
-            gas: gas,
-            gasPrice: 11067000000000000
-        }, (err, data) => {
-            Logger.info("addInfo: ", data);
-            callback(err, data);
-        });
-        break;
-    case "accept":
-        ss.accept(accountAddress, {
-            from: adminAddress,
-            gas: gas,
-            gasPrice: 11067000000000000
-        }, (err, data) => {
-            Logger.info("addInfo: ", data);
-            callback(err, data);
-        });
-        break;
-    case "revoke":
-        ss.revoke(accountAddress, adminAddress, {
-            from: adminAddress,
-            gas: gas,
-            gasPrice: 11067000000000000
-        }, (err, data) => {
-            Logger.info("revoke: ", data);
-            callback(err, data);
+        }
+    }
+    // call different methord of smart contract
+    contractMethodCall(method, adminAddress, accountAddress, action, ss, callback, textValue, conAddress, val, gas) {
+        console.log("This is the action", method);
+        switch (method) {
+            case "usersLog":
+                var event =ss.usersLog({ }, { fromBlock: 0, toBlock: 'latest'});
+                // event.watch(function(error, result) {
+                //
+                // });
+                var result = event.get(function(error, logs) {
+                  callback(error,logs);
+                });
+                event.stopWatching();
+                break;
+            case "expire":
+                ss.expire.call({
+                    from: adminAddress,
+                    gas: gas
+                }, (err, data) => {
+                    Logger.info("expire: ", data);
+                    callback(err, data);
+                });
+                break;
+            case "assignAction":
+                //gasPrice: 11067000000000000
+                ss.assignAction(accountAddress, action, {
+                    from: adminAddress,
+                    gas: gas
+                }, (err, data) => {
+                    this.MethodCallBack(err, data, ss, callback, "assignAction");
+                });
+                break;
+            case "getUserAction":
+                ss.getUserAction.call(accountAddress, {
+                    from: adminAddress,
+                    gas: gas
+                }, (err, data) => {
+                    Logger.info("getUserAction: ", data);
+                    callback(err, data);
+                });
+                break;
+            case "removeAction":
+                Logger.info("inside remove action");
+                ss.removeAction(accountAddress, action, {
+                    from: adminAddress,
+                    gas: gas
+                }, (err, data) => {
+                    this.MethodCallBack(err, data, ss, callback, "removeAction");
+                });
+                break;
+            case "acknowledge":
+                Logger.info("inside remove action");
+                ss.acknowledge({
+                    from: adminAddress,
+                    gas: gas
+                }, (err, data) => {
+                    this.MethodCallBack(err, data, ss, callback, "acknowledge");
+                });
+                break;
+            case "review":
+                console.log("value: ", typeof val, val);
+                ss.review(val, {
+                    from: adminAddress,
+                    gas: gas
+                }, (err, data) => {
+                    this.MethodCallBack(err, data, ss, callback, "review");
+                });
+                break;
+            case "addInfo":
+                ss.addInfo(accountAddress, {
+                    from: adminAddress,
+                    gas: gas
+                }, (err, data) => {
+                    Logger.info("addInfo: ", data);
+                    callback(err, data);
+                });
+                break;
+            case "accept":
+                ss.accept(accountAddress, {
+                    from: adminAddress,
+                    gas: gas
+                }, (err, data) => {
+                    Logger.info("addInfo: ", data);
+                    callback(err, data);
+                });
+                break;
+            case "revoke":
+                ss.revoke(accountAddress, adminAddress, {
+                    from: adminAddress,
+                    gas: gas
+                }, (err, data) => {
+                    Logger.info("revoke: ", data);
+                    callback(err, data);
 
-        });
-        break;
-    case "decline":
-        ss.decline(accountAddress, {
-            from: adminAddress,
-            gas: gas,
-            gasPrice: 11067000000000000
-        }, (err, data) => {
-            Logger.info("revoke: ", data);
-            callback(err, data);
-        });
-        break;
-    default:
-        var arr = {};
-        arr.message = "Method does not exit";
-        callback(err, arr);
-        break;
-  }
+                });
+                break;
+            case "decline":
+                ss.decline(accountAddress, {
+                    from: adminAddress,
+                    gas: gas
+                }, (err, data) => {
+                    Logger.info("revoke: ", data);
+                    callback(err, data);
+                });
+                break;
+            default:
+                var arr = {};
+                arr.message = "Method does not exit";
+                callback(err, arr);
+                break;
+        }
 
-}
+    }
 
 
 }
