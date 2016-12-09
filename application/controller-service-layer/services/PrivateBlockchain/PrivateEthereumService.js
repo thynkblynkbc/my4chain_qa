@@ -114,7 +114,7 @@
                     'contractAddress': contractAddress
                 }).select().then(function(data) {
                     let contData = data;
-                    Logger.info("contData: ",contData);
+                 //   Logger.info("contData: ",contData);
                     cb(contData[0].abi, contData[0].bytecode);
                 });
             }

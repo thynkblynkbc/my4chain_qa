@@ -7,7 +7,7 @@ class ContractMethordCall {
             if (!error) {
                 Logger.info("Event result", result.args);
                 var arr = {};
-                arr.transactionHash = data;
+                arr.txnHash = data;
                 arr.result = result.args;
                 callback(error, arr);
                 event.stopWatching();
@@ -56,7 +56,8 @@ class ContractMethordCall {
                 //gasPrice: 11067000000000000
                 ss.assignAction(accountAddress, action, {
                     from: adminAddress,
-                    gas: gas
+                    gas: gas,
+                    gasPrice: 11067000000000
                 }, (err, data) => {
                     this.MethodCallBack(err, data, ss, callback, "assignAction");
                 });
