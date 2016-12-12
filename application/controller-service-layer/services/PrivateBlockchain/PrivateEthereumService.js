@@ -47,16 +47,16 @@
 
         }
         createContract(smartSponsor, owner, bytecode, gas, abi, callback) {
+            Logger.info("-----Contract creation ----------", gas);
             var ss = smartSponsor.new({
                 from: owner,
                 data: bytecode,
                 gas: gas,
                 //gasPrice: 1106700000000,
-                value:1
             }, (err, contract) => {
                 if (err) {
                     console.error(err);
-                    callback(err,err);
+                    callback(err, err);
                     return;
                 } else if (contract.address) {
                     this.saveToDb(contract.address, contract.transactionHash, abi, owner, bytecode, gas, callback);
@@ -108,6 +108,7 @@
                 arr.contractAddress = contractAddress;
                 arr.transactionHash = transactionHash;
                 arr.gasUsed = gas;
+                arr.tranHash = transactionHash;
                 Logger.info("contractAddress: ", arr.contractAddress);
                 callback(null, arr);
             });
@@ -118,7 +119,6 @@
                     'contractAddress': contractAddress
                 }).select().then(function(data) {
                     let contData = data;
-                    //Logger.info("contData: ",contData);
                     cb(contData[0].abi, contData[0].bytecode);
                 });
             }
@@ -132,7 +132,7 @@
             let method = req.body.method;
             let textValue = req.body.textValue;
             console.log("Inside spnosor the contract function");
-            this.selectForDataBase(contractAddress, (selectData,bytecode) => {
+            this.selectForDataBase(contractAddress, (selectData, bytecode) => {
                 selectData = JSON.parse(selectData);
                 let smartSponsor = privateWeb3.eth.contract(selectData);
                 var ss = smartSponsor.at(contractAddress);
@@ -147,36 +147,22 @@
                                 callback(error, gas);
                                 return;
                             } else {
-                                contractMethordCall.contractMethodCall(method, adminAddress, accountAddress, action, ss, callback, textValue, contractAddress, req.body.val, gas,req.body);
+                                contractMethordCall.contractMethodCall(method, adminAddress, accountAddress, action, ss, callback, textValue, contractAddress, req.body.val, gas, req.body);
                             }
                         });
                     }
                 });
             });
         }
-        encrypt(text) {
-            var password = 'oodles';
-            var cipher = crypto.createCipher('aes-256-cbc', password);
-            var crypted = cipher.update(text, 'hex', 'hex');
-            crypted += cipher.final('hex');
-            return crypted;
-        }
 
-        decrypt(text) {
-            var password = 'oodles';
-            var decipher = crypto.createDecipher('aes-256-cbc', password);
-            var dec = decipher.update(text, 'hex', 'hex')
-            dec += decipher.final('hex');
-            return dec;
-        }
         privateImageHashGenerate(req, res, callback) {
             var key = 'oodles';
             var algorithm = 'sha256';
-            var imagePath=req.files.file.path;
+            var imagePath = req.files.file.path;
             // step 1 -------------Generate hash of image
 
             fs.readFile(imagePath, (err, imageData) => {
-            //fs.readFile(__dirname + '/images.jpg', (err, imageData) => {
+                //fs.readFile(__dirname + '/images.jpg', (err, imageData) => {
                 var firstHash = crypto.createHmac(algorithm, key).update(imageData).digest('hex');
                 Logger.info("hash of image: ", firstHash);
 
@@ -187,8 +173,8 @@
 
                 var arr = {};
                 arr.secondHash = secondHash;
-                arr.encrypt = this.encrypt(secondHash);
-                arr.decrypt = this.decrypt(arr.encrypt);
+                arr.encrypt = this.encrypt(secondHash, 'hex', 'hex');
+                arr.decrypt = this.decrypt(arr.encrypt, 'hex', 'hex');
                 callback(null, arr);
             });
         }
@@ -237,7 +223,21 @@
                 }
             });
         }
+        encrypt(text, from, to) {
+            var password = 'oodles';
+            var cipher = crypto.createCipher('aes-256-cbc', password);
+            var crypted = cipher.update(text, from, to);
+            crypted += cipher.final(to);
+            return crypted;
+        }
 
+        decrypt(text, from, to) {
+            var password = 'oodles';
+            var decipher = crypto.createDecipher('aes-256-cbc', password);
+            var dec = decipher.update(text, from, to)
+            dec += decipher.final(to);
+            return dec;
+        }
 
         //  send ether to other account
         privateSendether(reqData, res, callback) {
@@ -245,25 +245,39 @@
             var toAddress = reqData.toAddress;
             var password = reqData.password;
             var amount = reqData.amount;
+            var data=reqData.data;
             var duration = 30;
             var resData = {};
             Logger.info("gas needed");
-            privateWeb3.personal.unlockAccount(fromAddress, password, duration, function(error, result) {
+          //  var data = 'Imroz created a transaction';
+            var encrypted = this.encrypt(data, 'utf8', 'hex');
+            var decrypted = this.decrypt(encrypted, 'hex', 'utf8');
+            console.log("data: ", data, encrypted, decrypted);
+
+            privateWeb3.personal.unlockAccount(fromAddress, password, duration, (error, result) => {
                 if (!error) {
                     Logger.info("Amount sent-->", privateWeb3.toWei(1, 'ether'));
-                    privateWeb3.eth.sendTransaction({
-                        from: fromAddress,
-                        to: toAddress,
-                        value: privateWeb3.toWei(amount, 'ether'),
-                        gas: 21000
-                    }, function(tx_error, tx_result) {
-                        if (!tx_error) {
-                            resData.transactionResult = tx_result;
-                            callback(null, resData);
+                    this.estimateGas(fromAddress, encrypted, (error, gas) => {
+                        if (error) {
+                            callback(error, gas);
+                            return;
                         } else {
-                            callback(tx_error);
+                            privateWeb3.eth.sendTransaction({
+                                from: fromAddress,
+                                to: toAddress,
+                                value: privateWeb3.toWei(amount, 'ether'),
+                                data: encrypted
+                            }, function(tx_error, tx_result) {
+                                if (!tx_error) {
+                                    resData.transactionResult = tx_result;
+                                    callback(null, resData);
+                                } else {
+                                    callback(tx_error);
+                                }
+                            });
                         }
                     });
+
                 } else {
                     callback(error);
                 }

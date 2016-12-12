@@ -1,9 +1,10 @@
 /*
- * @author Kuldeep
+ * @author Himanshu sharma
  * This program includes all the function which are required to  initialize before the application start
  */
 
  //call all the function which are required to perform the require initialization before server will start
+'use strict';
 var Person = require('../application/models/PersonDetail');
 var  initApp = function(){
     Logger.info("config" +configurationHolder.config.accessLevels["anonymous"] );
@@ -15,7 +16,7 @@ var  initApp = function(){
 
 function startWeb3Ethereum() {
    var Web3=require('web3');
-   global.web3;
+   global.web3={};
   //  if (typeof web3 !== 'undefined') {
   //      web3 = new Web3(web3.currentProvider);
    //
@@ -36,7 +37,7 @@ function startWeb3Ethereum() {
 
 function startPrivateWeb3Ethereum() {
    var Web3=require('web3');
-   global.privateWeb3;
+   global.privateWeb3={};
   //  if (typeof web3 !== 'undefined') {
   //      web3 = new Web3(web3.currentProvider);
    //
@@ -56,7 +57,7 @@ function startPrivateWeb3Ethereum() {
 }
 function createPerson(){
 
-
+//let coinbase = web3.
 //domain.Person.query().insert({firstName: 'Sylvester',lastName:"himasnhu"}).then(function (data) {Logger.info("data",data);});
   // domain.Person
   //     .query()

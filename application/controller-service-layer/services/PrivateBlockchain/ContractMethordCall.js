@@ -7,7 +7,7 @@ class ContractMethordCall {
             if (!error) {
                 Logger.info("Event result", result.args);
                 var arr = {};
-                arr.transactionHash = data;
+                arr.txnHash = data;
                 arr.result = result.args;
                 callback(error, arr);
                 event.stopWatching();
@@ -140,7 +140,6 @@ class ContractMethordCall {
                         }, (err, data) => {
                             Logger.info("revoke: ", data);
                             callback(err, data);
-
                         });
                         break;
                     case "decline":
