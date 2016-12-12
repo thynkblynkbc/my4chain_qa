@@ -60,10 +60,14 @@ var smartContract = function (req, res,callback) {
 			 this.services.privateEthereumDetail.coinbaseBalance(res,callback);
 
  }
+ var privateImageHashGenerate=function (req,res,callback){
+	 this.services.privateEthereumService.privateImageHashGenerate(req,res,callback);
+ }
   	return {
 
 		coinbaseBalance  :coinbaseBalance,
 		accountBalance: accountBalance,
+		privateImageHashGenerate:privateImageHashGenerate,
 		contractForAssets: contractForAssets,
 		saveFileAndGenerateHash: saveFileAndGenerateHash,
     createAccount: createAccount,

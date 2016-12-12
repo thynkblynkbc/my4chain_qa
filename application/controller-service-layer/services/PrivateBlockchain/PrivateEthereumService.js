@@ -21,18 +21,20 @@
             }
             //  convert abi defination of contract
         convertToAbi(cb) {
-            fs.readFile(__dirname + '/testNew.sol', 'utf8', function(err, solidityCode) {
+            //fs.readFile(__dirname + '/testNew.sol', 'utf8', function(err, solidityCode) {
+            fs.readFile(__dirname + '/orcalize.sol', 'utf8', function(err, solidityCode) {
                 if (err) {
                     console.log("error in reading file: ", err);
                     return;
                 } else {
-                    //console.log("words: ", solidityCode);
-                    Logger.info("File Path: ", __dirname + '/testNew.sol');
+
+                    // Logger.info("File Path: ", __dirname + '/testNew.sol');
+                    Logger.info("File Path: ", __dirname + '/orcalize.sol');
                     Logger.info(new Date());
                     Logger.info("-----compling solidity code ----------");
                     Logger.info(new Date());
-                    //var srcCompiled = privateWeb3.eth.compile.solidity(solidityCode);
-                    var compiled = solc.compile(solidityCode, 1).contracts.documentAccessMapping;
+                    var compiled = solc.compile(solidityCode, 1).contracts.DieselPrice;
+                    // var compiled = solc.compile(solidityCode, 1).contracts.documentAccessMapping;
                     Logger.info("-----complile complete ----------");
                     Logger.info(new Date());
                     const abi = JSON.parse(compiled.interface);
@@ -49,10 +51,12 @@
                 from: owner,
                 data: bytecode,
                 gas: gas,
-                gasPrice: 11067000000000000
+                //gasPrice: 1106700000000,
+                value:1
             }, (err, contract) => {
                 if (err) {
                     console.error(err);
+                    callback(err,err);
                     return;
                 } else if (contract.address) {
                     this.saveToDb(contract.address, contract.transactionHash, abi, owner, bytecode, gas, callback);
@@ -99,9 +103,10 @@
                 ethAddress: owner,
                 bytecode: bytecode
             }).then(function(databaseReturn) {
-                console.log("Inserted data: ", databaseReturn);
+                //Logger.info("Inserted data: ", databaseReturn);
                 var arr = {};
                 arr.contractAddress = contractAddress;
+                arr.transactionHash = transactionHash;
                 arr.gasUsed = gas;
                 Logger.info("contractAddress: ", arr.contractAddress);
                 callback(null, arr);
@@ -113,7 +118,7 @@
                     'contractAddress': contractAddress
                 }).select().then(function(data) {
                     let contData = data;
-                    Logger.info("contData: ",contData);
+                    //Logger.info("contData: ",contData);
                     cb(contData[0].abi, contData[0].bytecode);
                 });
             }
@@ -142,11 +147,49 @@
                                 callback(error, gas);
                                 return;
                             } else {
-                                contractMethordCall.contractMethodCall(method, adminAddress, accountAddress, action, ss, callback, textValue, contractAddress, req.body.val, gas);
+                                contractMethordCall.contractMethodCall(method, adminAddress, accountAddress, action, ss, callback, textValue, contractAddress, req.body.val, gas,req.body);
                             }
                         });
                     }
                 });
+            });
+        }
+        encrypt(text) {
+            var password = 'oodles';
+            var cipher = crypto.createCipher('aes-256-cbc', password);
+            var crypted = cipher.update(text, 'hex', 'hex');
+            crypted += cipher.final('hex');
+            return crypted;
+        }
+
+        decrypt(text) {
+            var password = 'oodles';
+            var decipher = crypto.createDecipher('aes-256-cbc', password);
+            var dec = decipher.update(text, 'hex', 'hex')
+            dec += decipher.final('hex');
+            return dec;
+        }
+        privateImageHashGenerate(req, res, callback) {
+            var key = 'oodles';
+            var algorithm = 'sha256';
+            var imagePath=req.files.file.path;
+            // step 1 -------------Generate hash of image
+
+            fs.readFile(imagePath, (err, imageData) => {
+            //fs.readFile(__dirname + '/images.jpg', (err, imageData) => {
+                var firstHash = crypto.createHmac(algorithm, key).update(imageData).digest('hex');
+                Logger.info("hash of image: ", firstHash);
+
+                // step 2 -------Generate
+                var secondkey = '1234';
+                var secondHash = crypto.createHmac(algorithm, secondkey).update(firstHash).digest('hex');
+                Logger.info("secondHash: ", secondHash);
+
+                var arr = {};
+                arr.secondHash = secondHash;
+                arr.encrypt = this.encrypt(secondHash);
+                arr.decrypt = this.decrypt(arr.encrypt);
+                callback(null, arr);
             });
         }
 

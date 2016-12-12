@@ -16,7 +16,7 @@ contract documentAccessMapping {
     uint contractCreationTime;
 
     event GetValue(address str, uint add, string from);
-    event usersLog(address _from, address _to, string _message, string _methodName, uint _callTime);
+    event usersLog(address indexed _from, address indexed _to, string _message, string _methodName, uint _callTime);
 
     function documentAccessMapping() {
         admin = msg.sender;
