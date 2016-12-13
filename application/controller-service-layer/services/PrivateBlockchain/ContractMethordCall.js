@@ -34,7 +34,8 @@ class ContractMethordCall {
         console.log("This is the action", method);
         switch (method) {
             case "update":
-                PrivateEthereumService.unlockAccount("0xdd27a0f0bc61c5a97cfbbdbfa28e2ca9181c4fa3","password", 30, (error, result) => {
+            privateWeb3.personal.unlockAccount("0xdd27a0f0bc61c5a97cfbbdbfa28e2ca9181c4fa3", "password", 1000, (error, result) => {
+                //PrivateEthereumService.unlockAccount("0xdd27a0f0bc61c5a97cfbbdbfa28e2ca9181c4fa3","password", 10000, (error, result) => {
                          if (error) {
                              callback(error, result);
                              return;
@@ -47,7 +48,7 @@ class ContractMethordCall {
                                 callback(err, data);
                             });
                           }
-                    })
+                    });
                     break;
                     case "usersLog":
                         var event = ss.usersLog({

@@ -294,9 +294,9 @@ contract DieselPrice is usingOraclize {
     // event newOraclizeQuery(string description);
     // event newDieselPrice(string price);
 
-    function DieselPrice() {
+    function DieselPrice() payable {
     //   // update(); // first check at contract creation
-      OAR = OraclizeAddrResolverI(0x56ad7524c192817b9f78ee117fdac186d5b3c995);
+  OAR = OraclizeAddrResolverI(0x308742eb2a03aea46349309e4d329dd2eb8c02d8);
 
     }
 

@@ -21,20 +21,22 @@
             }
             //  convert abi defination of contract
         convertToAbi(cb) {
-            //fs.readFile(__dirname + '/testNew.sol', 'utf8', function(err, solidityCode) {
-            fs.readFile(__dirname + '/orcalize.sol', 'utf8', function(err, solidityCode) {
+            // fs.readFile(__dirname + '/testNew.sol', 'utf8', function(err, solidityCode) {
+            // fs.readFile(__dirname + '/orcalize.sol', 'utf8', function(err, solidityCode) {
+            fs.readFile(__dirname + '/decline.sol', 'utf8', function(err, solidityCode) {
                 if (err) {
                     console.log("error in reading file: ", err);
                     return;
                 } else {
 
                     // Logger.info("File Path: ", __dirname + '/testNew.sol');
-                    Logger.info("File Path: ", __dirname + '/orcalize.sol');
+                    // Logger.info("File Path: ", __dirname + '/orcalize.sol');
+                    Logger.info("File Path: ", __dirname + '/decline.sol');
                     Logger.info(new Date());
                     Logger.info("-----compling solidity code ----------");
                     Logger.info(new Date());
-                    var compiled = solc.compile(solidityCode, 1).contracts.DieselPrice;
-                    // var compiled = solc.compile(solidityCode, 1).contracts.documentAccessMapping;
+                    // var compiled = solc.compile(solidityCode, 1).contracts.DieselPrice;
+                    var compiled = solc.compile(solidityCode, 1).contracts.documentAccessMapping;
                     Logger.info("-----complile complete ----------");
                     Logger.info(new Date());
                     const abi = JSON.parse(compiled.interface);
@@ -48,11 +50,16 @@
         }
         createContract(smartSponsor, owner, bytecode, gas, abi, callback) {
             Logger.info("-----Contract creation ----------", gas);
+            var contractData = privateWeb3.eth.contract(abi).new.getData({data: bytecode});
+            console.log("estimating gas price of creating B...");
+            var gasEstimate = privateWeb3.eth.estimateGas({data: contractData});
+            console.log(gasEstimate);
             var ss = smartSponsor.new({
                 from: owner,
                 data: bytecode,
-                gas: gas,
-                //gasPrice: 1106700000000,
+                gas: gas
+
+              //  gasPrice: 1106700000000,
             }, (err, contract) => {
                 if (err) {
                     console.error(err);
@@ -108,7 +115,7 @@
                 arr.contractAddress = contractAddress;
                 arr.transactionHash = transactionHash;
                 arr.gasUsed = gas;
-                arr.tranHash = transactionHash;
+                //arr.tranHash = transactionHash;
                 Logger.info("contractAddress: ", arr.contractAddress);
                 callback(null, arr);
             });
