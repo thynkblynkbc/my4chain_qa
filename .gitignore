@@ -1,3 +1,4 @@
 node_modules
-./seedInfo.log
-./testInfo.log
+seedInfo.log
+testInfo.log
+.idea

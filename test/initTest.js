@@ -6,7 +6,7 @@ global.should = chai.should();
 
     chai.use(chaiHttp);
     let fileExports= require('./exports.js');
-    console.log(fileExports,process.env.TEST_CASE);
+    console.log("Test case",fileExports,process.env.TEST_CASE);
     if(process.env.TEST_CASE == "first")
         {
         fileExports.smartContract.smartContract();
@@ -50,5 +50,5 @@ global.should = chai.should();
            }
         else{
 
-        Console.log("YOU HAVE NOT SELECTED ANY TEST CASES");
+        console.log("YOU HAVE NOT SELECTED ANY TEST CASES");
     }

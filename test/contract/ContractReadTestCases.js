@@ -27,7 +27,7 @@ describe('GET USER ACTION', function() {
                      "contractAddress": tableData.contractAddress,
                     "adminAddress": userInfo[0].ethAddress,
                     "password": userInfo[0].password,
-                    "accountAddress": userInfo[2].ethAddress,
+                    "accountAddress": userInfo[1].ethAddress,
                     "action": "NAN",
                     "method": "getUserAction",
                     "val": 4,
