@@ -14,7 +14,7 @@ function selectContactFormDataBase(cb){
 
 describe('Contract Transaction', function() {
 
- //   describe('Exceute transaction', function() {
+    describe('Exceute transaction', function() {
         it('should assign role in the contract',(done) => {
 
             this.timeout(100000);
@@ -25,9 +25,9 @@ describe('Contract Transaction', function() {
                 .post('/api/v1/privateRunContract')
                 .send({
                     "contractAddress": tableData.contractAddress,
-                    "adminAddress": userInfo[0].ethAddress,
-                    "password": userInfo[0].password,
-                    "accountAddress": userInfo[1].ethAddress,
+                    "adminAddress": userInfo[1].ethAddress,
+                    "password": userInfo[1].password,
+                    "accountAddress": userInfo[2].ethAddress,
                     "action": "CAN_REVOKE",
                     "method": "assignAction",
                     "val": 4,
@@ -55,9 +55,9 @@ describe('Contract Transaction', function() {
                 .post('/api/v1/privateRunContract')
                 .send({
                    "contractAddress": tableData.contractAddress,
-                    "adminAddress": userInfo[0].ethAddress,
-                    "password": userInfo[0].password,
-                    "accountAddress": userInfo[1].ethAddress,
+                    "adminAddress": userInfo[1].ethAddress,
+                    "password": userInfo[1].password,
+                    "accountAddress": userInfo[2].ethAddress,
                     "action": "CAN_ACCEPT",
                     "method": "assignAction",
                     "val": 4,
@@ -85,9 +85,9 @@ describe('Contract Transaction', function() {
                         .post('/api/v1/privateRunContract')
                         .send({
                            "contractAddress": tableData.contractAddress,
-                            "adminAddress": userInfo[0].ethAddress,
-                            "password": userInfo[0].password,
-                            "accountAddress": userInfo[1].ethAddress,
+                            "adminAddress": userInfo[1].ethAddress,
+                            "password": userInfo[1].password,
+                            "accountAddress": userInfo[2].ethAddress,
                             "action": "CAN_DECLINE",
                             "method": "assignAction",
                             "val": 4,
@@ -115,9 +115,9 @@ describe('Contract Transaction', function() {
                                         .post('/api/v1/privateRunContract')
                                         .send({
                                            "contractAddress": tableData.contractAddress,
-                                            "adminAddress": userInfo[0].ethAddress,
-                                            "password": userInfo[0].password,
-                                            "accountAddress": userInfo[1].ethAddress,
+                                            "adminAddress": userInfo[1].ethAddress,
+                                            "password": userInfo[1].password,
+                                            "accountAddress": userInfo[2].ethAddress,
                                             "action": "CAN_REVIEW",
                                             "method": "assignAction",
                                             "val": 4,
@@ -145,9 +145,9 @@ describe('Contract Transaction', function() {
                                                            .post('/api/v1/privateRunContract')
                                                            .send({
                                                               "contractAddress": tableData.contractAddress,
-                                                               "adminAddress": userInfo[0].ethAddress,
-                                                               "password": userInfo[0].password,
-                                                               "accountAddress": userInfo[1].ethAddress,
+                                                               "adminAddress": userInfo[1].ethAddress,
+                                                               "password": userInfo[1].password,
+                                                               "accountAddress": userInfo[2].ethAddress,
                                                                "action": "CAN_ACK",
                                                                "method": "assignAction",
                                                                "val": 4,
@@ -168,7 +168,7 @@ describe('Contract Transaction', function() {
                                                    });
 
 
-   // });
+    });
 
 });
 

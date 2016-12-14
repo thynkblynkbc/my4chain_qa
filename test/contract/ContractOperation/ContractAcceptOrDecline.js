@@ -1,4 +1,4 @@
-module.exports.getContract = function(){
+module.exports.changeStateContract = function(){
 
 function selectContactFormDataBase(cb){
     domain.Contract.query().orderBy('id', 'desc').limit(1).select().then(function(data) {
@@ -16,7 +16,7 @@ describe('STATE CHANGE ACTION', function() {
 
     describe('Change the state', function() {
 
-        it('should remove user role from child in the contract', function(done) {
+        it('should decline  contract', function(done) {
 
             this.timeout(100000);
           selectContactFormDataBase((selectData,userInfo) =>{
@@ -29,11 +29,12 @@ describe('STATE CHANGE ACTION', function() {
                     "password": userInfo[0].password,
                     "accountAddress": userInfo[1].ethAddress,
                     "action": "NAN",
-                    "method": "review",
+                    "method": "decline",
                     "val": 4,
                     "textValue": "Hello"
                 })
                 .end(function(err, res) {
+                console.log( res.body);
                                res.should.have.status(200);
                                res.should.be.json;
                                res.body.should.be.a('object');

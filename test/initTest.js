@@ -47,6 +47,20 @@ global.should = chai.should();
            else if(process.env.TEST_CASE == "eleven"){
                 fileExports.ContractReadTestCases.getContract();
                                                           //    fileExports.ContractReadChildTestCases.getContract();
+           }else if(process.env.TEST_CASE == "twelve"){
+         // for decline sol
+
+
+              fileExports.ContractAcceptOrDecline.changeStateContract(); // decline state
+           }else if(process.env.TEST_CASE == "thirteen"){  /// check state of contract
+            fileExports.ContractReadTestCases.getContract();
+
+           }else if(process.env.TEST_CASE == "fourteen"){  /// assign role to child
+            fileExports.ContractChildAssignAllRole.getContract();
+
+           }else if(process.env.TEST_CASE == "fifteen"){   // read role
+
+            fileExports.ContractReadChildTestCases.getContract();
            }
         else{
 

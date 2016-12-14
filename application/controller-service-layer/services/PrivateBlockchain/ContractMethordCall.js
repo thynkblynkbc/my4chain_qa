@@ -78,7 +78,7 @@ class ContractMethordCall {
                         //gasPrice: 11067000000000000
                         ss.assignAction(accountAddress, action, {
                             from: adminAddress,
-                            gas: gas
+                            gas: gas + 300000
                         }, (err, data) => {
                             this.MethodCallBack(err, data, ss, callback, "assignAction");
                         });
@@ -130,8 +130,10 @@ class ContractMethordCall {
                             from: adminAddress,
                             gas: gas
                         }, (err, data) => {
-                            Logger.info("addInfo: ", data);
-                            callback(err, data);
+                           var args ={};
+                                                       args.txnHash =data;
+                                                       Logger.info("accept: ", data);
+                                                       callback(err, args)
                         });
                         break;
                     case "revoke":
@@ -139,8 +141,10 @@ class ContractMethordCall {
                             from: adminAddress,
                             gas: gas
                         }, (err, data) => {
+                            var args ={};
+                            args.txnHash =data;
                             Logger.info("revoke: ", data);
-                            callback(err, data);
+                            callback(err, args);
                         });
                         break;
                     case "decline":
@@ -148,8 +152,10 @@ class ContractMethordCall {
                             from: adminAddress,
                             gas: gas
                         }, (err, data) => {
-                            Logger.info("revoke: ", data);
-                            callback(err, data);
+                           var args ={};
+                           args.txnHash =data;
+                           Logger.info("decline: ", data);
+                           callback(err, args)
                         });
                         break;
                     default:

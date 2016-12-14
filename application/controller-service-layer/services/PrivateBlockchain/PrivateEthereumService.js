@@ -21,17 +21,17 @@
             }
             //  convert abi defination of contract
         convertToAbi(cb) {
-            // fs.readFile(__dirname + '/testNew.sol', 'utf8', function(err, solidityCode) {
-            // fs.readFile(__dirname + '/orcalize.sol', 'utf8', function(err, solidityCode) {
             fs.readFile(__dirname + '/decline.sol', 'utf8', function(err, solidityCode) {
+            // fs.readFile(__dirname + '/orcalize.sol', 'utf8', function(err, solidityCode) {
+           // fs.readFile(__dirname + '/decline.sol', 'utf8', function(err, solidityCode) {
                 if (err) {
                     console.log("error in reading file: ", err);
                     return;
                 } else {
 
-                    // Logger.info("File Path: ", __dirname + '/testNew.sol');
+                     Logger.info("File Path: ", __dirname + '/decline.sol');
                     // Logger.info("File Path: ", __dirname + '/orcalize.sol');
-                    Logger.info("File Path: ", __dirname + '/decline.sol');
+                    //Logger.info("File Path: ", __dirname + '/decline.sol');
                     Logger.info(new Date());
                     Logger.info("-----compling solidity code ----------");
                     Logger.info(new Date());
@@ -113,7 +113,7 @@
                 //Logger.info("Inserted data: ", databaseReturn);
                 var arr = {};
                 arr.contractAddress = contractAddress;
-                arr.transactionHash = transactionHash;
+                arr.txnHash = transactionHash;
                 arr.gasUsed = gas;
                 //arr.tranHash = transactionHash;
                 Logger.info("contractAddress: ", arr.contractAddress);
@@ -138,7 +138,7 @@
             let action = req.body.action;
             let method = req.body.method;
             let textValue = req.body.textValue;
-            console.log("Inside spnosor the contract function");
+            console.log("Inside spnosor the contract function",req.body);
             this.selectForDataBase(contractAddress, (selectData, bytecode) => {
                 selectData = JSON.parse(selectData);
                 let smartSponsor = privateWeb3.eth.contract(selectData);

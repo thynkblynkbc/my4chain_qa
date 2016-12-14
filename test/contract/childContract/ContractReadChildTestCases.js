@@ -39,12 +39,21 @@ describe('GET USER ACTION', function() {
                   //  res.body.should.be.a('object');
                     res.body.error.should.equal(false);
                   //  res.body.object.should.be.a('object');
-                  console.log("res.body",res.body);
+                  console.log("res.body",process.env.TEST_CASE);
                   if(process.env.TEST_CASE == "seven"){
-                                     res.body.object[0].should.equal('CAN_ASSIGN');
+                        res.body.object[0].should.equal('CAN_ASSIGN');
+
                    }else if(process.env.TEST_CASE == "nine"){
+
                         res.body.object[0].should.equal('CAN_ASSIGN,CAN_REVOKE,CAN_ACCEPT,CAN_DECLINE,CAN_REVIEW,CAN_ACK');
-                   }else{
+
+                   } else if(process.env.TEST_CASE == "fifteen"){
+
+                        res.body.object[0].should.equal('CAN_ASSIGN');
+
+                   }
+                   else{
+
                         res.body.object[0].should.equal('CAN_REVOKE,CAN_ASSIGN');
                   }
                     done();

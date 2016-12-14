@@ -46,6 +46,8 @@ describe('GET USER ACTION', function() {
                       res.body.object[0].should.equal('CAN_ASSIGN,CAN_REVOKE,CAN_ACCEPT,CAN_DECLINE,CAN_REVIEW,CAN_ACK');
                      }else if(process.env.TEST_CASE == "eleven"){
                      res.body.object[1].should.equal('REVIEW');
+                     }else if(process.env.TEST_CASE == "thirteen"){
+                      res.body.object[1].should.equal('ACCEPT');
                      }
                   else{
                     res.body.object[0].should.equal('CAN_REVOKE,CAN_ASSIGN');
