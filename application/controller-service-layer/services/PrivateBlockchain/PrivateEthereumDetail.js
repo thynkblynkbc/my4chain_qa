@@ -67,21 +67,36 @@ class PrivateEthereumDetail {
                       callback(error);
                   }
               });
+
           } else {
               callback(err);
           }
       });
   }
+  // function encrypt(buffer){
+  //   var cipher = crypto.createCipher(algorithm,password)
+  //   var crypted = Buffer.concat([cipher.update(buffer),cipher.final()]);
+  //   return crypted;
+  // }
 
+  decrypt(buffer){
+    var password = 'oodles';
+    var decipher = crypto.createDecipher('aes-256-cbc',password)
+    var dec = Buffer.concat([decipher.update(buffer) , decipher.final()]);
+    return dec;
+  }
 // can get a transaction detail for the user
   transactionDetail(tranxHash, res, callback) {
       // var dummytxHash="0x19a36234629a6a5692083438fbe2cc4b97eb98e42a9ed0211ff227f2a5dca32a";
       var resData = {};
-      privateWeb3.eth.getTransaction(tranxHash, function(error, result) {
+      privateWeb3.eth.getTransaction(tranxHash, (error, result) => {
           if (!error) {
               if (result != null) {
                   Logger.info("Result--->", result);
+                    console.log("data: ",privateWeb3.eth.getTransaction(tranxHash));
                   resData.transactionDetail = result;
+                  var input=new Buffer(result.input.slice(2),'hex');
+                  resData.data=this.decrypt(input).toString('utf8');
                   callback(null, resData);
               } else {
                   resData.message = "cant get blockByHash";

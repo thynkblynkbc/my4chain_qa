@@ -119,6 +119,14 @@
 						json: views.jsonView
 					}
 				}
-			]
+			],
+			"/api/v1/privateImageHashGenerate": [{
+					method: "POST",
+					action: controllers.privateEthereumController.privateImageHashGenerate,
+					middleware: [multipartMiddleware],
+					views: {
+							json: views.jsonView
+					}
+			}]
 		};
 	};

@@ -4,13 +4,21 @@ contract documentAccessMapping {
     struct User {
         address parentId;
         string[] actions;
+        address party;
     }
+
     mapping(string => string) roles;
     mapping(address => User) public users;
     mapping(string => string) states;
+    mapping(address =>string) partyState;
 
     address public admin;
     address[] hashValue;
+    address partyFirst;
+    address partySecond;
+
+
+
 
     string contractState;
     uint contractCreationTime;
@@ -18,11 +26,24 @@ contract documentAccessMapping {
     event GetValue(address str, uint add, string from);
     event usersLog(address indexed _from, address indexed _to, string _message, string _methodName, uint _callTime);
 
-    function documentAccessMapping() {
+    function documentAccessMapping(address partyOne,address partyTwo) {
         admin = msg.sender;
+        partyFirst=partyOne;
+        partySecond=partyTwo;
         contractCreationTime = block.timestamp;
         createRoles();
         allStates();
+    }
+
+    function signContract(address partyAddress){
+      string memory message;
+      if ((checkRole(msg.sender, 'CAN_ACCEPT') && partyAddress==users[msg.sender].party) || msg.sender == admin) {
+          partyState[partyAddress]='Sign';
+          message = 'Contract Sign';
+      } else {
+          message = 'Sorry, You are not authorized';
+      }
+      usersLog(msg.sender,users[msg.sender].parentId,message,'signContract',now);
     }
 
     function createRoles() internal {
@@ -66,11 +87,12 @@ contract documentAccessMapping {
         return isAction;
     }
 
-    function newUser(address userId, string argAction) public returns(string) {
+    function newUser(address userId, string argAction,address partyAddress) public returns(string) {
         if (stringsEqual(roles[argAction], argAction)) {
             if (checkRole(msg.sender, roles[argAction]) || msg.sender == admin) {
                 users[userId].actions.push(argAction);
                 users[userId].parentId = msg.sender;
+                users[userId].party=partyAddress;
                 usersLog(msg.sender,userId,"New User Added","newUser",now);
                 /*GetValue(userId, users[userId].actions.length, "New User Added");*/
                 return "New User Added";
@@ -129,13 +151,13 @@ contract documentAccessMapping {
         }
     }
 
-    function assignAction(address userId, string argAction) public returns(string) {
+    function assignAction(address userId, string argAction,address partyAddress) public returns(string) {
         if (checkRole(msg.sender, roles["CAN_ASSIGN"]) || msg.sender == admin) { //1
             if (users[userId].actions.length > 0) { //2
                 return existingUser(userId, argAction);
             } //2
             else {
-                return newUser(userId, argAction);
+                return newUser(userId, argAction,partyAddress);
             }
         } //1
         else {
@@ -247,8 +269,15 @@ contract documentAccessMapping {
     function accept() {
         string memory message;
         if (checkRole(msg.sender, 'CAN_ACCEPT') || msg.sender == admin) {
-            contractState = states["ACCEPT"];
-            message = 'Contract in Accept state';
+          if(stringsEqual(partyState[partyFirst], 'Sign') && stringsEqual(partyState[partySecond],'Sign') ){
+              contractState = states["ACCEPT"];
+              message = 'Contract in Accept state';
+            }
+            else
+            {
+              message ='Both party have not sign the contract';
+
+            }
         } else {
             message = 'Sorry, You are not authorized';
         }

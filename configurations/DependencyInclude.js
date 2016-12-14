@@ -25,6 +25,9 @@ global.dbConnection = require('./PgDatasource.js').getDbConnection()
     // Database dependencies and Connection setting
 global.mongoose = require('mongoose');
 global.Promise = require("bluebird");
+var multipart = require('connect-multiparty');
+
+global.multipartMiddleware = multipart();
 global.mongooseSchema = mongoose.Schema;
 global.objection = require('objection');
 global.Model = objection.Model;
