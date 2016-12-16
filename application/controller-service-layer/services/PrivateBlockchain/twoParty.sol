@@ -35,16 +35,7 @@ contract documentAccessMapping {
         allStates();
     }
 
-    function signContract(address partyAddress){
-      string memory message;
-      if ((checkRole(msg.sender, 'CAN_ACCEPT') && partyAddress==users[msg.sender].party) || msg.sender == admin) {
-          partyState[partyAddress]='Sign';
-          message = 'Contract Sign';
-      } else {
-          message = 'Sorry, You are not authorized';
-      }
-      usersLog(msg.sender,users[msg.sender].parentId,message,'signContract',now);
-    }
+
 
     function createRoles() internal {
         roles["CAN_ASSIGN"] = "CAN_ASSIGN";
@@ -62,6 +53,15 @@ contract documentAccessMapping {
         states["ACCEPT"] = "ACCEPT";
         states["DECLINE"] = "DECLINE";
         states["REVOKE"] = "REVOKE";
+    }
+    modifier isAcceptDecline {
+        if (stringsEqual(contractState,states["ACCEPT"]) || stringsEqual(contractState,states["DECLINE"]) ){
+          usersLog(msg.sender,msg.sender,"State Cannot be change","isAcceptDecline",now);
+         // throw;
+        }else{
+        _;
+        }
+
     }
 
     function stringsEqual(string memory _a, string memory _b) internal returns(bool) {
@@ -87,9 +87,34 @@ contract documentAccessMapping {
         return isAction;
     }
 
+    function assignAction(address userId, string argAction,address partyAddress) isAcceptDecline public returns(string) {
+      if(partyAddress == partyFirst || partyAddress == partySecond){
+        if (checkRole(msg.sender, roles["CAN_ASSIGN"]) || msg.sender == admin) { //1
+            if (users[userId].actions.length > 0) { //2
+                return existingUser(userId, argAction);
+            } //2
+            else {
+                return newUser(userId, argAction,partyAddress);
+            }
+        } //1
+        else {
+            usersLog(msg.sender,userId,"Sorry, You are not authorized","assignAction",now);//*
+            /*GetValue(userId, users[userId].actions.length, "Not authorized");*/
+            return 'Sorry, You are not authorized';
+        }
+
+      }else{
+        usersLog(msg.sender,userId,"Sorry, This is not correct partyAddress","assignAction",now);//*
+        /*GetValue(userId, users[userId].actions.length, "Not authorized");*/
+        return 'Sorry, This is not correct partyAddress';
+
+      }
+    }
+
     function newUser(address userId, string argAction,address partyAddress) public returns(string) {
         if (stringsEqual(roles[argAction], argAction)) {
             if (checkRole(msg.sender, roles[argAction]) || msg.sender == admin) {
+
                 users[userId].actions.push(argAction);
                 users[userId].parentId = msg.sender;
                 users[userId].party=partyAddress;
@@ -142,7 +167,7 @@ contract documentAccessMapping {
         }
     }
 
-    function acknowledge() {
+    function acknowledge() isAcceptDecline {
         if (msg.sender == admin || checkRole(msg.sender, roles["CAN_ACK"])) {
             contractState = states["ACK"];
               usersLog(msg.sender,msg.sender,"Contract in acknowledge state","acknowledge",now);
@@ -151,23 +176,9 @@ contract documentAccessMapping {
         }
     }
 
-    function assignAction(address userId, string argAction,address partyAddress) public returns(string) {
-        if (checkRole(msg.sender, roles["CAN_ASSIGN"]) || msg.sender == admin) { //1
-            if (users[userId].actions.length > 0) { //2
-                return existingUser(userId, argAction);
-            } //2
-            else {
-                return newUser(userId, argAction,partyAddress);
-            }
-        } //1
-        else {
-            usersLog(msg.sender,userId,"Sorry, You are not authorized","assignAction",now);//*
-            /*GetValue(userId, users[userId].actions.length, "Not authorized");*/
-            return 'Sorry, You are not authorized';
-        }
-    }
 
-    function removeAction(address userId, string argAction) {
+
+    function removeAction(address userId, string argAction) isAcceptDecline {
 
         string memory message;
         if (msg.sender == admin || msg.sender == users[userId].parentId) {
@@ -200,7 +211,7 @@ contract documentAccessMapping {
         usersLog(msg.sender,userId,message,"removeAction",now);
     }
 
-    function review(uint comment) {
+    function review(uint comment) isAcceptDecline {
         string memory message;
         if (checkRole(msg.sender, roles["CAN_REVIEW"]) || msg.sender == admin) {
             if (comment == 1) {
@@ -216,7 +227,7 @@ contract documentAccessMapping {
         usersLog(msg.sender,msg.sender,message,"review",now);
     }
 
-    function addInfo(address fileAddress) {
+    function addInfo(address fileAddress) isAcceptDecline {
         string memory message;
         if (msg.sender == admin) {
             hashValue.push(fileAddress);
@@ -229,7 +240,7 @@ contract documentAccessMapping {
         //       usersLog(msg.sender,'addInfo',block.timestamp);
     }
     //function revoke(string _message) {
-    function revoke(address userId, string _message) {
+    function revoke(address userId, string _message) isAcceptDecline {
         string memory message;
         /*if ((checkRole(users[msg.sender].parentId, roles["CAN_REVOKE"]) && users[userId].parentId == msg.sender) || admin == msg.sender) {
             if (stringsEqual(contractState, states["ACCEPT"])) {
@@ -255,7 +266,7 @@ contract documentAccessMapping {
         usersLog(msg.sender,msg.sender,message,'revoke',now);
     }
 
-    function decline() {
+    function decline() isAcceptDecline {
         string memory message;
         if (checkRole(msg.sender, roles["CAN_DECLINE"]) || msg.sender == admin) {
             contractState = states["DECLINE"];
@@ -266,7 +277,19 @@ contract documentAccessMapping {
        usersLog(msg.sender,msg.sender,message,"decline",now);
     }
 
-    function accept() {
+    function signContract(address partyAddress) accept {
+      string memory message;
+      if ((checkRole(msg.sender, 'CAN_ACCEPT') && partyAddress==users[msg.sender].party) || msg.sender == admin) {
+          partyState[partyAddress]='Sign';
+          message = 'Contract Sign';
+      } else {
+          message = 'Sorry, You are not authorized';
+      }
+      usersLog(msg.sender,users[msg.sender].parentId,message,'signContract',now);
+    }
+
+    modifier accept() {
+        _;
         string memory message;
         if (checkRole(msg.sender, 'CAN_ACCEPT') || msg.sender == admin) {
           if(stringsEqual(partyState[partyFirst], 'Sign') && stringsEqual(partyState[partySecond],'Sign') ){
@@ -298,7 +321,7 @@ contract documentAccessMapping {
         return string(babcde);
     }
 
-    function getUserAction(address userId) public returns(string action, string state, address parent) {
+    function getUserAction(address userId) public returns(string action, string state, address parent, address first,address second) {
         string[] actionArray = users[userId].actions;
         string memory finalStrAction;
         string memory comma = ',';
@@ -309,7 +332,7 @@ contract documentAccessMapping {
             finalStrAction = strConcat(finalStrAction, comma, actionArray[i]);
         }
         usersLog(msg.sender,userId,finalStrAction,"getUserAction",now);
-        return (finalStrAction, contractState, users[userId].parentId);
+        return (finalStrAction, contractState, users[userId].parentId,partyFirst,partySecond);
     }
 
     function expire() returns(bool isExpire) {

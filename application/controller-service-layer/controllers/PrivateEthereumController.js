@@ -16,26 +16,34 @@ module.exports = function () {
 		this.services.privateEthereumService.createAccount(req.body, res, callback);
 	}
 
-var smartContract = function (req, res,callback) {
+  var smartContract = function (req, res,callback) {
 
 		this.services.privateEthereumService.smartContract(req, res, callback);
-  }
+    }
+		var smartPartyContract = function(req ,res,callback){
+				this.services.privateEthereumPartyService.smartPartyContract(req, res, callback);
 
+		}
+		var sponsorPartyContract = function (req, res,callback) {
+
+			this.services.privateEthereumPartyService.sponsorPartyContract(req, res, callback);
+
+					}
 
 	var sponsorContract = function (req, res,callback) {
 
 		this.services.privateEthereumService.sponsorContract(req, res, callback);
 
-  }
+        }
   var privateSendether = function (req, res,callback) {
     var reqData=req.body;
 		this.services.privateEthereumService.privateSendether(reqData, res, callback);
-  }
+        }
 
   var transactionConfirmations = function (req, res,callback) {
     var tranxHash=req.query.tranxHash;
 		this.services.privateEthereumDetail.transactionConfirmations(tranxHash,res,callback);
-  }
+        }
 
   var transactionDetail = function (req, res,callback) {
 		var tranxHash=req.body.tranxHash;
@@ -59,10 +67,10 @@ var smartContract = function (req, res,callback) {
 
 			 this.services.privateEthereumDetail.coinbaseBalance(res,callback);
 
- }
- var privateImageHashGenerate=function (req,res,callback){
-	 this.services.privateEthereumService.privateImageHashGenerate(req,res,callback);
- }
+    }
+    var privateImageHashGenerate=function (req,res,callback){
+	     this.services.privateEthereumService.privateImageHashGenerate(req,res,callback);
+        }
   	return {
 
 		coinbaseBalance  :coinbaseBalance,
@@ -70,11 +78,13 @@ var smartContract = function (req, res,callback) {
 		privateImageHashGenerate:privateImageHashGenerate,
 		contractForAssets: contractForAssets,
 		saveFileAndGenerateHash: saveFileAndGenerateHash,
-    createAccount: createAccount,
-    privateSendether:privateSendether,
-    transactionDetail:transactionDetail,
-    transactionConfirmations:transactionConfirmations,
+        createAccount: createAccount,
+        privateSendether:privateSendether,
+        transactionDetail:transactionDetail,
+        transactionConfirmations:transactionConfirmations,
 		sponsorContract:sponsorContract,
-		smartContract:smartContract
+		smartContract:smartContract,
+		smartPartyContract:smartPartyContract,
+		sponsorPartyContract:sponsorPartyContract
 	}
 };
