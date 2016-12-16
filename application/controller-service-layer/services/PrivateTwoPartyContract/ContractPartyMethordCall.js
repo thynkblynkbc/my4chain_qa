@@ -1,6 +1,6 @@
 'use strict ';
 
-class ContractMethordCall {
+class ContractPartyMethordCall {
 
     callEvent(ss, callback, data) {
         var event = ss.usersLog(function(error, result) {
@@ -30,79 +30,60 @@ class ContractMethordCall {
             }
         }
         // call different methord of smart contract
-    contractMethodCall(method, adminAddress, accountAddress, action, ss, callback, textValue, conAddress, val, gas, reqObj) {
+    contractMethodCall(method, adminAddress, accountAddress,partyaddress, action, ss, callback, textValue, conAddress, val, gas, reqObj) {
         console.log("This is the action", method);
         switch (method) {
-            case "getEther":
-                ss.getEther({
-                    from: adminAddress,
-                    gas: gas,
-                    value: privateWeb3.toWei(20, 'ether')
-                }, (err, data) => {
-                    this.MethodCallBack(err, data, ss, callback, "getEther");
-                });
-                break;
             case "update":
-                privateWeb3.personal.unlockAccount("0xdd27a0f0bc61c5a97cfbbdbfa28e2ca9181c4fa3", "password", 1000, (error, result) => {
-
-                    if (error) {
-                        callback(error, result);
-                        return;
-                    } else {
+            privateWeb3.personal.unlockAccount("0xdd27a0f0bc61c5a97cfbbdbfa28e2ca9181c4fa3", "password", 1000, (error, result) => {
+                //PrivateEthereumService.unlockAccount("0xdd27a0f0bc61c5a97cfbbdbfa28e2ca9181c4fa3","password", 10000, (error, result) => {
+                         if (error) {
+                             callback(error, result);
+                             return;
+                         } else {
                             ss.update({
-                                    from: adminAddress,
-                                    gas: gas
-                                }, (err, data) => {
-                                    Logger.info("update: ", data);
-                                    callback(err, data);
-                                });
-                      }
-                });
-                break;
-            case "usersLog":
-                var event = ss.usersLog({
-                    _from: reqObj.from,
-                    _to: reqObj.to
-                }, {
-                    fromBlock: 0,
-                    toBlock: 'latest'
-                });
-                // event.watch(function(error, result) {
-                //
-                // });
-                var result = event.get(function(error, logs) {
-                    callback(error, logs);
-                });
-                event.stopWatching();
-                break;
-            case "expire":
-                ss.expire.call({
-                    from: adminAddress,
-                    gas: gas
-                }, (err, data) => {
-                    Logger.info("expire: ", data);
-                    callback(err, data);
-                });
-                break;
-            case "assignAction":
-                //gasPrice: 11067000000000000
-                ss.assignAction.estimateGas(accountAddress, action, {
-                    from: adminAddress
-                }, (err, gasActual) => {
-                    console.log("gasActual: ", gasActual);
-                    if (!err) {
-                        ss.assignAction(accountAddress, action, {
+                                from: adminAddress,
+                                gas: gas
+                            }, (err, data) => {
+                                Logger.info("update: ", data);
+                                callback(err, data);
+                            });
+                          }
+                    });
+                    break;
+                    case "usersLog":
+                        var event = ss.usersLog({
+                            _from: reqObj.from,
+                            _to: reqObj.to
+                        }, {
+                            fromBlock: 0,
+                            toBlock: 'latest'
+                        });
+                        // event.watch(function(error, result) {
+                        //
+                        // });
+                        var result = event.get(function(error, logs) {
+                            callback(error, logs);
+                        }); event.stopWatching();
+                        break;
+                    case "expire":
+                        ss.expire.call({
                             from: adminAddress,
-                            gas: gasActual
+                            gas: gas
+                        }, (err, data) => {
+                            Logger.info("expire: ", data);
+                            callback(err, data);
+                        });
+                        break;
+                    case "assignAction":
+                        //gasPrice: 11067000000000000
+
+                        ss.assignAction(accountAddress, action,partyaddress, {
+                            from: adminAddress,
+                            gas: 6000000
                         }, (err, data) => {
                             this.MethodCallBack(err, data, ss, callback, "assignAction");
                         });
-                    } else {
-                        callback(err, err);
-                    }
-
-                });
-                  break;
+                        break;
                     case "getUserAction":
                         ss.getUserAction.call(accountAddress, {
                             from: adminAddress,
@@ -146,14 +127,14 @@ class ContractMethordCall {
                         });
                         break;
                     case "accept":
-                        ss.accept(accountAddress, {
-                            from: adminAddress,
+                        ss.signContract(accountAddress, {
+                            from: accountAddress,
                             gas: gas
                         }, (err, data) => {
                            var args ={};
-                           args.txnHash =data;
-                           Logger.info("accept: ", data);
-                           callback(err, args)
+                             args.txnHash =data;
+                             Logger.info("accept: ", data);
+                             callback(err, args)
                         });
                         break;
                     case "revoke":
@@ -181,12 +162,11 @@ class ContractMethordCall {
                     default:
                         var arr = {}; arr.message = "Method does not exit"; callback(err, arr);
                         break;
+                }
 
         }
 
+
     }
 
-
-}
-
-module.exports = new ContractMethordCall();
+    module.exports = new ContractPartyMethordCall();

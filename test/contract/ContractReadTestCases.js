@@ -27,7 +27,7 @@ describe('GET USER ACTION', function() {
                      "contractAddress": tableData.contractAddress,
                     "adminAddress": userInfo[0].ethAddress,
                     "password": userInfo[0].password,
-                    "accountAddress": userInfo[2].ethAddress,
+                    "accountAddress": userInfo[1].ethAddress,
                     "action": "NAN",
                     "method": "getUserAction",
                     "val": 4,
@@ -46,6 +46,8 @@ describe('GET USER ACTION', function() {
                       res.body.object[0].should.equal('CAN_ASSIGN,CAN_REVOKE,CAN_ACCEPT,CAN_DECLINE,CAN_REVIEW,CAN_ACK');
                      }else if(process.env.TEST_CASE == "eleven"){
                      res.body.object[1].should.equal('REVIEW');
+                     }else if(process.env.TEST_CASE == "thirteen"){
+                      res.body.object[1].should.equal('ACCEPT');
                      }
                   else{
                     res.body.object[0].should.equal('CAN_REVOKE,CAN_ASSIGN');

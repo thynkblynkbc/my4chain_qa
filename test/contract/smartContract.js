@@ -37,7 +37,7 @@ module.exports.smartContract = function(){
                         res.body.error.should.equal(false);
                         res.body.object.should.be.a('object');
                         res.body.object.should.have.property('contractAddress');
-                        res.body.object.should.have.property('tranHash');
+                        res.body.object.should.have.property('txnHash');
                         done();
                     });
             });

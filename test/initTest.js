@@ -6,7 +6,7 @@ global.should = chai.should();
 
     chai.use(chaiHttp);
     let fileExports= require('./exports.js');
-    console.log(fileExports,process.env.TEST_CASE);
+    console.log("Test case",fileExports,process.env.TEST_CASE);
     if(process.env.TEST_CASE == "first")
         {
         fileExports.smartContract.smartContract();
@@ -47,8 +47,22 @@ global.should = chai.should();
            else if(process.env.TEST_CASE == "eleven"){
                 fileExports.ContractReadTestCases.getContract();
                                                           //    fileExports.ContractReadChildTestCases.getContract();
+           }else if(process.env.TEST_CASE == "twelve"){
+         // for decline sol
+
+
+              fileExports.ContractAcceptOrDecline.changeStateContract(); // decline state
+           }else if(process.env.TEST_CASE == "thirteen"){  /// check state of contract
+            fileExports.ContractReadTestCases.getContract();
+
+           }else if(process.env.TEST_CASE == "fourteen"){  /// assign role to child
+            fileExports.ContractChildAssignAllRole.getContract();
+
+           }else if(process.env.TEST_CASE == "fifteen"){   // read role
+
+            fileExports.ContractReadChildTestCases.getContract();
            }
         else{
 
-        Console.log("YOU HAVE NOT SELECTED ANY TEST CASES");
+        console.log("YOU HAVE NOT SELECTED ANY TEST CASES");
     }

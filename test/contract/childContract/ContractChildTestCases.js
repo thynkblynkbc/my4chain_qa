@@ -106,36 +106,36 @@ describe('GET USER ACTION', function() {
                                   });
 
                             });
-//                            it('should not assign fourth unassign parent role to the contract', function(done) {
-//
-//                                                            this.timeout(100000);
-//                                                            selectContactFormDataBase((selectData,userInfo) =>{
-//                                                                  let tableData=selectData;
-//                                                            chai.request(server)
-//                                                                .post('/api/v1/privateRunContract')
-//                                                                .send({
-//                                                                   "contractAddress": tableData.contractAddress,
-//                                                                    "adminAddress": userInfo[0].ethAddress,
-//                                                                    "password": userInfo[0].password,
-//                                                                    "accountAddress": userInfo[2].ethAddress,
-//                                                                    "action": "CAN_ACK",
-//                                                                    "method": "assignAction",
-//                                                                    "val": 4,
-//                                                                    "textValue": "Hello"
-//                                                                })
-//                                                                .end(function(err, res) {
-//                                                                    res.should.have.status(200);
-//                                                                    res.should.be.json;
-//                                                                    res.body.should.be.a('object');
-//                                                                    res.body.error.should.equal(false);
-//                                                                    res.body.object.should.be.a('object');
-//                                                                    res.body.object.should.have.property('txnHash');
-//                                                                    done();
-//                                                                });
-//
-//                                                              });
-//
-//                                                        });
+                            it('should not assign fourth unassign parent role to the contract', function(done) {
+
+                                                            this.timeout(100000);
+                                                            selectContactFormDataBase((selectData,userInfo) =>{
+                                                                  let tableData=selectData;
+                                                            chai.request(server)
+                                                                .post('/api/v1/privateRunContract')
+                                                                .send({
+                                                                   "contractAddress": tableData.contractAddress,
+                                                                    "adminAddress": userInfo[0].ethAddress,
+                                                                    "password": userInfo[0].password,
+                                                                    "accountAddress": userInfo[2].ethAddress,
+                                                                    "action": "CAN_ACK",
+                                                                    "method": "assignAction",
+                                                                    "val": 4,
+                                                                    "textValue": "Hello"
+                                                                })
+                                                                .end(function(err, res) {
+                                                                    res.should.have.status(200);
+                                                                    res.should.be.json;
+                                                                    res.body.should.be.a('object');
+                                                                    res.body.error.should.equal(false);
+                                                                    res.body.object.should.be.a('object');
+                                                                    res.body.object.should.have.property('txnHash');
+                                                                    done();
+                                                                });
+
+                                                              });
+
+                                                        });
 
 
     });

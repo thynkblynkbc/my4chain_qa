@@ -3,6 +3,36 @@
 			views = app.views;
 
 		return {
+		    "/api/coinbase/balance": [{
+		        method: "GET",
+                action: controllers.coinbaseController.notifications,
+                views: {
+                			json: views.jsonView
+                	    }
+		        }],
+		    "/api/coinbase/accounts": [{
+                method: "GET",
+                action: controllers.coinbaseController.notifications,
+                views: {
+                             json: views.jsonView
+                   	    }
+               }],
+
+
+        "/api/coinbase/createAccount": [{
+               method: "GET",
+               action: controllers.coinbaseController.createAccount,
+               views: {
+                        json: views.jsonView
+                	    }
+                }],
+				"/api/v1/uploadToGlobalBlockchain": [{
+				      method: "GET",
+				      action: controllers.publishDataGlobal.sendData,
+				      views: {
+				                json: views.jsonView
+				              }
+				      }],
 			"/api/v1/balance": [{
 					method: "POST",
 					action: controllers.ethereumController.accountBalance,
@@ -48,6 +78,24 @@
 					method: "POST",
 					action: controllers.privateEthereumController.smartContract,
 					middleware:[validater(validationFile.privateCreateContract)],
+					views: {
+						json: views.jsonView
+					}
+				}
+			],
+			"/api/v1/privateCreatePartyContract": [{
+					method: "POST",
+					action: controllers.privateEthereumController.smartPartyContract,
+					middleware:[],
+					views: {
+						json: views.jsonView
+					}
+				}
+			],
+			"/api/v1/privateSponsorPartyContract": [{
+					method: "POST",
+					action: controllers.privateEthereumController.sponsorPartyContract,
+					middleware:[],
 					views: {
 						json: views.jsonView
 					}
