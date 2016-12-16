@@ -63,6 +63,9 @@ var smartContract = function (req, res,callback) {
  var privateImageHashGenerate=function (req,res,callback){
 	 this.services.privateEthereumService.privateImageHashGenerate(req,res,callback);
  }
+ var privateImageHashtoContract=function (req,res,callback){
+	this.services.privateEthereumService.privateImageHashtoContract(req,res,callback);
+ }
   	return {
 
 		coinbaseBalance  :coinbaseBalance,
@@ -75,6 +78,7 @@ var smartContract = function (req, res,callback) {
     transactionDetail:transactionDetail,
     transactionConfirmations:transactionConfirmations,
 		sponsorContract:sponsorContract,
-		smartContract:smartContract
+		smartContract:smartContract,
+		privateImageHashtoContract:privateImageHashtoContract
 	}
 };

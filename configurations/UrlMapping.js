@@ -127,6 +127,14 @@
 					views: {
 							json: views.jsonView
 					}
+			}],
+			"/api/v1/privateImageHashtoContract": [{
+					method: "POST",
+					action: controllers.privateEthereumController.privateImageHashtoContract,
+					middleware: [multipartMiddleware],
+					views: {
+							json: views.jsonView
+					}
 			}]
 		};
 	};

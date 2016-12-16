@@ -21,9 +21,11 @@
             }
             //  convert abi defination of contract
         convertToAbi(cb) {
+
             // fs.readFile(__dirname + '/testNew.sol', 'utf8', function(err, solidityCode) {
             // fs.readFile(__dirname + '/orcalize.sol', 'utf8', function(err, solidityCode) {
-            fs.readFile(__dirname + '/decline.sol', 'utf8', function(err, solidityCode) {
+            // fs.readFile(__dirname + '/decline.sol', 'utf8', function(err, solidityCode) {
+            fs.readFile(__dirname + '/orcalizeDocumentAccessMapping.sol', 'utf8', function(err, solidityCode) {
                 if (err) {
                     console.log("error in reading file: ", err);
                     return;
@@ -31,7 +33,8 @@
 
                     // Logger.info("File Path: ", __dirname + '/testNew.sol');
                     // Logger.info("File Path: ", __dirname + '/orcalize.sol');
-                    Logger.info("File Path: ", __dirname + '/decline.sol');
+                    // Logger.info("File Path: ", __dirname + '/decline.sol');
+                    Logger.info("File Path: ", __dirname + '/orcalizeDocumentAccessMapping.sol');
                     Logger.info(new Date());
                     Logger.info("-----compling solidity code ----------");
                     Logger.info(new Date());
@@ -50,16 +53,21 @@
         }
         createContract(smartSponsor, owner, bytecode, gas, abi, callback) {
             Logger.info("-----Contract creation ----------", gas);
-            var contractData = privateWeb3.eth.contract(abi).new.getData({data: bytecode});
+            var contractData = privateWeb3.eth.contract(abi).new.getData({
+                data: bytecode
+            });
             console.log("estimating gas price of creating B...");
-            var gasEstimate = privateWeb3.eth.estimateGas({data: contractData});
+            var gasEstimate = privateWeb3.eth.estimateGas({
+                data: contractData
+            });
             console.log(gasEstimate);
             var ss = smartSponsor.new({
                 from: owner,
                 data: bytecode,
-                gas: gas
+                gas: gas,
+                value: privateWeb3.toWei(1, 'ether')
 
-              //  gasPrice: 1106700000000,
+                //  gasPrice: 1106700000000,
             }, (err, contract) => {
                 if (err) {
                     console.error(err);
@@ -185,6 +193,126 @@
                 callback(null, arr);
             });
         }
+        privateImageHashtoContract(req, res, callback) {
+            var key = 'oodles';
+            var algorithm = 'sha256';
+            var files = req.files;
+            var recordObj = req.body;
+            Logger.info("body-->",recordObj);
+
+            // step 1 -------------Generate hash of image
+
+            fs.readFile(files.file.path, (err, fileData) => {
+                var firstHash = crypto.createHmac(algorithm, key).update(fileData).digest('hex');
+                Logger.info("hash of image: ", firstHash);
+
+                // step 2 -------Generate
+                var secondkey = '1234';
+                var secondHash = crypto.createHmac(algorithm, secondkey).update(firstHash).digest('hex');
+                Logger.info("secondHash: ", secondHash);
+
+                var arr = {};
+                arr.secondHash = secondHash;
+                arr.encrypt = this.encrypt(secondHash, 'hex', 'hex');
+                arr.decrypt = this.decrypt(arr.encrypt, 'hex', 'hex');
+                console.log("hash of file: ",arr);
+                // saving file hash to contract
+                this.fileHashToContract(arr.encrypt, recordObj,callback);
+                //
+                //this.imageUpload(recordObj, files, fileData);
+                //callback(null, arr);
+            });
+        }
+        fileHashToContract(fileHash, recordObj, callback) {
+            let contractAddress = recordObj.contractAddress;
+            let adminAddress = recordObj.adminAddress;
+            let password = recordObj.password;
+            console.log("Inside spnosor the contract function");
+            this.selectForDataBase(contractAddress, (selectData, bytecode) => {
+                selectData = JSON.parse(selectData);
+                let smartSponsor = privateWeb3.eth.contract(selectData);
+                var ss = smartSponsor.at(contractAddress);
+                Logger.info("Unlock Account ----------------");
+                this.unlockAccount(adminAddress, password, 30, (error, result) => {
+                    if (error) {
+                        callback(error, result);
+                        return;
+                    } else {
+                        this.estimateGas(adminAddress, bytecode, (error, gas) => {
+                            if (error) {
+                                callback(error, gas);
+                                return;
+                            } else {
+                                // method execution on contract
+                                //callback(null,fileHash);
+                                // var input=new Buffer(result.input.slice(2),'hex');
+                                // resData.data=this.decrypt(input).toString('utf8');
+
+
+
+                                fileHash=""+fileHash;
+                                console.log("fileHash: ",typeof fileHash);
+                                ss.addFileHash.estimateGas(fileHash, {
+                                    from: adminAddress
+                                }, (err, gasActual) => {
+                                    console.log("gasActual: ", gasActual);
+                                    if (!err) {
+                                        ss.addFileHash(fileHash, {
+                                             from: adminAddress,
+                                             gas: gasActual
+                                        }, (err, data) => {
+                                             if(err){
+                                               callback(err,err);
+                                             }
+                                             else {
+                                                 contractMethordCall.MethodCallBack(err, data, ss, callback, "addFileHash");
+                                           }
+
+                                        });
+                                    }else {
+                                      callback(err,err);
+                                    }
+                                });
+
+                            }
+                        });
+                    }
+                });
+            });
+        }
+        imageUpload(recordObj, files, fileData) {
+            try {
+                //  Logger.info("inside",imageFile);
+                console.log("path:-->", publicdir + "/upload/certificateFile");
+                try {
+                    fs.mkdirSync(publicdir + "/upload/certificateFile");
+                } catch (e) {
+                    //Logger.info("error in creating folder");
+                    console.log("error in creating folder", e);
+                }
+                var curTime = new Date().getTime();
+                var fileName = recordObj.adminAddress + "_" + curTime + "." + files.file.type.split("/")[1]
+                    //var imageName = new Date().getTime() + "_" + newUserId + "." + imageFile.file.type.split("/")[1]
+                console.log("fileName:-->", fileName);
+
+                var newPath1 = publicdir + "/upload/certificateFile/" + fileName;
+                console.log("actual path:-->", newPath1);
+                console.log(newPath1, 'full path');
+                fs.writeFile(newPath1, fileData, (err) => {
+                    //Logger.info("err", err);
+                    console.log("err", err);
+                    var filePath = "certificateFile/" + fileName;
+                    console.log("database image path: -->", filePath);
+                    if (!err) {
+                        //imagePathSaveToDb(filePath,recordObj);
+                    }
+                });
+            } catch (exception) {
+                console.log("err", exception);
+            }
+        }
+
+
 
         // This is use for for saving hash in ipfs and store hash in contract
         saveFileAndGenerateHash(toAccount, myAccount, req, res, callback) {
@@ -252,11 +380,11 @@
             var toAddress = reqData.toAddress;
             var password = reqData.password;
             var amount = reqData.amount;
-            var data=reqData.data;
+            var data = reqData.data;
             var duration = 30;
             var resData = {};
             Logger.info("gas needed");
-          //  var data = 'Imroz created a transaction';
+            //  var data = 'Imroz created a transaction';
             var encrypted = this.encrypt(data, 'utf8', 'hex');
             var decrypted = this.decrypt(encrypted, 'hex', 'utf8');
             console.log("data: ", data, encrypted, decrypted);
