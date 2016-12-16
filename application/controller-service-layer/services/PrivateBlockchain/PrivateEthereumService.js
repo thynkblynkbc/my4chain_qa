@@ -89,7 +89,7 @@
                         callback(error, result);
                         return;
                     } else {
-                        this.estimateGas(owner, bytecode, (error, gas) => {
+                      this.estimateGas(owner, bytecode, (error, gas) => {
                             if (error) {
                                 callback(error, gas);
                                 return;

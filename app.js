@@ -25,6 +25,12 @@ app.use(mongoosemask(function (result, mask, done) {
 	done(null, masked);
 }));
 
+process.on('uncaughtException', function (err) {
+  console.error(err);
+	Logger.info("error uncaughtException",err);
+
+});
+
 app.get("/",function(req,res){
 res.send("server working.");
 });

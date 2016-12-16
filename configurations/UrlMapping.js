@@ -26,13 +26,13 @@
                         json: views.jsonView
                 	    }
                 }],
-								"/api/v1/uploadToGlobalBlockchain": [{
-				               method: "GET",
-				               action: controllers.publishDataGlobal.sendData,
-				               views: {
-				                        json: views.jsonView
-				                	    }
-				                }],
+				"/api/v1/uploadToGlobalBlockchain": [{
+				      method: "GET",
+				      action: controllers.publishDataGlobal.sendData,
+				      views: {
+				                json: views.jsonView
+				              }
+				      }],
 			"/api/v1/balance": [{
 					method: "POST",
 					action: controllers.ethereumController.accountBalance,

@@ -15,8 +15,8 @@ contract documentAccessMapping {
     address public admin;
     address[] hashValue;
     address partyFirst;
-    address partySecond;
 
+    address partySecond;
 
 
 
@@ -34,6 +34,7 @@ contract documentAccessMapping {
         createRoles();
         allStates();
     }
+
 
 
 
@@ -332,7 +333,7 @@ contract documentAccessMapping {
             finalStrAction = strConcat(finalStrAction, comma, actionArray[i]);
         }
         usersLog(msg.sender,userId,finalStrAction,"getUserAction",now);
-        return (finalStrAction, contractState, users[userId].parentId,partyFirst,partySecond);
+        return (finalStrAction, contractState, users[userId].parentId,partyFirst,partySecond );
     }
 
     function expire() returns(bool isExpire) {

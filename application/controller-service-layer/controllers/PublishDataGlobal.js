@@ -2,7 +2,7 @@ module.exports = function () {
 
 
   var sendData = function (req,res,callback){
-        	this.services.publicDataService.sendData(req,  callback);
+        	this.services.publishDataService.sendData(req,  callback);
 
     }
     return {

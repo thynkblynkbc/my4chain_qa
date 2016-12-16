@@ -52,6 +52,7 @@ class PrivateEthereumPartyService {
         let owner = req.body.owner;
         let password = req.body.password;
         let to = req.body.to;
+        hjdhs
         // call a function to covert abi defination of contract
         this.convertToAbi((bytecode, smartSponsor, abi) => {
             Logger.info("Unlocking account -----------");
