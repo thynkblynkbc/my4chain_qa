@@ -10,7 +10,7 @@
             });
 
         }
-        estimateGas(account, bytecode, cb) {
+        estimateGas(account, bytecode,cb) {
                 privateWeb3.eth.estimateGas({
                     from: account,
                     data: bytecode
@@ -21,12 +21,14 @@
             }
             //  convert abi defination of contract
         convertToAbi(cb) {
-            fs.readFile(__dirname + '/orcalizeDocumentAccessMapping.sol', 'utf8', function(err, solidityCode) {
+
+            fs.readFile(__dirname + '/solidity/binaryContract.sol', 'utf8', function(err, solidityCode) {
                 if (err) {
                     console.log("error in reading file: ", err);
                     return;
                 } else {
-                    Logger.info("File Path: ", __dirname + '/orcalizeDocumentAccessMapping.sol');
+
+                    Logger.info("File Path: ", __dirname + '/solidity/binaryContract.sol');
                     Logger.info(new Date());
                     Logger.info("-----compling solidity code ----------");
                     Logger.info(new Date());
@@ -38,39 +40,34 @@
                     Logger.info("bytecode: ", typeof compiled.bytecode, compiled.bytecode.length);
                     const bytecode = compiled.bytecode;
                     var smartSponsor = privateWeb3.eth.contract(abi);
+
                     cb(bytecode, smartSponsor, abi);
                 }
             });
 
         }
-        createContract(smartSponsor, owner, bytecode, gas, abi, callback) {
+        createContract(smartSponsor, owner, bytecode, gas, abi, callback,to) {
             Logger.info("-----Contract creation ----------", gas);
-            var contractData = privateWeb3.eth.contract(abi).new.getData({
-                data: bytecode
-            });
-            console.log("estimating gas price of creating B...");
-            var gasEstimate = privateWeb3.eth.estimateGas({
-                data: contractData
-            });
-            console.log(gasEstimate);
-            var ss = smartSponsor.new({
-                from: owner,
-                data: bytecode,
-                gas: gas,
-                value: privateWeb3.toWei(1, 'ether')
+            var ss = smartSponsor.new(to,"yutyutewe2222222222222222222222222222222222222sdsdsd",{
+            // var ss = smartSponsor.new({
+                // var ss = smartSponsor.new(to,{
+                    from: owner,
+                    gas: gas+300000,
+                    data : bytecode
 
-                //  gasPrice: 1106700000000,
-            }, (err, contract) => {
-                if (err) {
-                    console.error(err);
-                    callback(err, err);
-                    return;
-                } else if (contract.address) {
-                    this.saveToDb(contract.address, contract.transactionHash, abi, owner, bytecode, gas, callback);
-                } else {
-                    Logger.info("A transmitted, waiting for mining...");
-                }
-            });
+                  }, (err, contract) => {
+                    if (err) {
+                        console.error(err);
+                        callback(err, err);
+                        return;
+                    } else if (contract.address) {
+                        this.saveToDb(contract.address, contract.transactionHash, abi, owner, bytecode, gas, callback);
+                    } else {
+                        Logger.info("A transmitted, waiting for mining...");
+                    }
+                });
+
+
         }
 
         contractForAssets(ihash, res, callback) {
@@ -81,6 +78,7 @@
         smartContract(req, res, callback) {
             let owner = req.body.owner;
             let password = req.body.password;
+            let to= req.body.to;
             // call a function to covert abi defination of contract
             this.convertToAbi((bytecode, smartSponsor, abi) => {
                 Logger.info("Unlocking account -----------");
@@ -94,7 +92,7 @@
                                 callback(error, gas);
                                 return;
                             } else {
-                                this.createContract(smartSponsor, owner, bytecode, gas, abi, callback);
+                                this.createContract(smartSponsor, owner, bytecode, gas, abi, callback,to);
                             }
                         });
                     }

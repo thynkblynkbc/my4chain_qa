@@ -26,6 +26,24 @@ var schemaPromise = knex.schema.createTableIfNotExists('Contract', function(tabl
              });
          }
     });
+    knex.schema.hasColumn('Contract', 'partyAddress').then((isColumn) => {
+         if (isColumn != true) {
+             knex.schema.table('Contract', function(table) {
+                table.text('partyAddress');
+              }).then(function(data) {
+                 console.log("partyAddress Column added to Contract Table");
+             });
+         }
+    });
+    knex.schema.hasColumn('Contract', 'salt').then((isColumn) => {
+         if (isColumn != true) {
+             knex.schema.table('Contract', function(table) {
+                table.text('salt');
+              }).then(function(data) {
+                 console.log("salt Column added to Contract Table");
+             });
+         }
+    });
 });
 
 // knex.schema.hasColumn('Contract', 'abi').then((isColumn) => {
@@ -53,7 +71,9 @@ Contract.jsonSchema = {
     transactionHash:{type:'string'},
     ethAddress:{type:'string'},
     abi:{type:'string'},
-    bytecode:{type:'string'}
+    bytecode:{type:'string'},
+    partyAddress:{type:'string'},
+    salt:{type:'string'}
     }
 };
 // Basic ES6 compatible prototypal inheritance.

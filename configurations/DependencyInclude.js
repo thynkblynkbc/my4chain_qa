@@ -12,9 +12,9 @@ global.validater = require('express-validation')
 global.validationFile = require('../application-utilities/Validater')
 
 // connect to ipfs daemon API server
-global.ipfs = ipfsAPI('localhost', '5001', {
-    protocol: 'http'
-})
+// global.ipfs = ipfsAPI('localhost', '5001', {
+//     protocol: 'http'
+// })
 global.Promise = require('node-promise').Promise
 global.async = require('async')
 global.crypto = require('crypto')
@@ -39,7 +39,7 @@ global.knex = knexReq({
     client: 'pg',
     useNullAsDefault: true,
     connection: {
-        host: 'localhost',
+        host: '127.0.0.1',
         port: "5432",
         user: 'oodles',
         password: 'oodles',
