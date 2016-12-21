@@ -30,12 +30,12 @@ class ContractMethordCall {
             }
         }
         // call different methord of smart contract
-    contractMethodCall(method, adminAddress, accountAddress, action, ss, callback, textValue, conAddress, val, gas, reqObj) {
-        console.log("This is the action", method);
-        switch (method) {
+    contractMethodCall(recordObj,ss,callback,gas){
+        console.log("This is the action", recordObj.method);
+        switch (recordObj.method) {
             case "getEther":
                 ss.getEther({
-                    from: adminAddress,
+                    from: recordObj.adminAddress,
                     gas: gas,
                     value: privateWeb3.toWei(20, 'ether')
                 }, (err, data) => {
@@ -50,7 +50,7 @@ class ContractMethordCall {
                         return;
                     } else {
                             ss.update({
-                                    from: adminAddress,
+                                    from: recordObj.adminAddress,
                                     gas: gas
                                 }, (err, data) => {
                                     Logger.info("update: ", data);
@@ -61,8 +61,8 @@ class ContractMethordCall {
                 break;
             case "usersLog":
                 var event = ss.usersLog({
-                    _from: reqObj.from,
-                    _to: reqObj.to
+                    _from: recordObj.from,
+                    _to: recordObj.to
                 }, {
                     fromBlock: 0,
                     toBlock: 'latest'
@@ -77,7 +77,7 @@ class ContractMethordCall {
                 break;
             case "expire":
                 ss.expire.call({
-                    from: adminAddress,
+                    from: recordObj.adminAddress,
                     gas: gas
                 }, (err, data) => {
                     Logger.info("expire: ", data);
@@ -86,13 +86,13 @@ class ContractMethordCall {
                 break;
             case "assignAction":
                 //gasPrice: 11067000000000000
-                ss.assignAction.estimateGas(accountAddress, action, {
-                    from: adminAddress
+                ss.assignAction.estimateGas(recordObj.accountAddress, recordObj.action, {
+                    from: recordObj.adminAddress
                 }, (err, gasActual) => {
                     console.log("gasActual: ", gasActual);
                     if (!err) {
-                        ss.assignAction(accountAddress, action, {
-                            from: adminAddress,
+                        ss.assignAction(recordObj.accountAddress, recordObj.action, {
+                            from: recordObj.adminAddress,
                             gas: gasActual
                         }, (err, data) => {
                             this.MethodCallBack(err, data, ss, callback, "assignAction");
@@ -104,8 +104,8 @@ class ContractMethordCall {
                 });
                   break;
                     case "getUserAction":
-                        ss.getUserAction.call(accountAddress, {
-                            from: adminAddress,
+                        ss.getUserAction.call(recordObj.accountAddress, {
+                            from: recordObj.adminAddress,
                             gas: gas
                         }, (err, data) => {
                             Logger.info("getUserAction: ", data);
@@ -113,8 +113,8 @@ class ContractMethordCall {
                         });
                         break;
                     case "removeAction":
-                        Logger.info("inside remove action"); ss.removeAction(accountAddress, action, {
-                            from: adminAddress,
+                        Logger.info("inside remove action"); ss.removeAction(recordObj.accountAddress, recordObj.action, {
+                            from: recordObj.adminAddress,
                             gas: gas
                         }, (err, data) => {
                             this.MethodCallBack(err, data, ss, callback, "removeAction");
@@ -122,7 +122,7 @@ class ContractMethordCall {
                         break;
                     case "acknowledge":
                         Logger.info("inside remove action"); ss.acknowledge({
-                            from: adminAddress,
+                            from: recordObj.adminAddress,
                             gas: gas
                         }, (err, data) => {
                             this.MethodCallBack(err, data, ss, callback, "acknowledge");
@@ -130,15 +130,15 @@ class ContractMethordCall {
                         break;
                     case "review":
                         console.log("value: ", typeof val, val); ss.review(val, {
-                            from: adminAddress,
+                            from: recordObj.adminAddress,
                             gas: gas
                         }, (err, data) => {
                             this.MethodCallBack(err, data, ss, callback, "review");
                         });
                         break;
                     case "addInfo":
-                        ss.addInfo(accountAddress, {
-                            from: adminAddress,
+                        ss.addInfo(recordObj.accountAddress, {
+                            from: recordObj.adminAddress,
                             gas: gas
                         }, (err, data) => {
                             Logger.info("addInfo: ", data);
@@ -146,8 +146,8 @@ class ContractMethordCall {
                         });
                         break;
                     case "accept":
-                        ss.accept(accountAddress, {
-                            from: adminAddress,
+                        ss.accept(recordObj.accountAddress, {
+                            from: recordObj.adminAddress,
                             gas: gas
                         }, (err, data) => {
                            var args ={};
@@ -157,8 +157,8 @@ class ContractMethordCall {
                         });
                         break;
                     case "revoke":
-                        ss.revoke(accountAddress, adminAddress, {
-                            from: adminAddress,
+                        ss.revoke(recordObj.accountAddress, recordObj.adminAddress, {
+                            from: recordObj.adminAddress,
                             gas: gas
                         }, (err, data) => {
                             var args ={};
@@ -168,8 +168,8 @@ class ContractMethordCall {
                         });
                         break;
                     case "decline":
-                        ss.decline(accountAddress, {
-                            from: adminAddress,
+                        ss.decline(recordObj.accountAddress, {
+                            from: recordObj.adminAddress,
                             gas: gas
                         }, (err, data) => {
                            var args ={};

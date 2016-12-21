@@ -20,7 +20,7 @@ module.exports.smartContract = function(){
                 this.timeout(200000);
 
          domain.User.query().orderBy('id', 'asc').limit(2).select().then(function(Usdata) {
-  
+
         let UserData =  JSON.parse(JSON.stringify(Usdata));
         console.log("UserData[0]==",UserData[0]);
 
@@ -28,7 +28,9 @@ module.exports.smartContract = function(){
                     .post('/api/v1/privateCreateContract')
                     .send({
                         "owner": UserData[0].ethAddress,
-                        "password": UserData[0].password
+                        "password": UserData[0].password,
+                        "to":UserData[1].ethAddress,
+	                      "fileHash":"0x944f36ea5c4756017ad632d4d7661b9bbf2b62cf"
                     })
                     .end(function(err, res) {
                         res.should.have.status(200);
