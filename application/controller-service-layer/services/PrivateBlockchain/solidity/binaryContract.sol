@@ -7,14 +7,21 @@ contract documentAccessMapping {
         address party;
     }
 
+    struct FileHash{
+      string filehash;
+      string comment;
+    }
+
     mapping(string => string) roles;
     mapping(address => User) public users;
     mapping(string => string) states;
     mapping(address =>bool) partyState;// is parties sign the contract
+    mapping(uint =>FileHash) filehash;
 
     address public admin;
     string hashValue;
     address _otherParty;
+    uint fileIndex;
 
 
     string contractState;
@@ -34,10 +41,27 @@ contract documentAccessMapping {
         _otherParty=otherParty;
         contractCreationTime = block.timestamp;
         hashValue=fileEncryptedHash;
+        filehash[fileIndex].filehash=fileEncryptedHash;
+        filehash[fileIndex].comment="init";
+        fileIndex++;
         createRoles();
         assignAdminAction();
         allStates();
     }
+    /*function getHash() returns (string hashComment) {
+      string memory finalStrAction;
+      string memory comma = ',';
+      string memory delimeter= '|';
+      if(fileIndex>0){
+        finalStrAction=strConcat(filehash[0].filehash,comma,filehash[0].comment);
+      }
+      for (uint i = 1; i <fileIndex; i++) {
+          string memory current=strConcat(filehash[i].filehash,comma,filehash[i].comment);
+          finalStrAction = strConcat(finalStrAction, delimeter,current);
+      }
+      usersLog(msg.sender,msg.sender,finalStrAction,"getHash",now);
+      return (finalStrAction);
+    }*/
 
     function createRoles() internal  {
         roles["CAN_ASSIGN"] = "CAN_ASSIGN";
@@ -225,10 +249,13 @@ contract documentAccessMapping {
         usersLog(msg.sender,userId,message,"removeAction",now);
     }
 
-    function review(uint iscomment,string comment) isAcceptDecline {
+    function review(uint iscomment,string comment,string encryptFileHash) isAcceptDecline {
         string memory message;
         if (checkRole(msg.sender, roles["CAN_REVIEW"])) {
             if (iscomment == 1) {
+                /*filehash[fileIndex].filehash=encryptFileHash;
+                filehash[fileIndex].comment=comment;
+                fileIndex++;*/
                 contractState = states["MODIFY"];
                 message = 'Contract in Modify state';
             } else {

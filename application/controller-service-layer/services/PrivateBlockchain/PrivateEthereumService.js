@@ -46,12 +46,24 @@
             });
 
         }
-        createContract(smartSponsor, owner, bytecode, gas, abi, callback,to) {
+        decryptBuffer(buffer,password){
+            var decipher = crypto.createDecipher('aes-256-cbc',password)
+            var dec = Buffer.concat([decipher.update(buffer) , decipher.final()]);
+            return dec;
+        }
+        encryptBuffer(buffer,password){
+            var cipher = crypto.createCipher('aes-256-cbc',password)
+            var crypted = Buffer.concat([cipher.update(buffer),cipher.final()]);
+            return crypted;
+        }
+        createContract(smartSponsor, recordObj, bytecode, gas, abi, callback) {
             Logger.info("-----Contract creation ----------", gas);
-            var ss = smartSponsor.new(to,"yutyutewe2222222222222222222222222222222222222sdsdsd",{
-            // var ss = smartSponsor.new({
-                // var ss = smartSponsor.new(to,{
-                    from: owner,
+            recordObj.salt=uuid.v1();
+            recordObj.encryptHash=this.encrypt(recordObj.fileHash, 'utf8', 'hex',recordObj.salt);
+            recordObj.decryptHash=this.decrypt(recordObj.encryptHash,'hex','utf8',recordObj.salt);
+            console.log("recordObj: ",recordObj);
+            var ss = smartSponsor.new(recordObj.to,recordObj.encryptHash,{
+                    from: recordObj.owner,
                     gas: gas+300000,
                     data : bytecode
 
@@ -61,7 +73,7 @@
                         callback(err, err);
                         return;
                     } else if (contract.address) {
-                        this.saveToDb(contract.address, contract.transactionHash, abi, owner, bytecode, gas, callback);
+                        this.saveToDb(contract, abi, recordObj, bytecode, gas, callback);
                     } else {
                         Logger.info("A transmitted, waiting for mining...");
                     }
@@ -76,23 +88,21 @@
 
         // create a  smart contract
         smartContract(req, res, callback) {
-            let owner = req.body.owner;
-            let password = req.body.password;
-            let to= req.body.to;
+            let recordObj=req.body;
             // call a function to covert abi defination of contract
             this.convertToAbi((bytecode, smartSponsor, abi) => {
                 Logger.info("Unlocking account -----------");
-                this.unlockAccount(owner, password, 30, (error, result) => {
+                this.unlockAccount(recordObj.owner, recordObj.password, 30, (error, result) => {
                     if (error) {
                         callback(error, result);
                         return;
                     } else {
-                      this.estimateGas(owner, bytecode, (error, gas) => {
+                      this.estimateGas(recordObj.owner, bytecode, (error, gas) => {
                             if (error) {
                                 callback(error, gas);
                                 return;
                             } else {
-                                this.createContract(smartSponsor, owner, bytecode, gas, abi, callback,to);
+                                this.createContract(smartSponsor, recordObj, bytecode, gas, abi, callback);
                             }
                         });
                     }
@@ -100,18 +110,20 @@
             });
         }
 
-        saveToDb(contractAddress, transactionHash, abi, owner, bytecode, gas, callback) {
+        saveToDb(contract, abi, recordObj, bytecode, gas, callback) {
             domain.Contract.query().insert({
-                contractAddress: contractAddress,
-                transactionHash: transactionHash,
+                contractAddress: contract.address,
+                transactionHash: contract.transactionHash,
                 abi: JSON.stringify(abi),
-                ethAddress: owner,
-                bytecode: bytecode
+                ethAddress: recordObj.owner,
+                bytecode: bytecode,
+                salt:recordObj.salt,
+                partyAddress:recordObj.to
             }).then(function(databaseReturn) {
                 //Logger.info("Inserted data: ", databaseReturn);
                 var arr = {};
-                arr.contractAddress = contractAddress;
-                arr.txnHash = transactionHash;
+                arr.contractAddress = contract.address;
+                arr.txnHash = contract.transactionHash;
                 arr.gasUsed = gas;
                 //arr.tranHash = transactionHash;
                 Logger.info("contractAddress: ", arr.contractAddress);
@@ -129,58 +141,31 @@
             }
             // assign role to smart contract
         sponsorContract(req, res, callback) {
-          var resData = {};
-            let contractAddress = req.body.contractAddress;
-            let accountAddress = req.body.accountAddress;
-            let adminAddress = req.body.adminAddress;
-            let password = req.body.password;
-            let action = req.body.action;
-            let method = req.body.method;
-            let textValue = req.body.textValue;
-            console.log("Inside spnosor the contract function",req.body);
-            this.selectForDataBase(contractAddress, (selectData, bytecode) => {
-              this.estimateGas(adminAddress, bytecode, (error, gas) => {
-                  if (error) {
-                    resData = new Error("Issue with blockchain");
-                    resData.status = 500;
-
-                      callback(resData,null);
-
-                      return;
-                  } else {
+            let recordObj=req.body;
+            console.log("Inside spnosor the contract function",recordObj);
+            this.selectForDataBase(recordObj.contractAddress, (selectData, bytecode) => {
                 selectData = JSON.parse(selectData);
                 let smartSponsor = privateWeb3.eth.contract(selectData);
-                var ss = smartSponsor.at(contractAddress);
+                var ss = smartSponsor.at(recordObj.contractAddress);
                 Logger.info("Unlock Account ----------------");
-                Logger.info(new Date());
-                this.unlockAccount(adminAddress, password, 30, (error, result) => {
+                this.unlockAccount(recordObj.adminAddress, recordObj.password, 30, (error, result) => {
                     if (error) {
                         callback(error, result);
                         return;
                     } else {
-                      Logger.info(new Date());
-                        Logger.info("Unlock Account ----------------");
-                        // this.estimateGas(adminAddress, bytecode, (error, gas) => {
-                        //     if (error) {
-                        //       resData = new Error("Issue with blockchain");
-                        //       resData.status = 500;
-                        //
-                        //         callback(resData,null);
-                        //
-                        //         return;
-                        //     } else {
-                                contractMethordCall.contractMethodCall(method, adminAddress, accountAddress, action, ss, callback, textValue, contractAddress, req.body.val, gas, req.body);
-                        //    }
-                      //  });
+                        this.estimateGas(recordObj.adminAddress, bytecode, (error, gas) => {
+                            if (error) {
+                                callback(error, gas);
+                                return;
+                            } else {
+                                contractMethordCall.contractMethodCall(recordObj,ss,callback,gas);
+                            }
+                        });
                     }
                 });
-              }
+            
             });
-            });
-        //   }
-        // });
-
-
+         
         }
 
         privateImageHashGenerate(req, res, callback) {
@@ -201,8 +186,8 @@
 
                 var arr = {};
                 arr.secondHash = secondHash;
-                arr.encrypt = this.encrypt(secondHash, 'hex', 'hex');
-                arr.decrypt = this.decrypt(arr.encrypt, 'hex', 'hex');
+                arr.encrypt = this.encrypt(secondHash, 'hex', 'hex','oodles');
+                arr.decrypt = this.decrypt(arr.encrypt, 'hex', 'hex','oodles');
                 callback(null, arr);
             });
         }
@@ -226,8 +211,8 @@
 
                 var arr = {};
                 arr.secondHash = secondHash;
-                arr.encrypt = this.encrypt(secondHash, 'hex', 'hex');
-                arr.decrypt = this.decrypt(arr.encrypt, 'hex', 'hex');
+                arr.encrypt = this.encrypt(secondHash, 'hex', 'hex','oodles');
+                arr.decrypt = this.decrypt(arr.encrypt, 'hex', 'hex','oodles');
                 console.log("hash of file: ",arr);
                 // saving file hash to contract
                 this.fileHashToContract(arr.encrypt, recordObj,callback);
@@ -374,16 +359,14 @@
                 }
             });
         }
-        encrypt(text, from, to) {
-            var password = 'oodles';
+        encrypt(text, from, to,password) {
             var cipher = crypto.createCipher('aes-256-cbc', password);
             var crypted = cipher.update(text, from, to);
             crypted += cipher.final(to);
             return crypted;
         }
 
-        decrypt(text, from, to) {
-            var password = 'oodles';
+        decrypt(text, from, to,password) {
             var decipher = crypto.createDecipher('aes-256-cbc', password);
             var dec = decipher.update(text, from, to)
             dec += decipher.final(to);
@@ -401,8 +384,8 @@
             var resData = {};
             Logger.info("gas needed");
             //  var data = 'Imroz created a transaction';
-            var encrypted = this.encrypt(data, 'utf8', 'hex');
-            var decrypted = this.decrypt(encrypted, 'hex', 'utf8');
+            var encrypted = this.encrypt(data, 'utf8', 'hex','oodles');
+            var decrypted = this.decrypt(encrypted, 'hex', 'utf8','oodles');
             console.log("data: ", data, encrypted, decrypted);
 
             privateWeb3.personal.unlockAccount(fromAddress, password, duration, (error, result) => {
