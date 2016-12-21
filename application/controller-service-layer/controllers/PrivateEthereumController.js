@@ -46,7 +46,7 @@ module.exports = function () {
         }
 
   var transactionDetail = function (req, res,callback) {
-		var tranxHash=req.body.tranxHash;
+		var tranxHash=req.query.tranxHash;
 		this.services.privateEthereumDetail.transactionDetail(tranxHash,res,callback);
   }
 

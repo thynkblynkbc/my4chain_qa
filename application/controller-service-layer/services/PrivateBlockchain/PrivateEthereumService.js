@@ -49,26 +49,35 @@
 
         }
         createContract(smartSponsor, owner, bytecode, gas, abi, callback) {
-            Logger.info("-----Contract creation ----------", gas);
-            var contractData = privateWeb3.eth.contract(abi).new.getData({data: bytecode});
+          Logger.info("-----Contract creation ----------", gas);
+            var contractData = privateWeb3.eth.contract(abi).new.getData({
+                data: bytecode
+            });
             console.log("estimating gas price of creating B...");
-            var gasEstimate = privateWeb3.eth.estimateGas({data: contractData});
+            var gasEstimate = privateWeb3.eth.estimateGas({
+                data: contractData
+            });
             console.log(gasEstimate);
+            Logger.info(new Date());
             var ss = smartSponsor.new({
                 from: owner,
                 data: bytecode,
                 gas: gas
+            //    value: privateWeb3.toWei(1, 'ether')
 
-              //  gasPrice: 1106700000000,
+                //  gasPrice: 1106700000000,
             }, (err, contract) => {
                 if (err) {
                     console.error(err);
                     callback(err, err);
                     return;
                 } else if (contract.address) {
+                    Logger.info(new Date());
                     this.saveToDb(contract.address, contract.transactionHash, abi, owner, bytecode, gas, callback);
                 } else {
+
                     Logger.info("A transmitted, waiting for mining...");
+                    Logger.info(new Date());
                 }
             });
         }
@@ -131,6 +140,7 @@
             }
             // assign role to smart contract
         sponsorContract(req, res, callback) {
+          var resData = {};
             let contractAddress = req.body.contractAddress;
             let accountAddress = req.body.accountAddress;
             let adminAddress = req.body.adminAddress;
@@ -138,28 +148,59 @@
             let action = req.body.action;
             let method = req.body.method;
             let textValue = req.body.textValue;
-            console.log("Inside spnosor the contract function",req.body);
+            console.log("Inside spnosor the contract function111",req.body);
+            // this.estimateGas(adminAddress, bytecode, (error, gas) => {
+            //     if (error) {
+            //       resData = new Error("Issue with blockchain");
+            //       resData.status = 500;
+            //
+            //         callback(resData,null);
+            //
+            //         return;
+            //     } else {
             this.selectForDataBase(contractAddress, (selectData, bytecode) => {
+              this.estimateGas(adminAddress, bytecode, (error, gas) => {
+                  if (error) {
+                    resData = new Error("Issue with blockchain");
+                    resData.status = 500;
+
+                      callback(resData,null);
+
+                      return;
+                  } else {
                 selectData = JSON.parse(selectData);
                 let smartSponsor = privateWeb3.eth.contract(selectData);
                 var ss = smartSponsor.at(contractAddress);
                 Logger.info("Unlock Account ----------------");
+                Logger.info(new Date());
                 this.unlockAccount(adminAddress, password, 30, (error, result) => {
                     if (error) {
                         callback(error, result);
                         return;
                     } else {
-                        this.estimateGas(adminAddress, bytecode, (error, gas) => {
-                            if (error) {
-                                callback(error, gas);
-                                return;
-                            } else {
+                      Logger.info(new Date());
+                        Logger.info("Unlock Account ----------------");
+                        // this.estimateGas(adminAddress, bytecode, (error, gas) => {
+                        //     if (error) {
+                        //       resData = new Error("Issue with blockchain");
+                        //       resData.status = 500;
+                        //
+                        //         callback(resData,null);
+                        //
+                        //         return;
+                        //     } else {
                                 contractMethordCall.contractMethodCall(method, adminAddress, accountAddress, action, ss, callback, textValue, contractAddress, req.body.val, gas, req.body);
-                            }
-                        });
+                        //    }
+                      //  });
                     }
                 });
+              }
             });
+            });
+        //   }
+        // });
+
+
         }
 
         privateImageHashGenerate(req, res, callback) {
@@ -202,8 +243,9 @@
 
         // // to create a new account in blockchain
         createAccount(recordObj, res, callback) {
+            var resData = {};
             //	Logger.info("privateWeb3.personal",privateWeb3.personal.newAccount);
-            Logger.info("hello");
+            Logger.info("In CreateAccount controller");
             privateWeb3.personal.newAccount(recordObj.password, function(error, result) {
                 if (!error) {
                     domain.User.query().insert({
@@ -214,10 +256,9 @@
                     }).then(function(data) {
                         console.log("Inserted data: ", data);
                         var databaseReturn = data;
-                        var resData = {};
-                        resData.key = "password";
+
                         resData.address = result;
-                        resData.data = databaseReturn;
+                        resData.message = "Successfully account created"
 
                         callback(null, resData);
                     });
@@ -226,7 +267,10 @@
                     // resData.address = result;
                     // callback(null, resData);
                 } else {
-                    callback(error);
+                  resData = new Error("Issue with blockchain");
+                  resData.status = 500;
+
+                    callback(resData,null);
                 }
             });
         }

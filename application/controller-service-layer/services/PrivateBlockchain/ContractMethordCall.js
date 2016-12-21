@@ -76,11 +76,15 @@ class ContractMethordCall {
                         break;
                     case "assignAction":
                         //gasPrice: 11067000000000000
+                        console.log(new Date());
                         ss.assignAction(accountAddress, action, {
                             from: adminAddress,
-                            gas: gas + 300000
+                            gas: gas
+                          //  gasPrice: 11067000000000000
                         }, (err, data) => {
-                            this.MethodCallBack(err, data, ss, callback, "assignAction");
+                            console.log(new Date());
+                         callback(err,data)
+                        // this.MethodCallBack(err, data, ss, callback, "assignAction");
                         });
                         break;
                     case "getUserAction":
