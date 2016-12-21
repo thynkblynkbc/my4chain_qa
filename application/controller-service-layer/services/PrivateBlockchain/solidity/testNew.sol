@@ -18,25 +18,11 @@ contract documentAccessMapping {
     event GetValue(address str, uint add, string from);
     event usersLog(address indexed _from, address indexed _to, string _message, string _methodName, uint _callTime);
 
-
-
-
-    function documentAccessMapping(){
+    function documentAccessMapping() {
         admin = msg.sender;
         contractCreationTime = block.timestamp;
         createRoles();
         allStates();
-    }
-    function getEther() payable {
-      usersLog(msg.sender,this,"ether get","getEther",now);
-    }
-    modifier isAcceptDecline {
-        if (stringsEqual(contractState,states["ACCEPT"]) || stringsEqual(contractState,states["DECLINE"]) ){
-          usersLog(msg.sender,msg.sender,"State Cannot be change","isAcceptDecline",now);
-         // throw;
-        }else{
-        _;
-        }
     }
 
     function createRoles() internal {
@@ -80,7 +66,7 @@ contract documentAccessMapping {
         return isAction;
     }
 
-    function newUser(address userId, string argAction) internal returns(string) {
+    function newUser(address userId, string argAction) public returns(string) {
         if (stringsEqual(roles[argAction], argAction)) {
             if (checkRole(msg.sender, roles[argAction]) || msg.sender == admin) {
                 users[userId].actions.push(argAction);
@@ -101,7 +87,7 @@ contract documentAccessMapping {
         }
     }
 
-    function existingUser(address userId, string argAction) internal returns(string) {
+    function existingUser(address userId, string argAction) public returns(string) {
         if (checkRole(userId, roles[argAction])) { //3
             usersLog(msg.sender,userId,"Action Already Added","existingUser",now);
             /*GetValue(userId, users[userId].actions.length, "Action Already Added");*/
@@ -134,7 +120,7 @@ contract documentAccessMapping {
         }
     }
 
-    function acknowledge() isAcceptDecline {
+    function acknowledge() {
         if (msg.sender == admin || checkRole(msg.sender, roles["CAN_ACK"])) {
             contractState = states["ACK"];
               usersLog(msg.sender,msg.sender,"Contract in acknowledge state","acknowledge",now);
@@ -143,7 +129,7 @@ contract documentAccessMapping {
         }
     }
 
-    function assignAction(address userId, string argAction) isAcceptDecline public returns(string) {
+    function assignAction(address userId, string argAction) public returns(string) {
         if (checkRole(msg.sender, roles["CAN_ASSIGN"]) || msg.sender == admin) { //1
             if (users[userId].actions.length > 0) { //2
                 return existingUser(userId, argAction);
@@ -159,7 +145,7 @@ contract documentAccessMapping {
         }
     }
 
-    function removeAction(address userId, string argAction) isAcceptDecline {
+    function removeAction(address userId, string argAction) {
 
         string memory message;
         if (msg.sender == admin || msg.sender == users[userId].parentId) {
@@ -192,7 +178,7 @@ contract documentAccessMapping {
         usersLog(msg.sender,userId,message,"removeAction",now);
     }
 
-    function review(uint comment) isAcceptDecline {
+    function review(uint comment) {
         string memory message;
         if (checkRole(msg.sender, roles["CAN_REVIEW"]) || msg.sender == admin) {
             if (comment == 1) {
@@ -208,7 +194,7 @@ contract documentAccessMapping {
         usersLog(msg.sender,msg.sender,message,"review",now);
     }
 
-    function addInfo(address fileAddress) isAcceptDecline {
+    function addInfo(address fileAddress) {
         string memory message;
         if (msg.sender == admin) {
             hashValue.push(fileAddress);
@@ -220,7 +206,8 @@ contract documentAccessMapping {
         }
         //       usersLog(msg.sender,'addInfo',block.timestamp);
     }
-    function revoke(address userId, string _message) isAcceptDecline {
+    //function revoke(string _message) {
+    function revoke(address userId, string _message) {
         string memory message;
         /*if ((checkRole(users[msg.sender].parentId, roles["CAN_REVOKE"]) && users[userId].parentId == msg.sender) || admin == msg.sender) {
             if (stringsEqual(contractState, states["ACCEPT"])) {
@@ -246,7 +233,7 @@ contract documentAccessMapping {
         usersLog(msg.sender,msg.sender,message,'revoke',now);
     }
 
-    function decline() isAcceptDecline {
+    function decline() {
         string memory message;
         if (checkRole(msg.sender, roles["CAN_DECLINE"]) || msg.sender == admin) {
             contractState = states["DECLINE"];
@@ -257,7 +244,7 @@ contract documentAccessMapping {
        usersLog(msg.sender,msg.sender,message,"decline",now);
     }
 
-    function accept() isAcceptDecline {
+    function accept() {
         string memory message;
         if (checkRole(msg.sender, 'CAN_ACCEPT') || msg.sender == admin) {
             contractState = states["ACCEPT"];
