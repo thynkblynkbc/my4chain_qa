@@ -1,5 +1,18 @@
 node_modules
+
 seedInfo.log
 testInfo.log
 .idea
+# Logs
+logs
+*.log
+npm-debug.log*
 
+# Dependency directory
+node_modules
+upload
+# Optional npm cache directory
+.npm
+
+# geth command file
+*.sh
