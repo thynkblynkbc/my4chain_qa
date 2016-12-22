@@ -10,7 +10,7 @@
             });
 
         }
-        estimateGas(account, bytecode,cb) {
+        estimateGas(account, bytecode, cb) {
                 privateWeb3.eth.estimateGas({
                     from: account,
                     data: bytecode
@@ -66,6 +66,7 @@
                     from: recordObj.owner,
                     gas: gas+300000,
                     data : bytecode
+
                   }, (err, contract) => {
                     if (err) {
                         console.error(err);
@@ -77,6 +78,8 @@
                         Logger.info("A transmitted, waiting for mining...");
                     }
                 });
+
+
         }
 
         contractForAssets(ihash, res, callback) {
@@ -160,7 +163,9 @@
                         });
                     }
                 });
+            
             });
+         
         }
 
         privateImageHashGenerate(req, res, callback) {
@@ -323,8 +328,9 @@
 
         // // to create a new account in blockchain
         createAccount(recordObj, res, callback) {
+            var resData = {};
             //	Logger.info("privateWeb3.personal",privateWeb3.personal.newAccount);
-            Logger.info("hello");
+            Logger.info("In CreateAccount controller");
             privateWeb3.personal.newAccount(recordObj.password, function(error, result) {
                 if (!error) {
                     domain.User.query().insert({
@@ -335,10 +341,9 @@
                     }).then(function(data) {
                         console.log("Inserted data: ", data);
                         var databaseReturn = data;
-                        var resData = {};
-                        resData.key = "password";
+
                         resData.address = result;
-                        resData.data = databaseReturn;
+                        resData.message = "Successfully account created"
 
                         callback(null, resData);
                     });
@@ -347,7 +352,10 @@
                     // resData.address = result;
                     // callback(null, resData);
                 } else {
-                    callback(error);
+                  resData = new Error("Issue with blockchain");
+                  resData.status = 500;
+
+                    callback(resData,null);
                 }
             });
         }

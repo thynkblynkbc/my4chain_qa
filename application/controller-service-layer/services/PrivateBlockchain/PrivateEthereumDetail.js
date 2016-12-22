@@ -38,7 +38,7 @@ class PrivateEthereumDetail {
    transactionConfirmations(tranxHash, res, callback) {
       // var dummytxHash="0x19a36234629a6a5692083438fbe2cc4b97eb98e42a9ed0211ff227f2a5dca32a";
       var resData = {};
-      Logger.info("transaction---", privateWeb3.eth.blockNumber - privateWeb3.eth.getTransaction(tranxHash).blockNumber);
+      //Logger.info("transaction---", privateWeb3.eth.blockNumber - privateWeb3.eth.getTransaction(tranxHash).blockNumber);
       privateWeb3.eth.getBlock('latest', function(err, bestBlock) {
           if (!err) {
               Logger.info("bestBlock--->", bestBlock);
@@ -58,18 +58,27 @@ class PrivateEthereumDetail {
                           resData.latest = bestBlock.number;
                           callback(null, resData);
                       } else {
-                          resData.message = "cant get blockByHash";
-                          //resData.block = blockByHash;
-                          resData.latest = bestBlock.number;
-                          callback(resData);
+
+                          resData = new Error("cant get blockByHash");
+                          resData.status = 500;
+
+                            callback(resData,null);
+
                       }
                   } else {
-                      callback(error);
+
+                      resData = new Error("Issue with blockchain");
+                      resData.status = 500;
+
+                        callback(resData,null);
                   }
               });
 
           } else {
-              callback(err);
+            resData = new Error("Issue with blockchain");
+            resData.status = 500;
+
+              callback(resData,null);
           }
       });
   }
@@ -81,6 +90,7 @@ class PrivateEthereumDetail {
 
   decrypt(buffer){
     var password = 'oodles';
+
     var decipher = crypto.createDecipher('aes-256-cbc',password)
     var dec = Buffer.concat([decipher.update(buffer) , decipher.final()]);
     return dec;
@@ -92,18 +102,31 @@ class PrivateEthereumDetail {
       privateWeb3.eth.getTransaction(tranxHash, (error, result) => {
           if (!error) {
               if (result != null) {
+                try{
                   Logger.info("Result--->", result);
                     console.log("data: ",privateWeb3.eth.getTransaction(tranxHash));
                   resData.transactionDetail = result;
-                  var input=new Buffer(result.input.slice(2),'hex');
-                  resData.data=this.decrypt(input).toString('utf8');
+                //  var input=new Buffer(result.input.slice(2),'hex');
+                  //resData.data=this.decrypt(input).toString('utf8');
                   callback(null, resData);
+                }catch(e){
+                  console.log(e);
+                  resData = new Error("Error to read data");
+                  resData.status = 409;
+
+                    callback(resData,null);
+                }
               } else {
-                  resData.message = "cant get blockByHash";
-                  callback(resData);
+                resData = new Error("Issue with blockchain");
+                resData.status = 500;
+
+                  callback(resData,null);
               }
           } else {
-              callback(error);
+            resData = new Error("Issue with blockchain");
+            resData.status = 500;
+
+              callback(resData,null);
           }
       });
 

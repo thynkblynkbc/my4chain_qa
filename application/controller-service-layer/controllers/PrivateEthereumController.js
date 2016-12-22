@@ -45,22 +45,21 @@ module.exports = function() {
         this.services.privateEthereumDetail.transactionConfirmations(tranxHash, res, callback);
     }
 
-    var transactionDetail = function(req, res, callback) {
-        var tranxHash = req.body.tranxHash;
-        this.services.privateEthereumDetail.transactionDetail(tranxHash, res, callback);
+  var transactionDetail = function (req, res,callback) {
+		var tranxHash=req.query.tranxHash;
+		this.services.privateEthereumDetail.transactionDetail(tranxHash,res,callback);
+  }
+
+	var contractForAssets = function (req , res ,callback){
+		var tranxHash=req.body.tranxHash;
+		this.services.privateEthereumService.contractForAssets(tranxHash,res,callback);
+
     }
 
-    var contractForAssets = function(req, res, callback) {
-        var tranxHash = req.body.tranxHash;
-        this.services.privateEthereumService.contractForAssets(tranxHash, res, callback);
-
-
-    }
-
-    var saveFileAndGenerateHash = function(req, res, callback) {
-        var myaccount = req.body.myAddress;
-        var toAccount = req.body.toAddress;
-        this.services.privateEthereumService.saveFileAndGenerateHash(toAccount, myaccount, req, res, callback);
+	var saveFileAndGenerateHash = function (req , res ,callback){
+     var myaccount = req.body.myAddress;
+     var toAccount = req.body.toAddress;
+      	this.services.privateEthereumService.saveFileAndGenerateHash(toAccount,myaccount,req,res,callback);
 
     }
     var coinbaseBalance = function(req, res, callback) {

@@ -153,7 +153,7 @@
 				}
 			],
 			"/api/v1/privateTransactionDetail": [{
-					method: "POST",
+					method: "GET",
 					action: controllers.privateEthereumController.transactionDetail,
 					views: {
 						json: views.jsonView

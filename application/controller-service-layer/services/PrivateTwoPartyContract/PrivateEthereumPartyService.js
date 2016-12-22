@@ -52,7 +52,7 @@ class PrivateEthereumPartyService {
         let owner = req.body.owner;
         let password = req.body.password;
         let to = req.body.to;
-        hjdhs
+
         // call a function to covert abi defination of contract
         this.convertToAbi((bytecode, smartSponsor, abi) => {
             Logger.info("Unlocking account -----------");
@@ -134,6 +134,7 @@ class PrivateEthereumPartyService {
         }
         // assign role to smart contract
     sponsorPartyContract(req, res, callback) {
+      var resData = {};
         let contractAddress = req.body.contractAddress;
         let accountAddress = req.body.accountAddress;
         let adminAddress = req.body.adminAddress;
@@ -143,27 +144,41 @@ class PrivateEthereumPartyService {
         let textValue = req.body.textValue;
         let partyAddress = req.body.partyAddress;
         console.log("Inside spnosor the contract function",req.body);
+
         this.selectForDataBase(contractAddress, (selectData, bytecode) => {
+          this.estimateGas(adminAddress, bytecode, (error, gas) => {
+              if (error) {
+                resData = new Error("Issue with blockchain");
+                resData.status = 500;
+
+                  callback(resData,null);
+                  return;
+              } else {
             selectData = JSON.parse(selectData);
             let smartSponsor = privateWeb3.eth.contract(selectData);
             var ss = smartSponsor.at(contractAddress);
             Logger.info("Unlock Account ----------------");
             this.unlockAccount(adminAddress, password, 30, (error, result) => {
                 if (error) {
+
                     callback(error, result);
                     return;
                 } else {
-                    this.estimateGas(adminAddress, bytecode, (error, gas) => {
-                        if (error) {
-                            callback(error, gas);
-                            return;
-                        } else {
+                    // this.estimateGas(adminAddress, bytecode, (error, gas) => {
+                    //     if (error) {
+                    //         callback(error, gas);
+                    //         return;
+                    //     } else {
                             contractMethordCall.contractMethodCall(method, adminAddress, accountAddress,partyAddress, action, ss, callback, textValue, contractAddress, req.body.val, gas, req.body);
-                        }
-                    });
+                    //     }
+                    // });
                 }
             });
+          }
+      });
         });
+
+
     }
 
     privateImageHashGenerate(req, res, callback) {
