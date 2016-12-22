@@ -18,6 +18,14 @@ class ContractMethordCall {
             }
         });
     }
+    selectForDataBase(contractAddress, cb) {
+            domain.Contract.query().where({
+                'contractAddress': contractAddress
+            }).select().then(function(data) {
+                let contData = data;
+                cb(contData[0].salt);
+            });
+    }
     MethodCallBack(err, data, ss, callback, methodName) {
             if (err) {
                 Logger.info("error: ", err, data);
@@ -28,6 +36,19 @@ class ContractMethordCall {
                 Logger.info("event Call ------------");
                 this.callEvent(ss, callback, data);
             }
+        }
+        encrypt(text, from, to,password) {
+            var cipher = crypto.createCipher('aes-256-cbc', password);
+            var crypted = cipher.update(text, from, to);
+            crypted += cipher.final(to);
+            return crypted;
+        }
+
+        decrypt(text, from, to,password) {
+            var decipher = crypto.createDecipher('aes-256-cbc', password);
+            var dec = decipher.update(text, from, to)
+            dec += decipher.final(to);
+            return dec;
         }
         // call different methord of smart contract
     contractMethodCall(recordObj,ss,callback,gas){
@@ -129,12 +150,18 @@ class ContractMethordCall {
                         });
                         break;
                     case "review":
-                        console.log("value: ", typeof val, val); ss.review(val, {
+                    this.selectForDataBase(recordObj.contractAddress, (salt) => {
+                    console.log("isModified: ", typeof recordObj.isModified, recordObj.isModified);
+                    var encryptFileHash=this.encrypt(recordObj.changedFileHash, 'utf8', 'hex',salt);
+                    var decryptFileHash=this.decrypt(encryptFileHash,'hex','utf8',salt);
+                    console.log("review encrypt decrypt: ",recordObj.changedFileHash,encryptFileHash,decryptFileHash);
+                    ss.review(recordObj.isModified,recordObj.modifyComment,encryptFileHash, {
                             from: recordObj.adminAddress,
                             gas: gas
                         }, (err, data) => {
                             this.MethodCallBack(err, data, ss, callback, "review");
                         });
+                      });
                         break;
                     case "addInfo":
                         ss.addInfo(recordObj.accountAddress, {
