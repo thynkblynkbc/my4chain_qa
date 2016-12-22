@@ -1,0 +1,8 @@
+node_modules
+seedInfo.log
+testInfo.log
+.idea
+*.orig
+jmeter.log
+.node*
+
