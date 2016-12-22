@@ -89,18 +89,26 @@
         // create a  smart contract
         smartContract(req, res, callback) {
             let recordObj=req.body;
+            var resData = {};
             // call a function to covert abi defination of contract
             this.convertToAbi((bytecode, smartSponsor, abi) => {
                 Logger.info("Unlocking account -----------");
                 this.unlockAccount(recordObj.owner, recordObj.password, 30, (error, result) => {
                     if (error) {
-                        callback(error, result);
+                      resData = new Error("Issue with blockchain");
+                      resData.status = 500;
+
+                        callback(resData,null);
                         return;
                     } else {
                       this.estimateGas(recordObj.owner, bytecode, (error, gas) => {
                             if (error) {
-                                callback(error, gas);
-                                return;
+                              resData = new Error("Issue with blockchain");
+                              resData.status = 500;
+
+                                callback(resData,null);
+                                // callback(error, gas);
+                                // return;
                             } else {
                                 this.createContract(smartSponsor, recordObj, bytecode, gas, abi, callback);
                             }
@@ -163,9 +171,9 @@
                         });
                     }
                 });
-            
+
             });
-         
+
         }
 
         privateImageHashGenerate(req, res, callback) {

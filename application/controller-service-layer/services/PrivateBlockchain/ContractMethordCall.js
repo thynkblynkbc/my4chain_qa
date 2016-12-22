@@ -95,7 +95,10 @@ class ContractMethordCall {
                             from: recordObj.adminAddress,
                             gas: gasActual
                         }, (err, data) => {
-                            this.MethodCallBack(err, data, ss, callback, "assignAction");
+                          var resData = {};
+                          resData.txnHash = data;
+                          callback(null,resData);
+                            //this.MethodCallBack(err, data, ss, callback, "assignAction");
                         });
                     } else {
                         callback(err, err);
