@@ -30,8 +30,9 @@ describe('STATE CHANGE ACTION', function() {
                     "accountAddress": userInfo[1].ethAddress,
                     "action": "NAN",
                     "method": "review",
-                    "val": 4,
-                    "textValue": "Hello"
+                    "changedFileHash":"0x944f36ea5c4756017ad632d4d7661b9bbf2b63de",
+                    "isModified":1,
+                    "modifyComment":"Changes in file"
                 })
                 .end(function(err, res) {
                                res.should.have.status(200);

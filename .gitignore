@@ -5,4 +5,11 @@ testInfo.log
 *.orig
 jmeter.log
 .node*
+logs
+*.log
+upload
+# Optional npm cache directory
+.npm
+npm-debug.log*
+*.sh
 

@@ -219,7 +219,7 @@ contract documentAccessMapping {
     function removeAction(address userId, string argAction) isAcceptDecline {
 
         string memory message;
-        if (msg.sender == users[userId].parentId && users[msg.sender].party== users[userId].party ) {
+        if (msg.sender == users[userId].parentId) {
             bool isAction = false;
             uint index;
 
