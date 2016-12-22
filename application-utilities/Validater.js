@@ -32,5 +32,50 @@ module.exports = {
             action: Joi.string().required(),
             method: Joi.string().required(),
         }
+    },
+    review: {
+        body: {
+            contractAddress: Joi.string().required(),
+            accountAddress: Joi.string().required(),
+            password: Joi.string().required(),
+            review: {
+                isModified: Joi.number().required(),
+                modifyComment: Joi.string().required(),
+                changedFileHash: Joi.string().required()
+            }
+        }
+    },
+    revoke: {
+        body: {
+            contractAddress: Joi.string().required(),
+            accountAddress: Joi.string().required(),
+            password: Joi.string().required(),
+            revoke: {
+                comment: Joi.string().required()
+            }
+        }
+    },
+    changestate: {
+        body: {
+            contractAddress: Joi.string().required(),
+            accountAddress: Joi.string().required(),
+            password: Joi.string().required(),
+            method: Joi.string().required()
+        }
+    },
+    userdetail: {
+        body: {
+            contractAddress: Joi.string().required(),
+            adminAddress: Joi.string().required(),
+            password: Joi.string().required(),
+            accountAddress: Joi.string().required()
+        }
+    },
+    log:{
+      body: {
+          contractAddress: Joi.string().required(),
+          accountAddress: Joi.string().required(),
+          password: Joi.string().required()
+        }
     }
 };

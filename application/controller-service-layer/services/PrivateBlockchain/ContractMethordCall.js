@@ -19,39 +19,39 @@ class ContractMethordCall {
         });
     }
     selectForDataBase(contractAddress, cb) {
-            domain.Contract.query().where({
-                'contractAddress': contractAddress
-            }).select().then(function(data) {
-                let contData = data;
-                cb(contData[0].salt);
-            });
+        domain.Contract.query().where({
+            'contractAddress': contractAddress
+        }).select().then(function(data) {
+            let contData = data;
+            cb(contData[0].salt);
+        });
     }
     MethodCallBack(err, data, ss, callback, methodName) {
-            if (err) {
-                Logger.info("error: ", err, data);
-                callback(err, err);
-                return;
-            } else {
-                Logger.info(methodName, data);
-                Logger.info("event Call ------------");
-                this.callEvent(ss, callback, data);
-            }
+        if (err) {
+            Logger.info("error: ", err, data);
+            callback(err, err);
+            return;
+        } else {
+            Logger.info(methodName, data);
+            Logger.info("event Call ------------");
+            this.callEvent(ss, callback, data);
         }
-        encrypt(text, from, to,password) {
-            var cipher = crypto.createCipher('aes-256-cbc', password);
-            var crypted = cipher.update(text, from, to);
-            crypted += cipher.final(to);
-            return crypted;
-        }
+    }
+    encrypt(text, from, to, password) {
+        var cipher = crypto.createCipher('aes-256-cbc', password);
+        var crypted = cipher.update(text, from, to);
+        crypted += cipher.final(to);
+        return crypted;
+    }
 
-        decrypt(text, from, to,password) {
+    decrypt(text, from, to, password) {
             var decipher = crypto.createDecipher('aes-256-cbc', password);
             var dec = decipher.update(text, from, to)
             dec += decipher.final(to);
             return dec;
         }
         // call different methord of smart contract
-    contractMethodCall(recordObj,ss,callback,gas){
+    contractMethodCall(recordObj, ss, callback, gas) {
         console.log("This is the action", recordObj.method);
         switch (recordObj.method) {
             case "getEther":
@@ -70,14 +70,14 @@ class ContractMethordCall {
                         callback(error, result);
                         return;
                     } else {
-                            ss.update({
-                                    from: recordObj.adminAddress,
-                                    gas: gas
-                                }, (err, data) => {
-                                    Logger.info("update: ", data);
-                                    callback(err, data);
-                                });
-                      }
+                        ss.update({
+                            from: recordObj.adminAddress,
+                            gas: gas
+                        }, (err, data) => {
+                            Logger.info("update: ", data);
+                            callback(err, data);
+                        });
+                    }
                 });
                 break;
             case "usersLog":
@@ -96,15 +96,7 @@ class ContractMethordCall {
                 });
                 event.stopWatching();
                 break;
-            case "expire":
-                ss.expire.call({
-                    from: recordObj.adminAddress,
-                    gas: gas
-                }, (err, data) => {
-                    Logger.info("expire: ", data);
-                    callback(err, data);
-                });
-                break;
+
             case "assignAction":
                 //gasPrice: 11067000000000000
                 ss.assignAction.estimateGas(recordObj.accountAddress, recordObj.action, {
@@ -116,9 +108,9 @@ class ContractMethordCall {
                             from: recordObj.adminAddress,
                             gas: gasActual
                         }, (err, data) => {
-                          var resData = {};
-                          resData.txnHash = data;
-                          callback(null,resData);
+                            var resData = {};
+                            resData.txnHash = data;
+                            callback(null, resData);
                             //this.MethodCallBack(err, data, ss, callback, "assignAction");
                         });
                     } else {
@@ -126,91 +118,80 @@ class ContractMethordCall {
                     }
 
                 });
-                  break;
-                    case "getUserAction":
-                        ss.getUserAction.call(recordObj.accountAddress, {
-                            from: recordObj.adminAddress,
-                            gas: gas
-                        }, (err, data) => {
-                            Logger.info("getUserAction: ", data);
-                            callback(err, data);
-                        });
-                        break;
-                    case "removeAction":
-                        Logger.info("inside remove action"); ss.removeAction(recordObj.accountAddress, recordObj.action, {
-                            from: recordObj.adminAddress,
-                            gas: gas
-                        }, (err, data) => {
-                            this.MethodCallBack(err, data, ss, callback, "removeAction");
-                        });
-                        break;
-                    case "acknowledge":
-                        Logger.info("inside remove action"); ss.acknowledge({
-                            from: recordObj.adminAddress,
-                            gas: gas
-                        }, (err, data) => {
-                            this.MethodCallBack(err, data, ss, callback, "acknowledge");
-                        });
-                        break;
-                    case "review":
-                    this.selectForDataBase(recordObj.contractAddress, (salt) => {
-                    console.log("isModified: ", typeof recordObj.isModified, recordObj.isModified);
-                    var encryptFileHash=this.encrypt(recordObj.changedFileHash, 'utf8', 'hex',salt);
-                    var decryptFileHash=this.decrypt(encryptFileHash,'hex','utf8',salt);
-                    console.log("review encrypt decrypt: ",recordObj.changedFileHash,encryptFileHash,decryptFileHash);
-                    ss.review(recordObj.isModified,recordObj.modifyComment,encryptFileHash, {
-                            from: recordObj.adminAddress,
-                            gas: gas
-                        }, (err, data) => {
-                            this.MethodCallBack(err, data, ss, callback, "review");
-                        });
-                      });
-                        break;
-                    case "addInfo":
-                        ss.addInfo(recordObj.accountAddress, {
-                            from: recordObj.adminAddress,
-                            gas: gas
-                        }, (err, data) => {
-                            Logger.info("addInfo: ", data);
-                            callback(err, data);
-                        });
-                        break;
-                    case "accept":
-                        ss.accept(recordObj.accountAddress, {
-                            from: recordObj.adminAddress,
-                            gas: gas
-                        }, (err, data) => {
-                           var args ={};
-                           args.txnHash =data;
-                           Logger.info("accept: ", data);
-                           callback(err, args)
-                        });
-                        break;
-                    case "revoke":
-                        ss.revoke(recordObj.accountAddress, recordObj.adminAddress, {
-                            from: recordObj.adminAddress,
-                            gas: gas
-                        }, (err, data) => {
-                            var args ={};
-                            args.txnHash =data;
-                            Logger.info("revoke: ", data);
-                            callback(err, args);
-                        });
-                        break;
-                    case "decline":
-                        ss.decline(recordObj.accountAddress, {
-                            from: recordObj.adminAddress,
-                            gas: gas
-                        }, (err, data) => {
-                           var args ={};
-                           args.txnHash =data;
-                           Logger.info("decline: ", data);
-                           callback(err, args)
-                        });
-                        break;
-                    default:
-                        var arr = {}; arr.message = "Method does not exit"; callback(err, arr);
-                        break;
+                break;
+            case "getUserAction":
+                ss.getUserAction.call(recordObj.accountAddress, {
+                    from: recordObj.adminAddress,
+                    gas: gas
+                }, (err, data) => {
+                    Logger.info("getUserAction: ", data);
+                    var resData = {};
+                    resData.userdetail = data;
+                    callback(null, resData);
+
+                });
+                break;
+            case "removeAction":
+                Logger.info("inside remove action");
+                ss.removeAction(recordObj.accountAddress, recordObj.action, {
+                    from: recordObj.adminAddress,
+                    gas: gas
+                }, (err, data) => {
+                  var resData = {};
+                  resData.txnHash = data;
+                  callback(null, resData);
+                  //this.MethodCallBack(err, data, ss, callback, "");
+                });
+                break;
+            case "acknowledge":
+                ss.acknowledge({
+                    from: recordObj.accountAddress,
+                    gas: gas
+                }, (err, data) => {
+                  var resData = {};
+                  resData.txnHash = data;
+                  callback(null, resData);
+                  //this.MethodCallBack(err, data, ss, callback, "acknowledge");
+                });
+                break;
+            case "sign":
+                ss.sign({
+                    from: recordObj.accountAddress,
+                    gas: gas
+                }, (err, data) => {
+                  var resData = {};
+                  resData.txnHash = data;
+                  callback(null, resData);
+                    // this.MethodCallBack(err, data, ss, callback, "sign");
+                });
+                break;
+            case "decline":
+                ss.decline({
+                    from: recordObj.accountAddress,
+                    gas: gas
+                }, (err, data) => {
+                  var resData = {};
+                  resData.txnHash = data;
+                  callback(null, resData);
+                    //this.MethodCallBack(err, data, ss, callback, "decline");
+                });
+                break;
+            case "expire":
+                ss.expire.call({
+                    from: recordObj.accountAddress,
+                    gas: gas
+                }, (err, data) => {
+                    Logger.info("expire: ", data);
+                    var resData = {};
+                    resData.isExpire = data;
+                    callback(null, resData);
+                });
+                break;
+            default:
+                var arr = {};
+                arr.message = "Method does not exit";
+                callback(err, arr);
+                break;
 
         }
 

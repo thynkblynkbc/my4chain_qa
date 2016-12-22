@@ -35,6 +35,33 @@ module.exports = function() {
         this.services.privateEthereumService.sponsorContract(req, res, callback);
 
     }
+    var review = function(req, res, callback) {
+
+        this.services.privateEthereumService.review(req, res, callback);
+
+    }
+    var revoke = function(req, res, callback) {
+
+        this.services.privateEthereumService.revoke(req, res, callback);
+
+    }
+
+    var changestate = function(req, res, callback) {
+
+        this.services.privateEthereumService.changestate(req, res, callback);
+
+    }
+
+    var userdetail = function(req, res, callback) {
+
+        this.services.privateEthereumService.userdetail(req, res, callback);
+
+    }
+    var log = function(req, res, callback) {
+
+        this.services.privateEthereumService.log(req, res, callback);
+
+    }
     var privateSendether = function(req, res, callback) {
         var reqData = req.body;
         this.services.privateEthereumService.privateSendether(reqData, res, callback);
@@ -45,21 +72,21 @@ module.exports = function() {
         this.services.privateEthereumDetail.transactionConfirmations(tranxHash, res, callback);
     }
 
-  var transactionDetail = function (req, res,callback) {
-		var tranxHash=req.query.tranxHash;
-		this.services.privateEthereumDetail.transactionDetail(tranxHash,res,callback);
-  }
+    var transactionDetail = function(req, res, callback) {
+        var tranxHash = req.query.tranxHash;
+        this.services.privateEthereumDetail.transactionDetail(tranxHash, res, callback);
+    }
 
-	var contractForAssets = function (req , res ,callback){
-		var tranxHash=req.body.tranxHash;
-		this.services.privateEthereumService.contractForAssets(tranxHash,res,callback);
+    var contractForAssets = function(req, res, callback) {
+        var tranxHash = req.body.tranxHash;
+        this.services.privateEthereumService.contractForAssets(tranxHash, res, callback);
 
     }
 
-	var saveFileAndGenerateHash = function (req , res ,callback){
-     var myaccount = req.body.myAddress;
-     var toAccount = req.body.toAddress;
-      	this.services.privateEthereumService.saveFileAndGenerateHash(toAccount,myaccount,req,res,callback);
+    var saveFileAndGenerateHash = function(req, res, callback) {
+        var myaccount = req.body.myAddress;
+        var toAccount = req.body.toAddress;
+        this.services.privateEthereumService.saveFileAndGenerateHash(toAccount, myaccount, req, res, callback);
 
     }
     var coinbaseBalance = function(req, res, callback) {
@@ -89,7 +116,12 @@ module.exports = function() {
         smartContract: smartContract,
         privateImageHashtoContract: privateImageHashtoContract,
         smartPartyContract: smartPartyContract,
-        sponsorPartyContract: sponsorPartyContract
+        sponsorPartyContract: sponsorPartyContract,
+        review: review,
+        revoke: revoke,
+        changestate: changestate,
+        userdetail: userdetail,
+        log: log
 
     }
 };
