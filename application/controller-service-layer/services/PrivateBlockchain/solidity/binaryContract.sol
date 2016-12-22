@@ -318,7 +318,7 @@ contract documentAccessMapping {
       usersLog(msg.sender,msg.sender,message,"decline",now);
     }
 
-    function signContract() accept {
+    function signContract() isAcceptDecline  accept {
       string memory message;
       if (checkRole(msg.sender, 'CAN_ACCEPT') && users[msg.sender].party!=address(0)) {
           partyState[users[msg.sender].party]=true;
