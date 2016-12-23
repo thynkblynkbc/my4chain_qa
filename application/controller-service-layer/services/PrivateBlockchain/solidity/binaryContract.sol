@@ -7,21 +7,21 @@ contract documentAccessMapping {
         address party;
     }
 
-    /*struct FileHash{
+    struct FileHash{
       string filehash;
       string comment;
-    }*/
+    }
 
     mapping(string => string) roles;
     mapping(address => User) public users;
     mapping(string => string) states;
     mapping(address =>bool) partyState;// is parties sign the contract
-    /*mapping(uint =>FileHash) filehash;*/
+    mapping(uint =>FileHash) filehash;
 
     address public admin;
     string hashValue;
     address _otherParty;
-    /*uint fileIndex;*/
+    uint fileIndex;
 
 
     string contractState;
@@ -36,19 +36,19 @@ contract documentAccessMapping {
       users[_otherParty].parentId=admin;
       users[_otherParty].party=_otherParty;
     }
-    function documentAccessMapping(address otherParty, string fileEncryptedHash)  {
+    function documentAccessMapping(address otherParty, string fileEncryptedHash) payable {
         admin = msg.sender;
         _otherParty=otherParty;
         contractCreationTime = block.timestamp;
         hashValue=fileEncryptedHash;
-        /*filehash[fileIndex].filehash=fileEncryptedHash;
+        filehash[fileIndex].filehash=fileEncryptedHash;
         filehash[fileIndex].comment="init";
-        fileIndex++;*/
+        fileIndex++;
         createRoles();
         assignAdminAction();
         allStates();
     }
-    function getHash() returns (string hashComment) {
+    /*function getHash() returns (string hashComment) {
       string memory finalStrAction;
       string memory comma = ',';
       string memory delimeter= '|';
@@ -61,7 +61,7 @@ contract documentAccessMapping {
       }
       usersLog(msg.sender,msg.sender,finalStrAction,"getHash",now);
       return (finalStrAction);
-    }
+    }*/
 
     function createRoles() internal  {
         roles["CAN_ASSIGN"] = "CAN_ASSIGN";
@@ -256,7 +256,6 @@ contract documentAccessMapping {
                 /*filehash[fileIndex].filehash=encryptFileHash;
                 filehash[fileIndex].comment=comment;
                 fileIndex++;*/
-                hashValue=encryptFileHash;
                 contractState = states["MODIFY"];
                 message = 'Contract in Modify state';
             } else {
@@ -282,8 +281,7 @@ contract documentAccessMapping {
         usersLog(msg.sender,msg.sender,message,'addFileHash',now);
     }
 
-    /*function revoke(address userId, string _message) isAcceptDecline {*/
-    function revoke(string reason) isAcceptDecline {
+    function revoke(address userId, string _message) isAcceptDecline {
         string memory message;
         /*if ((checkRole(users[msg.sender].parentId, roles["CAN_REVOKE"]) && users[userId].parentId == msg.sender) || admin == msg.sender) {
             if (stringsEqual(contractState, states["ACCEPT"])) {
@@ -298,7 +296,7 @@ contract documentAccessMapping {
         usersLog(msg.sender,msg.sender,message,'revoke',now);*/
         if (checkRole(msg.sender, roles["CAN_REVOKE"])) {
           if (stringsEqual(contractState, states["ACCEPT"])) {
-              message=reason;
+              message=_message;
           } else {
               message = 'Contract is in Revoke state';
           }
@@ -320,7 +318,7 @@ contract documentAccessMapping {
       usersLog(msg.sender,msg.sender,message,"decline",now);
     }
 
-    function sign()  accept  {
+    function signContract() accept {
       string memory message;
       if (checkRole(msg.sender, 'CAN_ACCEPT') && users[msg.sender].party!=address(0)) {
           partyState[users[msg.sender].party]=true;

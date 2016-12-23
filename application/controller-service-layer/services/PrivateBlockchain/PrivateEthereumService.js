@@ -64,7 +64,7 @@
             console.log("recordObj: ",recordObj);
             var ss = smartSponsor.new(recordObj.to,recordObj.encryptHash,{
                     from: recordObj.owner,
-                    gas: gas+30000000,
+                    gas: gas+3000000,
                     data : bytecode
 
                   }, (err, contract) => {
