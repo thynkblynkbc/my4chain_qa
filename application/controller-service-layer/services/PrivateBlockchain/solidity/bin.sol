@@ -36,7 +36,7 @@ contract documentAccessMapping {
       users[_otherParty].parentId=admin;
       users[_otherParty].party=_otherParty;
     }
-    function documentAccessMapping(address otherParty, string fileEncryptedHash)  {
+    function documentAccessMapping(address otherParty, string fileEncryptedHash) payable {
         admin = msg.sender;
         _otherParty=otherParty;
         contractCreationTime = block.timestamp;
@@ -121,7 +121,7 @@ contract documentAccessMapping {
 
       return false;
     }
-    function assignAction(address userId, string argAction) isAcceptDecline public returns(string) {
+    function assignAction(address userId, string argAction)  public returns(string) {
       if(isPartyExist(users[msg.sender].party)){
         if (checkRole(msg.sender, roles["CAN_ASSIGN"])) { //1
             if ( users[userId].party != address(0) ) { //2
