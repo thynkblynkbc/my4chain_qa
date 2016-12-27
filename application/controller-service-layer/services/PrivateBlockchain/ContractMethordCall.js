@@ -43,6 +43,23 @@ class ContractMethordCall {
         crypted += cipher.final(to);
         return crypted;
     }
+    contractLogSaveToDb(recordObj){
+      domain.ContractLog.query().insert({
+          contractAddress: recordObj.contractAddress,
+          transactionHash: recordObj.txnHash,
+          callerAddress: recordObj.adminAddress,
+          action:recordObj.method
+      }).then(function(databaseReturn) {
+          //Logger.info("Inserted data: ", databaseReturn);
+          // var arr = {};
+          // arr.contractAddress = contract.address;
+          // arr.txnHash = contract.transactionHash;
+          // arr.gasUsed = gas;
+          // //arr.tranHash = transactionHash;
+          // Logger.info("contractAddress: ", arr.contractAddress);
+          // callback(null, arr);
+      });
+    }
 
     decrypt(text, from, to, password) {
             var decipher = crypto.createDecipher('aes-256-cbc', password);
@@ -112,6 +129,8 @@ class ContractMethordCall {
                         }, (err, data) => {
                             var resData = {};
                             resData.txnHash = data;
+                            recordObj.txnHash=data;
+                            this.contractLogSaveToDb(recordObj);
                             callback(null, resData);
                             //this.MethodCallBack(err, data, ss, callback, "assignAction");
                         });

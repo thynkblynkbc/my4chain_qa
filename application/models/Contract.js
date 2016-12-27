@@ -7,13 +7,12 @@ var schemaPromise = knex.schema.createTableIfNotExists('Contract', function(tabl
 
 }).then(function(data) {
     console.log("Contract Table added ");
-    knex.schema.hasColumn('Contract', 'ethAddress').then((isColumn) => {
+    knex.schema.hasColumn('Contract', 'senderAddress').then((isColumn) => {
          if (isColumn != true) {
              knex.schema.table('Contract', function(table) {
-                table.string('ethAddress');
-                table.foreign('ethAddress').references('User.ethAddress');
-             }).then(function(data) {
-                 console.log("ethAddress Column of Contract TAble as foreign key from User table");
+                table.string('senderAddress'); // ethereum account address of contract creator/sender(first party admin)
+                }).then(function(data) {
+                 console.log("senderAddress Column of Contract Table as foreign key from User(accountAddress) table");
              });
          }
     });
@@ -26,12 +25,12 @@ var schemaPromise = knex.schema.createTableIfNotExists('Contract', function(tabl
              });
          }
     });
-    knex.schema.hasColumn('Contract', 'partyAddress').then((isColumn) => {
+    knex.schema.hasColumn('Contract', 'receipentAddress').then((isColumn) => {
          if (isColumn != true) {
              knex.schema.table('Contract', function(table) {
-                table.text('partyAddress');
+                table.text('receipentAddress'); // ethereum account address of contract receipent(second party admin)
               }).then(function(data) {
-                 console.log("partyAddress Column added to Contract Table");
+                 console.log("receipentAddress Column added to Contract Table");
              });
          }
     });
@@ -44,17 +43,34 @@ var schemaPromise = knex.schema.createTableIfNotExists('Contract', function(tabl
              });
          }
     });
+    knex.schema.hasColumn('Contract', 'createdAt').then((isColumn) => {
+         if (isColumn != true) {
+             knex.schema.table('Contract', function(table) {
+                table.dateTime('createdAt').defaultTo(knex.fn.now());
+              }).then(function(data) {
+                 console.log("createdAt Column added to Contract Table");
+             });
+         }
+    });
+    knex.schema.hasColumn('Contract', 'startTime').then((isColumn) => {
+         if (isColumn != true) {
+             knex.schema.table('Contract', function(table) {
+                table.dateTime('startTime'); // start time of contract
+             }).then(function(data) {
+                 console.log("startTime Column added to Contract Table");
+             });
+         }
+    });
+    knex.schema.hasColumn('Contract', 'endTime').then((isColumn) => {
+         if (isColumn != true) {
+             knex.schema.table('Contract', function(table) {
+                table.dateTime('endTime'); // expiry/end time of contract
+              }).then(function(data) {
+                 console.log("endTime Column added to Contract Table");
+             });
+         }
+    });
 });
-
-// knex.schema.hasColumn('Contract', 'abi').then((isColumn) => {
-//      if (isColumn != true) {
-//          knex.schema.table('Contract', function(table) {
-//             table.json('abi');
-//           }).then(function(data) {
-//              console.log("abi Column of Contract TAble added");
-//          });
-//      }
-// });
 
 // Contract model.
 function Contract() {
@@ -64,16 +80,19 @@ function Contract() {
 Contract.tableName = 'Contract';
 Contract.jsonSchema = {
   type: 'object',
-  required: ['contractAddress','transactionHash','ethAddress','abi'],
+  required: ['contractAddress','transactionHash','senderAddress','abi'],
   properties: {
     id: {type: 'integer'},
     contractAddress: {type: 'string'},
     transactionHash:{type:'string'},
-    ethAddress:{type:'string'},
+    senderAddress:{type:'string'},
     abi:{type:'string'},
     bytecode:{type:'string'},
-    partyAddress:{type:'string'},
-    salt:{type:'string'}
+    receipentAddress:{type:'string'},
+    salt:{type:'string'},
+    createdAt:{type:'dateTime'},
+    startTime:{type:'dateTime'},
+    endTime:{type:'dateTime'}
     }
 };
 // Basic ES6 compatible prototypal inheritance.

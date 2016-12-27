@@ -7,13 +7,13 @@ var schemaPromise = knex.schema.createTableIfNotExists('User', function(table) {
 }).then(function(data) {
     console.log("User Table added ");
 });
-knex.schema.hasColumn('User', 'ethAddress').then((isColumn) => {
+knex.schema.hasColumn('User', 'accountAddress').then((isColumn) => {
     if (isColumn != true) {
         knex.schema.table('User', function(table) {
-            table.string('ethAddress');
-            table.unique('ethAddress');
+            table.string('accountAddress'); // ethereum account address
+            table.unique('accountAddress');
         }).then(function(data) {
-            console.log("ethAddress Column added");
+            console.log("accountAddress Column added");
         });
     }
 });
@@ -25,12 +25,12 @@ function User() {
 User.tableName = 'User';
 User.jsonSchema = {
   type: 'object',
-  required: ['email','ethPassword','ethAddress'],
+  required: ['email','password','ethPassword','accountAddress'],
   properties: {
     id: {type: 'integer'},
     email: {type: 'string', minLength: 1, maxLength: 255},
-    ethPassword:{type:'string',minLength:1,maxLength:100},
-    ethAddress:{type:'string'}
+    ethPassword:{type:'string',minLength:1,maxLength:10},
+    accountAddress:{type:'string'}
     //parentId: {type: ['integer', 'null']},
     //age: {type: 'number'},
   }
