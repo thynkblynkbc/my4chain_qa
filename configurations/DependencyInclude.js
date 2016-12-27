@@ -59,9 +59,6 @@ redisClient.on('connect', function(err, reply) {
         Logger.info("connected with redis");
     }
 });
-global.solAbi;
-global.solBytecode;
-require('./EthereumContract.js');
 //global.knex = Promise.promisifyAll(global.knex);
 
 // Give the connection to objection.
