@@ -64,7 +64,7 @@ module.exports = function() {
     }
     var privateSendether = function(req, res, callback) {
         var reqData = req.body;
-        this.services.privateEthereumService.privateSendether(reqData, res, callback);
+        this.services.privateEthereumService.privateSendether(req, res, callback);
     }
 
     var transactionConfirmations = function(req, res, callback) {
@@ -72,6 +72,9 @@ module.exports = function() {
         this.services.privateEthereumDetail.transactionConfirmations(tranxHash, res, callback);
     }
 
+    var requestConfirmation = function(req, res, callback) {
+        this.services.privateEthereumDetail.requestConfirmation(req, res, callback);
+    }
     var transactionDetail = function(req, res, callback) {
         var tranxHash = req.query.tranxHash;
         this.services.privateEthereumDetail.transactionDetail(tranxHash, res, callback);
@@ -121,7 +124,8 @@ module.exports = function() {
         revoke: revoke,
         changestate: changestate,
         userdetail: userdetail,
-        log: log
+        log: log,
+        requestConfirmation:requestConfirmation
 
     }
 };

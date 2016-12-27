@@ -22,29 +22,30 @@
             //  convert abi defination of contract
         convertToAbi(cb) {
 
-            fs.readFile(__dirname + '/solidity/binaryContract.sol', 'utf8', function(err, solidityCode) {
-                if (err) {
-                    console.log("error in reading file: ", err);
-                    return;
-                } else {
+            // fs.readFile(__dirname + '/solidity/binaryContract.sol', 'utf8', function(err, solidityCode) {
+            //     if (err) {
+            //         console.log("error in reading file: ", err);
+            //         return;
+            //     } else {
+            //
+            //         Logger.info("File Path: ", __dirname + '/solidity/binaryContract.sol');
+            //         Logger.info(new Date());
+            //         Logger.info("-----compling solidity code ----------");
+            //         Logger.info(new Date());
+            //         // var compiled = solc.compile(solidityCode, 1).contracts.DieselPrice;
+            //         var compiled = solc.compile(solidityCode, 1).contracts.documentAccessMapping;
+            //         Logger.info("-----complile complete ----------");
+            //         Logger.info(new Date());
+            //         const abi = JSON.parse(compiled.interface);
+            //         Logger.info("bytecode: ", typeof compiled.bytecode, compiled.bytecode.length);
+            //         const bytecode = compiled.bytecode;
+            //         var smartSponsor = privateWeb3.eth.contract(abi);
 
-                    Logger.info("File Path: ", __dirname + '/solidity/binaryContract.sol');
-                    Logger.info(new Date());
-                    Logger.info("-----compling solidity code ----------");
-                    Logger.info(new Date());
-                    // var compiled = solc.compile(solidityCode, 1).contracts.DieselPrice;
-                    var compiled = solc.compile(solidityCode, 1).contracts.documentAccessMapping;
-                    Logger.info("-----complile complete ----------");
-                    Logger.info(new Date());
-                    const abi = JSON.parse(compiled.interface);
-                    Logger.info("bytecode: ", typeof compiled.bytecode, compiled.bytecode.length);
-                    const bytecode = compiled.bytecode;
-                    var smartSponsor = privateWeb3.eth.contract(abi);
-
-                    cb(bytecode, smartSponsor, abi);
-                }
-            });
-
+                    // cb(bytecode, smartSponsor, abi);
+            //     }
+            // });
+            var smartSponsor = privateWeb3.eth.contract(solAbi);
+            cb(solBytecode,smartSponsor,solAbi);
         }
         decryptBuffer(buffer, password) {
             var decipher = crypto.createDecipher('aes-256-cbc', password)
@@ -64,7 +65,7 @@
             console.log("recordObj: ", recordObj);
             var ss = smartSponsor.new(recordObj.to, recordObj.encryptHash, {
                 from: recordObj.owner,
-                gas: gas + 300000,
+                gas: gas +300000,
                 data: bytecode
 
             }, (err, contract) => {
@@ -550,7 +551,9 @@
         }
 
         //  send ether to other account
-        privateSendether(reqData, res, callback) {
+        privateSendether(req, res, callback) {
+            var reqData=req.body;
+            var requestid=req.params.requestid;
             var fromAddress = reqData.fromAddress;
             var toAddress = reqData.toAddress;
             var password = reqData.password;
@@ -577,10 +580,12 @@
                                 to: toAddress,
                                 value: privateWeb3.toWei(amount, 'ether'),
                                 data: encrypted
-                            }, function(tx_error, tx_result) {
+                            }, (tx_error, tx_result) => {
                                 if (!tx_error) {
                                     resData.transactionResult = tx_result;
+                                    this.storeRequestConfirmation(requestid,tx_result);
                                     callback(null, resData);
+
                                 } else {
                                     callback(tx_error);
                                 }
@@ -594,6 +599,39 @@
 
             });
         }
+        storeRequestConfirmation(requestid,tx_result){
+          // redisClient.hmset(requestid,tx_result,0,function(err,object){
+          //   if(err){ console.log("adding Hmset Error"); }
+          //   else{ console.log("Added succesfully"); console.log(object); }
+          // });
+          var data={ tranHash:tx_result,confirm:0 };
+          redisClient.set(requestid,JSON.stringify(data), function(err,object){
+              if(err){ console.log("adding set Error"); }
+             else{ console.log("Added succesfully set"); console.log(object); }
+          });
+          redisClient.get(requestid, function(err, object) {
+              if(err){ console.log("Getting Set Error"); }
+              else{ console.log("----Retrieving SET--"); object=JSON.parse(object); console.log(object,typeof object);
+                     console.log("---End Retriving SET");}
+          });
+          // redisClient.hget(requestid,tx_result,function(err,object){
+          //   if(err){ console.log("Getting Hmset Error"); }
+          //   else { console.log("----Retrieving HMSET--"); console.log(object);
+          //          console.log("---End Retriving HMSET"); }
+          //  });
+          //  redisClient.multi()
+          //  .keys('*', function (err, replies) {
+          //    console.log("MULTI got " + replies.length + " replies");
+          //    replies.forEach(function (reply, index) {
+          //      console.log("Reply " + index + ": " + reply.toString());
+          //     //  redisClient.hget(reply,tx_result, function(err, data){
+          //     //    console.log(data);
+          //     //  });
+          //    });
+          //  })
+          //  .exec(function (err, replies) {});
+        }
+
 
 
     }

@@ -7,21 +7,14 @@ contract documentAccessMapping {
         address party;
     }
 
-    struct FileHash{
-      string filehash;
-      string comment;
-    }
-
     mapping(string => string) roles;
     mapping(address => User) public users;
     mapping(string => string) states;
     mapping(address =>bool) partyState;// is parties sign the contract
-    mapping(uint =>FileHash) filehash;
 
     address public admin;
     string hashValue;
-    address _otherParty;
-    uint fileIndex;
+    address[] _parties;
 
 
     string contractState;
@@ -29,48 +22,26 @@ contract documentAccessMapping {
 
     event GetValue(address str, uint add, string from);
     event usersLog(address indexed _from, address indexed _to, string _message, string _methodName, uint _callTime);
-    function assignAdminAction() internal{
-      users[admin].parentId=admin;
-      users[admin].actions=["CAN_ASSIGN","CAN_REVOKE","CAN_ACCEPT","CAN_DECLINE","CAN_REVIEW","CAN_ACK"];
-      users[admin].party=admin;
-      users[_otherParty].parentId=admin;
-      users[_otherParty].party=_otherParty;
-    }
-    function documentAccessMapping(address otherParty, string fileEncryptedHash) {
+
+    function documentAccessMapping(address[] parties,string fileEncryptedHash) {
         admin = msg.sender;
-        _otherParty=otherParty;
+        _parties=parties;
         contractCreationTime = block.timestamp;
         hashValue=fileEncryptedHash;
-        filehash[fileIndex].filehash=fileEncryptedHash;
-        filehash[fileIndex].comment="init";
-        fileIndex++;
         createRoles();
-        assignAdminAction();
         allStates();
     }
-    function getHash() returns (string hashComment) {
-      string memory finalStrAction;
-      string memory comma = ',';
-      string memory delimeter= '|';
-      if(fileIndex>0){
-        finalStrAction=strConcat(filehash[0].filehash,comma,filehash[0].comment);
-      }
-      for (uint i = 1; i <fileIndex; i++) {
-          string memory current=strConcat(filehash[i].filehash,comma,filehash[i].comment);
-          finalStrAction = strConcat(finalStrAction, delimeter,current);
-      }
-      usersLog(msg.sender,msg.sender,finalStrAction,"getHash",now);
-      return (finalStrAction);
-    }
 
-    function createRoles() internal  {
+
+
+
+    function createRoles() internal {
         roles["CAN_ASSIGN"] = "CAN_ASSIGN";
         roles["CAN_REVOKE"] = "CAN_REVOKE";
         roles["CAN_ACCEPT"] = "CAN_ACCEPT";
         roles["CAN_DECLINE"] = "CAN_DECLINE";
         roles["CAN_REVIEW"] = "CAN_REVIEW";
         roles["CAN_ACK"] = "CAN_ACK";
-
     }
 
     function allStates() internal {
@@ -116,19 +87,21 @@ contract documentAccessMapping {
     function isPartyExist(address partyAddress) internal returns(bool) {
       if(partyAddress==address(0))
             return false;
-      if(partyAddress==_otherParty || partyAddress==admin)
-        return true;
+
+      for(uint i=0;i<_parties.length;i++)
+        if(_parties[i]==partyAddress)
+              return true;
 
       return false;
     }
     function assignAction(address userId, string argAction) isAcceptDecline public returns(string) {
-      if(isPartyExist(users[msg.sender].party)){
-        if (checkRole(msg.sender, roles["CAN_ASSIGN"])) { //1
-            if ( users[userId].party != address(0) ) { //2
+      if(isPartyExist(users[msg.sender].party) || msg.sender==admin){
+        if (checkRole(msg.sender, roles["CAN_ASSIGN"]) || msg.sender == admin) { //1
+            if (users[userId].actions.length > 0) { //2
                 return existingUser(userId, argAction);
             } //2
             else {
-                if(users[msg.sender].party==address(0)){ // if sender have no party
+                if(users[msg.sender].party==address(0) || msg.sender==admin){ // if sender have no party
                   return newUser(userId, argAction,msg.sender);
                 }
                 else{
@@ -152,7 +125,8 @@ contract documentAccessMapping {
 
     function newUser(address userId, string argAction,address partyAddress) internal returns(string) {
         if (stringsEqual(roles[argAction], argAction)) {
-            if (checkRole(msg.sender, roles[argAction])) {
+            if (checkRole(msg.sender, roles[argAction]) || msg.sender == admin) {
+
                 users[userId].actions.push(argAction);
                 users[userId].parentId = msg.sender;
                 users[userId].party=partyAddress;
@@ -181,7 +155,7 @@ contract documentAccessMapping {
         else {
             if (stringsEqual(roles[argAction], argAction)) { //4
                 if (msg.sender == users[userId].parentId) {
-                    if (checkRole(users[userId].parentId, roles[argAction])) {
+                    if (checkRole(users[userId].parentId, roles[argAction]) || msg.sender == admin) {
                         users[userId].actions.push(argAction);
                         usersLog(msg.sender,userId,"Action Added","existingUser",now);
                         /*GetValue(userId, users[userId].actions.length, "Action Added");*/
@@ -206,8 +180,8 @@ contract documentAccessMapping {
     }
 
     function acknowledge() isAcceptDecline {
-        if (msg.sender == admin || (checkRole(msg.sender, roles["CAN_ACK"]) && users[msg.sender].party!=address(0))) {
-              contractState = states["ACK"];
+        if (msg.sender == admin || checkRole(msg.sender, roles["CAN_ACK"])) {
+            contractState = states["ACK"];
               usersLog(msg.sender,msg.sender,"Contract in acknowledge state","acknowledge",now);
         }else{
             usersLog(msg.sender,msg.sender,"Sorry, You are not authorized","acknowledge",now);
@@ -219,7 +193,7 @@ contract documentAccessMapping {
     function removeAction(address userId, string argAction) isAcceptDecline {
 
         string memory message;
-        if (msg.sender == users[userId].parentId) {
+        if (msg.sender == admin || msg.sender == users[userId].parentId) {
             bool isAction = false;
             uint index;
 
@@ -249,14 +223,10 @@ contract documentAccessMapping {
         usersLog(msg.sender,userId,message,"removeAction",now);
     }
 
-    function review(uint iscomment,string comment,string encryptFileHash) isAcceptDecline {
+    function review(uint comment) isAcceptDecline {
         string memory message;
-        if (checkRole(msg.sender, roles["CAN_REVIEW"])) {
-            if (iscomment == 1) {
-                /*filehash[fileIndex].filehash=encryptFileHash;
-                filehash[fileIndex].comment=comment;
-                fileIndex++;*/
-                hashValue=encryptFileHash;
+        if (checkRole(msg.sender, roles["CAN_REVIEW"]) || msg.sender == admin) {
+            if (comment == 1) {
                 contractState = states["MODIFY"];
                 message = 'Contract in Modify state';
             } else {
@@ -271,7 +241,7 @@ contract documentAccessMapping {
 
     function addFileHash(string encryptFileHash) isAcceptDecline {
         string memory message;
-        if (msg.sender == admin || msg.sender== _otherParty) {
+        if (msg.sender == admin) {
             hashValue=encryptFileHash;
             message = 'File Hash added';
 
@@ -282,8 +252,7 @@ contract documentAccessMapping {
         usersLog(msg.sender,msg.sender,message,'addFileHash',now);
     }
 
-    /*function revoke(address userId, string _message) isAcceptDecline {*/
-    function revoke(string reason) isAcceptDecline {
+    function revoke(address userId, string _message) isAcceptDecline {
         string memory message;
         /*if ((checkRole(users[msg.sender].parentId, roles["CAN_REVOKE"]) && users[userId].parentId == msg.sender) || admin == msg.sender) {
             if (stringsEqual(contractState, states["ACCEPT"])) {
@@ -296,9 +265,9 @@ contract documentAccessMapping {
             message = 'Sorry, You are not authorized';
         }
         usersLog(msg.sender,msg.sender,message,'revoke',now);*/
-        if (checkRole(msg.sender, roles["CAN_REVOKE"])) {
+        if (checkRole(msg.sender, roles["CAN_REVOKE"]) || msg.sender == admin) {
           if (stringsEqual(contractState, states["ACCEPT"])) {
-              message=reason;
+              message=_message;
           } else {
               message = 'Contract is in Revoke state';
           }
@@ -317,12 +286,12 @@ contract documentAccessMapping {
         } else {
             message = 'Sorry, You are not authorized';
         }
-      usersLog(msg.sender,msg.sender,message,"decline",now);
+       usersLog(msg.sender,msg.sender,message,"decline",now);
     }
 
-    function sign()  accept  {
+    function signContract() accept {
       string memory message;
-      if (checkRole(msg.sender, 'CAN_ACCEPT') && users[msg.sender].party!=address(0)) {
+      if ((checkRole(msg.sender, 'CAN_ACCEPT') && users[msg.sender].party!=address(0)) || msg.sender == admin) {
           partyState[users[msg.sender].party]=true;
           message = 'Contract Sign';
       } else {
@@ -331,10 +300,11 @@ contract documentAccessMapping {
       usersLog(msg.sender,users[msg.sender].parentId,message,'signContract',now);
     }
     function isPartySign() internal returns(bool) {
-      if(partyState[admin] && partyState[_otherParty])
-          return true;
-
-      return false;
+      for(uint i=0;i<_parties.length;i++){
+        if(!partyState[_parties[i]]) // if any party does not sign the contract , it will give false
+          return false;
+      }
+      return true;
     }
     modifier accept() {
         _;
@@ -370,7 +340,7 @@ contract documentAccessMapping {
         return string(babcde);
     }
 
-    function getUserAction(address userId) public returns(string action, string state, address parent,address party,address otherParty) {
+    function getUserAction(address userId) public returns(string action, string state, address parent,address[] parties,address party) {
         string[] actionArray = users[userId].actions;
         string memory finalStrAction;
         string memory comma = ',';
@@ -381,7 +351,7 @@ contract documentAccessMapping {
             finalStrAction = strConcat(finalStrAction, comma, actionArray[i]);
         }
         usersLog(msg.sender,userId,finalStrAction,"getUserAction",now);
-        return (finalStrAction, contractState, users[userId].parentId,users[userId].party,_otherParty);
+        return (finalStrAction, contractState, users[userId].parentId,_parties,users[userId].party);
     }
 
     function expire() returns(bool isExpire) {
@@ -400,5 +370,7 @@ contract documentAccessMapping {
               return true;
           }
         }
+
+
     }
 }

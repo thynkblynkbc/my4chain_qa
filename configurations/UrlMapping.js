@@ -80,8 +80,7 @@
 	                json: views.jsonView
 	            }
 	        }],
-
-	        "/api/v1/contract/sendether": [{
+	        "/api/v1/contract/sendether/:requestid": [{
 	            method: "POST",
 	            action: controllers.privateEthereumController.privateSendether,
 	            middleware: [validater(validationFile.privateSendether)],
@@ -100,6 +99,13 @@
 	        "/api/v1/contract/txconfirmations": [{
 	            method: "GET",
 	            action: controllers.privateEthereumController.transactionConfirmations,
+	            views: {
+	                json: views.jsonView
+	            }
+	        }],
+					"/api/v1/requestconfirmation/:requestid": [{
+	            method: "GET",
+	            action: controllers.privateEthereumController.requestConfirmation,
 	            views: {
 	                json: views.jsonView
 	            }

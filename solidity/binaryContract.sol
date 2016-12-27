@@ -8,7 +8,7 @@ contract documentAccessMapping {
     }
 
     struct FileHash{
-      string filehash;
+      string fh;
       string comment;
     }
 
@@ -16,12 +16,12 @@ contract documentAccessMapping {
     mapping(address => User) public users;
     mapping(string => string) states;
     mapping(address =>bool) partyState;// is parties sign the contract
-    mapping(uint =>FileHash) filehash;
+    mapping(uint =>FileHash) filehashes;
 
     address public admin;
     string hashValue;
     address _otherParty;
-    uint fileIndex;
+    uint fileIndex=0;
 
 
     string contractState;
@@ -41,27 +41,27 @@ contract documentAccessMapping {
         _otherParty=otherParty;
         contractCreationTime = block.timestamp;
         hashValue=fileEncryptedHash;
-        filehash[fileIndex].filehash=fileEncryptedHash;
-        filehash[fileIndex].comment="init";
+        filehashes[fileIndex].fh=fileEncryptedHash;
+        filehashes[fileIndex].comment="init";
         fileIndex++;
         createRoles();
         assignAdminAction();
         allStates();
     }
-    function getHash() returns (string hashComment) {
+    /*function getHash() returns (string hashComment) {
       string memory finalStrAction;
       string memory comma = ',';
       string memory delimeter= '|';
       if(fileIndex>0){
-        finalStrAction=strConcat(filehash[0].filehash,comma,filehash[0].comment);
+        finalStrAction=strConcat(filehashes[0].fh,comma,filehashes[0].comment);
       }
       for (uint i = 1; i <fileIndex; i++) {
-          string memory current=strConcat(filehash[i].filehash,comma,filehash[i].comment);
+          string memory current=strConcat(filehashes[i].fh,comma,filehashes[i].comment);
           finalStrAction = strConcat(finalStrAction, delimeter,current);
       }
       usersLog(msg.sender,msg.sender,finalStrAction,"getHash",now);
       return (finalStrAction);
-    }
+    }*/
 
     function createRoles() internal  {
         roles["CAN_ASSIGN"] = "CAN_ASSIGN";
@@ -253,8 +253,8 @@ contract documentAccessMapping {
         string memory message;
         if (checkRole(msg.sender, roles["CAN_REVIEW"])) {
             if (iscomment == 1) {
-                /*filehash[fileIndex].filehash=encryptFileHash;
-                filehash[fileIndex].comment=comment;
+                /*filehashes[fileIndex].fh=encryptFileHash;
+                filehashes[fileIndex].comment=comment;
                 fileIndex++;*/
                 hashValue=encryptFileHash;
                 contractState = states["MODIFY"];
