@@ -63,7 +63,7 @@
             recordObj.encryptHash=this.encrypt(recordObj.fileHash, 'utf8', 'hex',recordObj.salt);
             recordObj.decryptHash=this.decrypt(recordObj.encryptHash,'hex','utf8',recordObj.salt);
             console.log("recordObj: ",recordObj);
-            var ss = smartSponsor.new(recordObj.to,recordObj.encryptHash,{
+            var ss = smartSponsor.new(recordObj.recipient,recordObj.encryptHash,{
                     from: recordObj.owner,
                     gas: gas+3000000,
                     data : bytecode
@@ -131,7 +131,7 @@
                 ethAddress: recordObj.owner,
                 bytecode: bytecode,
                 salt: recordObj.salt,
-                partyAddress: recordObj.to
+                partyAddress: recordObj.recipient
             }).then(function(databaseReturn) {
                 //Logger.info("Inserted data: ", databaseReturn);
                 var arr = {};
@@ -161,19 +161,19 @@
                 let smartSponsor = privateWeb3.eth.contract(selectData);
                 var ss = smartSponsor.at(recordObj.contractAddress);
                 Logger.info("Unlock Account ----------------");
-                this.unlockAccount(recordObj.adminAddress, recordObj.password, 30, (error, result) => {
+                this.unlockAccount(recordObj.accountAddress, recordObj.password, 30, (error, result) => {
                     if (error) {
                         callback(error, result);
                         return;
                     } else {
-                        this.estimateGas(recordObj.adminAddress, bytecode, (error, gas) => {
-                            if (error) {
-                                callback(error, gas);
-                                return;
-                            } else {
-                                contractMethordCall.contractMethodCall(recordObj, ss, callback, gas);
-                            }
-                        });
+                        // this.estimateGas(recordObj.parentAddress, bytecode, (error, gas) => {
+                        //     if (error) {
+                        //         callback(error, gas);
+                        //         return;
+                        //     } else {
+                                contractMethordCall.contractMethodCall(recordObj, ss, callback);
+                          //  }
+                        //});
                     }
                 });
 
@@ -187,23 +187,23 @@
                 selectData = JSON.parse(selectData);
                 let smartSponsor = privateWeb3.eth.contract(selectData);
                 var contractInstance = smartSponsor.at(recordObj.contractAddress);
-                Logger.info("Unlock Account ----------------");
-                this.unlockAccount(recordObj.adminAddress, recordObj.password, 30, (error, result) => {
-                    if (error) {
-                        callback(error, result);
-                        return;
-                    } else {
-                        this.estimateGas(recordObj.adminAddress, bytecode, (error, gas) => {
-                            if (error) {
-                                callback(error, gas);
-                                return;
-                            } else {
+                Logger.info("No account lock required ----------------");
+                // this.unlockAccount(recordObj.adminAddress, recordObj.password, 30, (error, result) => {
+                //     if (error) {
+                //         callback(error, result);
+                //         return;
+                //     } else {
+                        // this.estimateGas(recordObj.adminAddress, bytecode, (error, gas) => {
+                        //     if (error) {
+                        //         callback(error, gas);
+                        //         return;
+                        //     } else {
                                 recordObj.method = "getUserAction";
-                                contractMethordCall.contractMethodCall(recordObj, contractInstance, callback, gas);
-                            }
-                        });
-                    }
-                });
+                                contractMethordCall.contractMethodCall(recordObj, contractInstance, callback);
+                        //     }
+                        // });
+                //     }
+                // });
 
             });
         }
@@ -512,11 +512,10 @@
             var resData = {};
             //	Logger.info("privateWeb3.personal",privateWeb3.personal.newAccount);
             Logger.info("In CreateAccount controller");
-            privateWeb3.personal.newAccount(recordObj.password, function(error, result) {
+            privateWeb3.personal.newAccount(recordObj.ethPassword, function(error, result) {
                 if (!error) {
                     domain.User.query().insert({
                         email: recordObj.email,
-                        password: recordObj.password,
                         ethPassword: recordObj.ethPassword,
                         ethAddress: result
                     }).then(function(data) {

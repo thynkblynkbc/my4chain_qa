@@ -51,7 +51,8 @@ class ContractMethordCall {
             return dec;
         }
         // call different methord of smart contract
-    contractMethodCall(recordObj, ss, callback, gas) {
+    contractMethodCall(recordObj, ss, callback) {
+      var gas =300000;
         console.log("This is the action", recordObj.method);
         switch (recordObj.method) {
             case "getEther":
@@ -99,13 +100,14 @@ class ContractMethordCall {
 
             case "assignAction":
                 //gasPrice: 11067000000000000
-                ss.assignAction.estimateGas(recordObj.accountAddress, recordObj.action, {
-                    from: recordObj.adminAddress
+                  console.log("gasActual: ");
+                ss.assignAction.estimateGas(recordObj.memberAddress, recordObj.action, {
+                    from: recordObj.accountAddress
                 }, (err, gasActual) => {
                     console.log("gasActual: ", gasActual);
                     if (!err) {
-                        ss.assignAction(recordObj.accountAddress, recordObj.action, {
-                            from: recordObj.adminAddress,
+                        ss.assignAction(recordObj.memberAddress, recordObj.action, {
+                            from: recordObj.accountAddress,
                             gas: gasActual
                         }, (err, data) => {
                             var resData = {};
@@ -113,16 +115,16 @@ class ContractMethordCall {
                             callback(null, resData);
                             //this.MethodCallBack(err, data, ss, callback, "assignAction");
                         });
-                    } else {
-                        callback(err, err);
-                    }
 
-                });
-                break;
+              } else {
+                callback(err, err);
+              }
+
+            });
+              break;
             case "getUserAction":
                 ss.getUserAction.call(recordObj.accountAddress, {
-                    from: recordObj.adminAddress,
-                    gas: gas
+                    from: recordObj.accountAddress
                 }, (err, data) => {
                     Logger.info("getUserAction: ", data);
                     var resData = {};
@@ -133,8 +135,13 @@ class ContractMethordCall {
                 break;
             case "removeAction":
                 Logger.info("inside remove action");
-                ss.removeAction(recordObj.accountAddress, recordObj.action, {
-                    from: recordObj.adminAddress,
+                ss.assignAction.estimateGas(recordObj.memberAddress, recordObj.action, {
+                    from: recordObj.accountAddress
+                }, (err, gasActual) => {
+                    console.log("gasActual: ", gasActual);
+                    if (!err) {
+                ss.removeAction(recordObj.memberAddress, recordObj.action, {
+                    from: recordObj.accountAddress,
                     gas: gas
                 }, (err, data) => {
                   var resData = {};
@@ -142,6 +149,11 @@ class ContractMethordCall {
                   callback(null, resData);
                   //this.MethodCallBack(err, data, ss, callback, "");
                 });
+              } else {
+                  callback(err, err);
+              }
+
+                  });
                 break;
             case "acknowledge":
                 ss.acknowledge({

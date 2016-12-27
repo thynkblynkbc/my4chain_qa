@@ -4,8 +4,7 @@ module.exports = {
     createAccount: {
         body: {
             email: Joi.string().email().required(),
-            password: Joi.string().regex(/[a-zA-Z0-9]{3,30}/).required(),
-            ethPassword: Joi.string().regex(/[a-zA-Z0-9]{3,30}/).required()
+            ethPassword: Joi.string().required()
         }
     },
     privateSendether: {
@@ -20,15 +19,16 @@ module.exports = {
     privateCreateContract: {
         body: {
             owner: Joi.string().required(),
-            password: Joi.string().required()
+            password: Joi.string().required(),
+            recipient:Joi.string().required()
         }
     },
     privateRunContract: {
         body: {
             contractAddress: Joi.string().required(),
-            adminAddress: Joi.string().required(),
-            password: Joi.string().required(),
             accountAddress: Joi.string().required(),
+            password: Joi.string().required(),
+            memberAddress: Joi.string().required(),
             action: Joi.string().required(),
             method: Joi.string().required(),
         }
@@ -66,8 +66,6 @@ module.exports = {
     userdetail: {
         body: {
             contractAddress: Joi.string().required(),
-            adminAddress: Joi.string().required(),
-            password: Joi.string().required(),
             accountAddress: Joi.string().required()
         }
     },
