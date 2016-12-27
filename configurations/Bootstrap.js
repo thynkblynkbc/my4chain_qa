@@ -12,7 +12,33 @@ var  initApp = function(){
     startPrivateWeb3Ethereum();
     bootApplication();
     createPerson();
+    //createContractAbi();
  }
+ // function createContractAbi(){
+ //
+ //   fs.readFile(__dirname + '../application/controller-service-layer/services/PrivateBlockchain/solidity/binaryContract.sol', 'utf8', function(err, solidityCode) {
+ //       if (err) {
+ //           console.log("error in reading file: ", err);
+ //           return;
+ //       } else {
+ //
+ //           Logger.info("File Path: ", __dirname + '/solidity/binaryContract.sol');
+ //           Logger.info(new Date());
+ //           Logger.info("-----compling solidity code ----------");
+ //           Logger.info(new Date());
+ //           // var compiled = solc.compile(solidityCode, 1).contracts.DieselPrice;
+ //           var compiled = solc.compile(solidityCode, 1).contracts.documentAccessMapping;
+ //           Logger.info("-----complile complete ----------");
+ //           Logger.info(new Date());
+ //           const abi = JSON.parse(compiled.interface);
+ //           Logger.info("bytecode: ", typeof compiled.bytecode, compiled.bytecode.length);
+ //           const bytecode = compiled.bytecode;
+ //           var smartSponsor = privateWeb3.eth.contract(abi);
+ //
+ //           cb(bytecode, smartSponsor, abi);
+ //       }
+ //   });
+ // }
 
 function startWeb3Ethereum() {
    var Web3=require('web3');

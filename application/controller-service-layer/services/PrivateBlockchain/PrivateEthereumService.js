@@ -59,28 +59,28 @@
         }
         createContract(smartSponsor, recordObj, bytecode, gas, abi, callback) {
             Logger.info("-----Contract creation ----------", gas);
-            recordObj.salt = uuid.v1();
-            recordObj.encryptHash = this.encrypt(recordObj.fileHash, 'utf8', 'hex', recordObj.salt);
-            recordObj.decryptHash = this.decrypt(recordObj.encryptHash, 'hex', 'utf8', recordObj.salt);
-            console.log("recordObj: ", recordObj);
-            var ss = smartSponsor.new(recordObj.to, recordObj.encryptHash, {
-                from: recordObj.owner,
-                gas: gas +300000,
-                data: bytecode
+            recordObj.salt=uuid.v1();
+            recordObj.encryptHash=this.encrypt(recordObj.fileHash, 'utf8', 'hex',recordObj.salt);
+            recordObj.decryptHash=this.decrypt(recordObj.encryptHash,'hex','utf8',recordObj.salt);
+            console.log("recordObj: ",recordObj);
+            var ss = smartSponsor.new(recordObj.to,recordObj.encryptHash,{
+                    from: recordObj.owner,
+                    gas: gas+3000000,
+                    data : bytecode
 
-            }, (err, contract) => {
-                if (err) {
-                    console.error(err);
-                    callback(err, err);
-                    return;
-                } else if (contract.address) {
-                    this.saveToDb(contract, abi, recordObj, bytecode, gas, callback);
-                } else {
-                    Logger.info("A transmitted, waiting for mining...");
-                }
-            });
-
-
+                  }, (err, contract) => {
+                    if (err) {
+                        console.error(err);
+                        callback(err, err);
+                        return;
+                    } else if (contract.address) {
+                        Logger.info(new Date());
+                        this.saveToDb(contract, abi, recordObj, bytecode, gas, callback);
+                    } else {
+                        Logger.info("A transmitted, waiting for mining...");
+                        Logger.info(new Date());
+                    }
+                });
         }
 
         contractForAssets(ihash, res, callback) {
@@ -94,15 +94,19 @@
             // call a function to covert abi defination of contract
             this.convertToAbi((bytecode, smartSponsor, abi) => {
                 Logger.info("Unlocking account -----------");
+                  Logger.info(new Date());
                 this.unlockAccount(recordObj.owner, recordObj.password, 30, (error, result) => {
                     if (error) {
-                        resData = new Error("Issue with blockchain");
-                        resData.status = 500;
+                      console.log(error)
+                      resData = new Error("Issue with blockchain");
+                      resData.status = 500;
 
                         callback(resData, null);
                         return;
                     } else {
-                        this.estimateGas(recordObj.owner, bytecode, (error, gas) => {
+                        Logger.info(new Date());
+                        Logger.info("unlocked");
+                      this.estimateGas(recordObj.owner, bytecode, (error, gas) => {
                             if (error) {
                                 resData = new Error("Issue with blockchain");
                                 resData.status = 500;
