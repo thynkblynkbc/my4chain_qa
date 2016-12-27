@@ -128,10 +128,12 @@
                 contractAddress: contract.address,
                 transactionHash: contract.transactionHash,
                 abi: JSON.stringify(abi),
-                ethAddress: recordObj.owner,
+                senderAddress: recordObj.owner,
                 bytecode: bytecode,
                 salt: recordObj.salt,
-                partyAddress: recordObj.to
+                receipentAddress: recordObj.to,
+                startTime:knex.fn.now(),
+                endTime:knex.fn.now()
             }).then(function(databaseReturn) {
                 //Logger.info("Inserted data: ", databaseReturn);
                 var arr = {};
