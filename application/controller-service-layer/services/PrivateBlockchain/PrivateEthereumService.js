@@ -30,42 +30,32 @@
             }
             //  convert abi defination of contract
         convertToAbi(cb) {
-
-            fs.readFile(__dirname + '/solidity/NumberContract.sol', 'utf8', function(err, solidityCode) {
+          fs.readFile(__dirname + '/solidity/NumberContract.sol', 'utf8', function(err, solidityCode) {
                 if (err) {
                     console.log("error in reading file: ", err);
                     return;
                 } else {
-
                     Logger.info("File Path: ", __dirname + '/solidity/NumberContract.sol');
                     Logger.info(new Date());
                     Logger.info("-----compling solidity code ----------");
                     Logger.info(new Date());
-                    // var compiled = solc.compile(solidityCode, 1).contracts.DieselPrice;
                     var compiled = solc.compile(solidityCode, 1).contracts.documentAccessMapping;
                     Logger.info("-----complile complete ----------");
                     Logger.info(new Date());
                     const abi = JSON.parse(compiled.interface);
-                    // fs.writeFile('./solidity/bytecode.txt', compiled.bytecode, (err) => {
-                    //                             if (err) {
-                    //                                 console.log("err", err);
-                    //                             } else {
+                    // fs.writeFile('./solidity/abi.json', compiled.interface, (err) => {
+                    //   console.log("errrrr",err)
                     //
-                    //                             }
-                    //                         });
-                    fs.writeFile('./solidity/abi.json', compiled.interface, (err) => {
-                      console.log("errrrr",err)
-
-                    });
+                    // });
                     Logger.info("bytecode: ", typeof compiled.bytecode, compiled.bytecode.length);
                     const bytecode =compiled.bytecode;
                     var smartSponsor = privateWeb3.eth.contract(abi);
-
                     cb(bytecode, smartSponsor, abi);
                 }
             });
-      //      var smartSponsor = privateWeb3.eth.contract(solAbi);
+        //      var smartSponsor = privateWeb3.eth.contract(solAbi);
         //    cb(solBytecode,smartSponsor,solAbi);
+
         }
         decryptBuffer(buffer, password) {
             var decipher = crypto.createDecipher('aes-256-cbc', password)
@@ -108,26 +98,7 @@
                         Logger.info(new Date());
                     }
                 });
-            // var ss = smartSponsor.new({
-            //       from: recordObj.owner,
-            //         gas: 30000000,
-            //         data : bytecode
-            //
-            //       }, (err, contract) => {
-            //         if (err) {
-            //             console.error(err);
-            //             callback(err, err);
-            //             return;
-            //         } else if (contract.address) {
-            //             Logger.info(new Date());
-            //             this.saveToDb(contract, abi, recordObj, bytecode, gas, callback);
-            //         } else {
-            //             Logger.info("A transmitted, waiting for mining...");
-            //             Logger.info(new Date());
-            //         }
-            //     });
-
-            });
+           
         }
 
         contractForAssets(ihash, res, callback) {

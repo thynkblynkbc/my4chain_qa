@@ -36,7 +36,7 @@ contract documentAccessMapping {
       users[_otherParty].parentId=admin;
       users[_otherParty].party=_otherParty;
     }
-    function documentAccessMapping(address otherParty, string fileEncryptedHash) {
+    function documentAccessMapping(address otherParty, string fileEncryptedHash) payable {
         admin = msg.sender;
         _otherParty=otherParty;
         contractCreationTime = block.timestamp;
