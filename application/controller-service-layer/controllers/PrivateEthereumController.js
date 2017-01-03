@@ -62,6 +62,11 @@ module.exports = function() {
         this.services.privateEthereumService.log(req, res, callback);
 
     }
+    var fileModifylog = function(req, res, callback) {
+
+        this.services.privateEthereumService.fileModifylog(req, res, callback);
+
+    }
     var privateSendether = function(req, res, callback) {
         var reqData = req.body;
         this.services.privateEthereumService.privateSendether(req, res, callback);
@@ -121,6 +126,7 @@ module.exports = function() {
         smartPartyContract: smartPartyContract,
         sponsorPartyContract: sponsorPartyContract,
         review: review,
+        fileModifylog : fileModifylog,
         revoke: revoke,
         changestate: changestate,
         userdetail: userdetail,

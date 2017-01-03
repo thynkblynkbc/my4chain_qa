@@ -42,6 +42,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/upload'));
 //global.route = require('./configurations/routes');
 global.domain = require('./configurations/DomainInclude.js');
+// require('./configurations/EthereumContract.js');
 //removing fields from the response
 app.use(mongoosemask(function (result, mask, done) {
 	var masked = mask(result, []);

@@ -1,7 +1,6 @@
 var schemaPromise = knex.schema.createTableIfNotExists('User', function(table) {
     table.increments('id').primary();
     table.string('email');
-    table.string('password');
     table.string('ethPassword');
 
 
@@ -30,7 +29,6 @@ User.jsonSchema = {
   properties: {
     id: {type: 'integer'},
     email: {type: 'string', minLength: 1, maxLength: 255},
-    password:{type:'string',minLength:1,maxLength:10},
     ethPassword:{type:'string',minLength:1,maxLength:10},
     accountAddress:{type:'string'}
     //parentId: {type: ['integer', 'null']},

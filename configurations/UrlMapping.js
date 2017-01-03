@@ -72,6 +72,14 @@
 	                json: views.jsonView
 	            }
 	        }],
+					"/api/v1/contract/fileModifylog": [{
+	            method: "POST",
+	            action: controllers.privateEthereumController.fileModifylog,
+	            middleware:[validater(validationFile.log)],
+	            views: {
+	                json: views.jsonView
+	            }
+	        }],
 	        "/api/v1/contract/createcontract": [{
 	            method: "POST",
 	            action: controllers.privateEthereumController.smartContract,

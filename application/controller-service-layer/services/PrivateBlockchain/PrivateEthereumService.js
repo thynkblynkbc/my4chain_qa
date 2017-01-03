@@ -1,8 +1,17 @@
     'use strict';
     var contractMethordCall = require('./ContractMethordCall');
     class PrivateEthereumService {
+      //rolesInt ={};
+       constructor (){
 
-
+         this.rolesInt ={};
+         this.rolesInt["CAN_ASSIGN"] = 1;
+         this.rolesInt["CAN_REVOKE"] =2;
+         this.rolesInt["CAN_ACCEPT"] = 3;
+         this.rolesInt["CAN_DECLINE"] = 4;
+         this.rolesInt["CAN_REVIEW"] = 5;
+         this.rolesInt["CAN_ACK"] =6;
+       }
         // unlock account before transaction
         unlockAccount(owner, password, duration, cb) {
             privateWeb3.personal.unlockAccount(owner, password, 120, function(error, result) {
@@ -21,32 +30,32 @@
             }
             //  convert abi defination of contract
         convertToAbi(cb) {
-
-          fs.readFile(publicdir + '/solidity/publicFileStorage.sol', 'utf8', function(err, solidityCode) {
-          // fs.readFile(publicdir + '/solidity/binaryContract.sol', 'utf8', function(err, solidityCode) {
+          fs.readFile(__dirname + '/solidity/NumberContract.sol', 'utf8', function(err, solidityCode) {
                 if (err) {
                     console.log("error in reading file: ", err);
                     return;
                 } else {
-
-                    Logger.info("File Path: ", publicdir + '/solidity/binaryContract.sol');
+                    Logger.info("File Path: ", __dirname + '/solidity/NumberContract.sol');
                     Logger.info(new Date());
                     Logger.info("-----compling solidity code ----------");
                     Logger.info(new Date());
-                    // var compiled = solc.compile(solidityCode, 1).contracts.documentAccessMapping;
-                    var compiled = solc.compile(solidityCode, 1).contracts.publicTransaction;
+                    var compiled = solc.compile(solidityCode, 1).contracts.documentAccessMapping;
                     Logger.info("-----complile complete ----------");
                     Logger.info(new Date());
                     const abi = JSON.parse(compiled.interface);
+                    // fs.writeFile('./solidity/abi.json', compiled.interface, (err) => {
+                    //   console.log("errrrr",err)
+                    //
+                    // });
                     Logger.info("bytecode: ", typeof compiled.bytecode, compiled.bytecode.length);
-                    const bytecode = compiled.bytecode;
+                    const bytecode =compiled.bytecode;
                     var smartSponsor = privateWeb3.eth.contract(abi);
-
                     cb(bytecode, smartSponsor, abi);
                 }
             });
-            // var smartSponsor = privateWeb3.eth.contract(solAbi);
-            // cb(solBytecode,smartSponsor,solAbi);
+        //      var smartSponsor = privateWeb3.eth.contract(solAbi);
+        //    cb(solBytecode,smartSponsor,solAbi);
+
         }
         decryptBuffer(buffer, password) {
             var decipher = crypto.createDecipher('aes-256-cbc', password)
@@ -59,33 +68,36 @@
             return crypted;
         }
         createContract(smartSponsor, recordObj, bytecode, gas, abi, callback) {
-            Logger.info("-----Contract creation ----------", gas);
-            recordObj.salt=uuid.v1();
-            recordObj.encryptHash=this.encrypt(recordObj.fileHash, 'utf8', 'hex',recordObj.salt);
-            recordObj.decryptHash=this.decrypt(recordObj.encryptHash,'hex','utf8',recordObj.salt);
-            console.log("recordObj: ",recordObj.data.length);
-            this.estimateGas(recordObj.owner, recordObj.data, (error, gasString) => {
-                console.log("gasString: ",gasString);
-            var dataGas=privateWeb3.eth.getBlock('latest').gasLimit;
-            console.log("dataGas: ",dataGas);
-            var ss = smartSponsor.new(recordObj.data,{
-                    from: recordObj.owner,
-                    gas: 629779,
-                    data : bytecode
-
-                  }, (err, contract) => {
-                    if (err) {
-                        console.error(err);
-                        callback(err, err);
-                        return;
-                    } else if (contract.address) {
-                        Logger.info(new Date());
-                        this.saveToDb(contract, abi, recordObj, bytecode, gas, callback);
-                    } else {
-                        Logger.info("A transmitted, waiting for mining...",contract.transactionHash);
-                        Logger.info(new Date());
-                    }
-                });
+                Logger.info("-----Contract creation ----------", gas,recordObj.expireDate);
+                recordObj.salt=uuid.v1();
+                recordObj.encryptHash=this.encrypt(recordObj.fileHash, 'utf8', 'hex',recordObj.salt);
+                recordObj.decryptHash=this.decrypt(recordObj.encryptHash,'hex','utf8',recordObj.salt);
+                console.log("recordObj: ",recordObj);
+                this.interpetate(recordObj,(ownerMember,ownerMemberAction,recipientMember,recipientMemberAction)=>{
+                 console.log("recordObj1111-->",recordObj)
+                var ss = smartSponsor.new("filehash",recordObj.owner,
+                ownerMember
+                ,ownerMemberAction,recordObj.recipient,//[1,2,3,4,0,6,5,4,3]
+                recipientMember,
+                recipientMemberAction,
+                recordObj.startfrom,
+                recordObj.expireDate,{
+                      from: recordObj.owner,
+                        gas: gas+3000000,
+                        data : bytecode
+                      }, (err, contract) => {
+                        if (err) {
+                            console.error(err);
+                            callback(err, err);
+                            return;
+                        } else if (contract.address) {
+                            Logger.info(new Date());
+                            this.saveToDb(contract, abi, recordObj, bytecode, gas, callback);
+                        } else {
+                            Logger.info("A transmitted, waiting for mining...");
+                            Logger.info(new Date());
+                        }
+                    });
                 });
         }
 
@@ -98,6 +110,8 @@
             let recordObj = req.body;
             var resData = {};
             // call a function to covert abi defination of contract
+                 console.log("run interpetate")
+
             this.convertToAbi((bytecode, smartSponsor, abi) => {
                 Logger.info("Unlocking account -----------");
                   Logger.info(new Date());
@@ -127,7 +141,102 @@
                     }
                 });
             });
+            //});
         }
+
+         interpetate(bodyData,funCallback){
+
+            var ownerMember = [];
+            var ownerMemberAction =[];
+            var recipientMember = [];
+            var recipientMemberAction = [];
+                      async.auto({
+                        owner_data: (callback)=>{
+                            console.log('in get_data');
+                            // async code to get some data
+                            this.ownerArray(bodyData,ownerMember,ownerMemberAction,callback);
+                              console.log('out get_data');
+                          //  callback(null, 'data', 'owner in array');
+                        },
+                        recipient_data: (callback)=>{
+                            console.log('in make_folder');
+                            this.recipientArray(bodyData,recipientMember,recipientMemberAction,callback);
+                            console.log('out make_data');
+                            // async code to create a directory to store a file in
+                            // this is run at the same time as getting the data
+                            //callback(null, 'recipent in array');
+                        },
+                        write_file: ['owner_data', 'recipient_data', (callback, results)=>{
+                          console.log('in write_file');
+                            // once there is some data and the directory exists,
+                            // write the data to a file in the directory
+                            callback(null, 'filename');
+                        }]
+                    }, (err, results)=> {
+                        console.log('err = ', err);
+                        console.log('results = ', results);
+                        console.log("ownerMember -->",ownerMember);
+                        console.log("ownerMemberAction -->",ownerMemberAction);
+                          console.log("recipientMember -->",recipientMember);
+                            console.log("recipientMemberAction -->",recipientMemberAction);
+                        funCallback(ownerMember,ownerMemberAction,recipientMember,recipientMemberAction);
+
+                    });
+
+         }
+
+         ownerArray(bodyData,ownerMember,ownerMemberAction,ownerDataCallback){
+           // take owner member array
+           let count =0;
+           async.forEach(bodyData.ownerMember, (ownerAction, ownerCallback) => {
+             // push one by one address into owner member
+
+             console.log(count++);
+                ownerMember.push(ownerAction.address);
+             async.forEach(ownerAction.action, (action, ownerMemberCallback) => {
+               // push action of member one by one as member inserted respectively
+                     ownerMemberAction.push(this.rolesInt[action]);
+                      ownerMemberCallback();
+             },(err)=>{
+               console.log()
+               // insert 0 (zero) as delimiter of each use action
+                       ownerMemberAction.push(0);
+                  //     ownerMemberCallback();
+                      ownerCallback();
+             });
+           } , (err)=>{
+             console.log("owner end----------------->")
+                // ownerCallback();
+                 ownerDataCallback(null,{});
+
+           });
+
+         }
+
+         recipientArray(bodyData,recipientMember,recipientMemberAction,recipientDataCallback){
+            let count =0;
+           // take recipient member array
+           async.forEach(bodyData.recipientMember, (recipientAction, recipientCallback) => {
+               // push one by one address into recipient member
+                console.log("count",count++);
+                recipientMember.push(recipientAction.address);
+             async.forEach(recipientAction.action, (action, recipientMemberCallback)=> {
+                 // push action of member one by one as member inserted in array respectively
+                     recipientMemberAction.push(this.rolesInt[action]);
+                     recipientMemberCallback();
+             },(err)=>{
+                       recipientMemberAction.push(0);
+                       recipientCallback();
+             });
+           } , (err)=>{
+              console.log("recipient end")
+                 //recipientCallback();
+                 recipientDataCallback(null,{});
+
+           });
+
+         }
+
 
         saveToDb(contract, abi, recordObj, bytecode, gas, callback) {
             domain.Contract.query().insert({
@@ -137,7 +246,7 @@
                 senderAddress: recordObj.owner,
                 bytecode: bytecode,
                 salt: recordObj.salt,
-                receipentAddress: recordObj.to,
+                receipentAddress: recordObj.recipient,
                 startTime:knex.fn.now(),
                 endTime:knex.fn.now()
             }).then(function(databaseReturn) {
@@ -169,19 +278,21 @@
                 let smartSponsor = privateWeb3.eth.contract(selectData);
                 var ss = smartSponsor.at(recordObj.contractAddress);
                 Logger.info("Unlock Account ----------------");
-                this.unlockAccount(recordObj.adminAddress, recordObj.password, 30, (error, result) => {
+                this.unlockAccount(recordObj.accountAddress, recordObj.password, 30, (error, result) => {
                     if (error) {
                         callback(error, result);
                         return;
                     } else {
-                        this.estimateGas(recordObj.adminAddress, bytecode, (error, gas) => {
-                            if (error) {
-                                callback(error, gas);
-                                return;
-                            } else {
-                                contractMethordCall.contractMethodCall(recordObj, ss, callback, gas);
-                            }
-                        });
+                        // this.estimateGas(recordObj.parentAddress, bytecode, (error, gas) => {
+                        //     if (error) {
+                        //         callback(error, gas);
+                        //         return;
+                        //     } else {
+
+                          contractMethordCall.contractMethodCall(recordObj, ss, callback);
+
+                          //  }
+                        //});
                     }
                 });
 
@@ -195,23 +306,23 @@
                 selectData = JSON.parse(selectData);
                 let smartSponsor = privateWeb3.eth.contract(selectData);
                 var contractInstance = smartSponsor.at(recordObj.contractAddress);
-                Logger.info("Unlock Account ----------------");
-                this.unlockAccount(recordObj.adminAddress, recordObj.password, 30, (error, result) => {
-                    if (error) {
-                        callback(error, result);
-                        return;
-                    } else {
-                        this.estimateGas(recordObj.adminAddress, bytecode, (error, gas) => {
-                            if (error) {
-                                callback(error, gas);
-                                return;
-                            } else {
+                Logger.info("No account lock required ----------------");
+                // this.unlockAccount(recordObj.adminAddress, recordObj.password, 30, (error, result) => {
+                //     if (error) {
+                //         callback(error, result);
+                //         return;
+                //     } else {
+                        // this.estimateGas(recordObj.adminAddress, bytecode, (error, gas) => {
+                        //     if (error) {
+                        //         callback(error, gas);
+                        //         return;
+                        //     } else {
                                 recordObj.method = "getUserAction";
-                                contractMethordCall.contractMethodCall(recordObj, contractInstance, callback, gas);
-                            }
-                        });
-                    }
-                });
+                                contractMethordCall.contractMethodCall(recordObj, contractInstance, callback);
+                        //     }
+                        // });
+                //     }
+                // });
 
             });
         }
@@ -223,25 +334,26 @@
                 let smartSponsor = privateWeb3.eth.contract(selectData);
                 var contractInstance = smartSponsor.at(recordObj.contractAddress);
                 Logger.info("Unlock Account ----------------");
-                this.unlockAccount(recordObj.accountAddress, recordObj.password, 30, (error, result) => {
-                    if (error) {
-                        callback(error, result);
-                        return;
-                    } else {
-                        this.estimateGas(recordObj.accountAddress, bytecode, (error, gas) => {
-                            if (error) {
-                                callback(error, gas);
-                                return;
-                            } else {
-                                recordObj.method = "usersLog";
-                                contractMethordCall.contractMethodCall(recordObj, contractInstance, callback, gas);
-                            }
-                        });
-                    }
-                });
-
-            });
+                recordObj.method = "usersLog";
+                let gas =21000;
+                contractMethordCall.contractMethodCall(recordObj, contractInstance, callback, gas);
+          });
         }
+        fileModifylog(req, res, callback) {
+            let recordObj = req.body;
+            console.log("Inside spnosor the contract function", recordObj);
+            this.selectForDataBase(recordObj.contractAddress, (selectData, bytecode, salt) => {
+                selectData = JSON.parse(selectData);
+                let smartSponsor = privateWeb3.eth.contract(selectData);
+                var contractInstance = smartSponsor.at(recordObj.contractAddress);
+                Logger.info("Unlock Account ----------------");
+                recordObj.method = "modifierLog";
+                let gas =21000;
+                contractMethordCall.contractMethodCall(recordObj, contractInstance, callback, gas);
+          });
+        }
+
+
         changestate(req, res, callback) {
             let recordObj = req.body;
             console.log("Inside spnosor the contract function", recordObj);
@@ -255,14 +367,9 @@
                         callback(error, result);
                         return;
                     } else {
-                        this.estimateGas(recordObj.accountAddress, bytecode, (error, gas) => {
-                            if (error) {
-                                callback(error, gas);
-                                return;
-                            } else {
+                         let gas = 21000;
                                 contractMethordCall.contractMethodCall(recordObj, contractInstance, callback, gas);
-                            }
-                        });
+
                     }
                 });
 
@@ -284,19 +391,9 @@
                         callback(error, result);
                         return;
                     } else {
-                        this.estimateGas(recordObj.accountAddress, bytecode, (error, gas) => {
-                            if (error) {
-                                callback(error, gas);
-                                return;
-                            } else {
-                                if (recordObj.review) {
+                         let gas = 2100;
                                     this.callReviewMethod(recordObj, contractInstance, gas, callback);
-                                } else if (recordObj.revoke) {
-                                    this.callRevokeMethod(recordObj, contractInstance, gas, callback);
-                                }
 
-                            }
-                        });
                     }
                 });
 
@@ -319,15 +416,29 @@
                 var encryptFileHash = this.encrypt(recordObj.review.changedFileHash, 'utf8', 'hex', salt);
                 var decryptFileHash = this.decrypt(encryptFileHash, 'hex', 'utf8', salt);
                 Logger.info("review encrypt decrypt: ", recordObj.review.changedFileHash, encryptFileHash, decryptFileHash);
+                contractInstance.review.estimateGas(recordObj.review.isModified, recordObj.review.modifyComment, encryptFileHash, {
+                    from: recordObj.accountAddress
+                }, (err, gasActual) => {
+                  let resData ={};
+                    console.log("gasActual: ", gasActual);
+                    if (!err) {
                 contractInstance.review(recordObj.review.isModified, recordObj.review.modifyComment, encryptFileHash, {
                     from: recordObj.accountAddress,
-                    gas: gas
+                    gas: gasActual
                 }, (err, data) => {
-                  var resData = {};
+                   //resData = {};
                   resData.txnHash = data;
                   callback(null, resData);
                     // this.MethodCallBack(err, data, contractInstance, callback, "review");
                 });
+
+              }else{
+                // resData = {};
+                resData = new Error(err);
+                resData.status = 403;
+                callback(null, resData);
+              }
+            });
             });
         }
         MethodCallBack(err, data, contractInstance, callback, methodName) {
@@ -520,11 +631,10 @@
             var resData = {};
             //	Logger.info("privateWeb3.personal",privateWeb3.personal.newAccount);
             Logger.info("In CreateAccount controller");
-            privateWeb3.personal.newAccount(recordObj.password, function(error, result) {
+            privateWeb3.personal.newAccount(recordObj.ethPassword, function(error, result) {
                 if (!error) {
                     domain.User.query().insert({
                         email: recordObj.email,
-                        password: recordObj.password,
                         ethPassword: recordObj.ethPassword,
                         ethAddress: result
                     }).then(function(data) {
