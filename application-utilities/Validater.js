@@ -29,7 +29,6 @@ module.exports = {
             accountAddress: Joi.string().required(),
             password: Joi.string().required(),
             memberAddress: Joi.string().required(),
-            action: Joi.string().required(),
             method: Joi.string().required(),
         }
     },
@@ -71,9 +70,7 @@ module.exports = {
     },
     log:{
       body: {
-          contractAddress: Joi.string().required(),
-          accountAddress: Joi.string().required(),
-          password: Joi.string().required()
+          contractAddress: Joi.string().required()
         }
     }
 };

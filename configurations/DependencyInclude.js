@@ -67,7 +67,7 @@ Model.knex(knex);
 
 global.dbConnection = require('./PgDatasource.js')
     //Ethereum_Web3 Library dependency
-global.web3_extended = require('web3_ipc');
+//global.web3_extended = require('web3_ipc');
 
 //global variable to hold all the environment specific configuration
 global.configurationHolder = {}

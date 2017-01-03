@@ -46,6 +46,7 @@
     "serve-static": "1.10.0",
     "solc": "^0.4.6",
     "vhost": "3.0.1",
+    "web3": "^0.17.0-beta",
     "web3_ipc": "^1.1.0",
     "winston": "1.0.2"
   },
