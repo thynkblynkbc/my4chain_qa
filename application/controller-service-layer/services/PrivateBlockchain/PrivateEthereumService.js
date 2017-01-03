@@ -78,7 +78,7 @@
             return crypted;
         }
         createContract(smartSponsor, recordObj, bytecode, gas, abi, callback) {
-            Logger.info("-----Contract creation ----------", gas);
+            Logger.info("-----Contract creation ----------", gas,recordObj.expireDate);
             recordObj.salt=uuid.v1();
             recordObj.encryptHash=this.encrypt(recordObj.fileHash, 'utf8', 'hex',recordObj.salt);
             recordObj.decryptHash=this.decrypt(recordObj.encryptHash,'hex','utf8',recordObj.salt);

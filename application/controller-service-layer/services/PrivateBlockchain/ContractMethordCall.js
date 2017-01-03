@@ -247,7 +247,7 @@ class ContractMethordCall {
               });
                 break;
             case "getUserAction":
-                ss.getUserAction.call(recordObj.accountAddress, {
+                ss.getHash.call({
                     from: recordObj.accountAddress
                 }, (err, data) => {
                     Logger.info("getUserAction: ", data);
