@@ -98,7 +98,9 @@
                         Logger.info(new Date());
                     }
                 });
-           
+
+              });
+
         }
 
         contractForAssets(ihash, res, callback) {
