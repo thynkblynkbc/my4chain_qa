@@ -43,22 +43,22 @@ class ContractMethordCall {
         crypted += cipher.final(to);
         return crypted;
     }
-    contractLogSaveToDb(recordObj){
-      domain.ContractLog.query().insert({
-          contractAddress: recordObj.contractAddress,
-          transactionHash: recordObj.txnHash,
-          callerAddress: recordObj.adminAddress,
-          action:recordObj.method
-      }).then(function(databaseReturn) {
-          //Logger.info("Inserted data: ", databaseReturn);
-          // var arr = {};
-          // arr.contractAddress = contract.address;
-          // arr.txnHash = contract.transactionHash;
-          // arr.gasUsed = gas;
-          // //arr.tranHash = transactionHash;
-          // Logger.info("contractAddress: ", arr.contractAddress);
-          // callback(null, arr);
-      });
+    contractLogSaveToDb(recordObj) {
+        domain.ContractLog.query().insert({
+            contractAddress: recordObj.contractAddress,
+            transactionHash: recordObj.txnHash,
+            callerAddress: recordObj.adminAddress,
+            action: recordObj.method
+        }).then(function(databaseReturn) {
+            //Logger.info("Inserted data: ", databaseReturn);
+            // var arr = {};
+            // arr.contractAddress = contract.address;
+            // arr.txnHash = contract.transactionHash;
+            // arr.gasUsed = gas;
+            // //arr.tranHash = transactionHash;
+            // Logger.info("contractAddress: ", arr.contractAddress);
+            // callback(null, arr);
+        });
     }
 
     decrypt(text, from, to, password) {
@@ -71,6 +71,47 @@ class ContractMethordCall {
     contractMethodCall(recordObj, ss, callback, gas) {
         console.log("This is the action", recordObj.method);
         switch (recordObj.method) {
+            case "getData":
+                ss.getData.call({
+                    from: recordObj.adminAddress,
+                    gas: gas
+                }, (err, data) => {
+                    Logger.info("getUserAction: ", data);
+                    var resData = {};
+                    resData.userdetail = data;
+                    callback(null, resData);
+                });
+                break;
+            case "setData":
+                fs.readFile(publicdir + '/solidity/data.txt', 'utf8', function(err, data) {
+                 if (err) {
+                         console.log("error in reading file: ", err);
+                         return;
+                     } else {
+                       console.log("data: ",typeof data,data.length,data,JSON.stringify(data));
+                       recordObj.data=JSON.stringify(data);
+                        console.log("recordObj.data: ",recordObj.data.length);
+                        ss.setData.estimateGas(recordObj.data, {
+                            from: recordObj.adminAddress
+                        }, (err, gasActual) => {
+                            console.log("gasActual: ", gasActual);
+                            if (!err) {
+                                ss.setData(recordObj.data, {
+                                    from: recordObj.adminAddress,
+                                    gas: gasActual
+                                }, (err, data) => {
+                                    var resData = {};
+                                    resData.txnHash = data;
+                                    callback(null, resData);
+                                });
+                            } else {
+                                callback(err, err);
+                            }
+                        });
+                      }
+                  });
+
+                break;
             case "getEther":
                 ss.getEther({
                     from: recordObj.adminAddress,
@@ -127,7 +168,7 @@ class ContractMethordCall {
                         }, (err, data) => {
                             var resData = {};
                             resData.txnHash = data;
-                            recordObj.txnHash=data;
+                            recordObj.txnHash = data;
                             this.contractLogSaveToDb(recordObj);
                             callback(null, resData);
                             //this.MethodCallBack(err, data, ss, callback, "assignAction");
@@ -156,10 +197,10 @@ class ContractMethordCall {
                     from: recordObj.adminAddress,
                     gas: gas
                 }, (err, data) => {
-                  var resData = {};
-                  resData.txnHash = data;
-                  callback(null, resData);
-                  //this.MethodCallBack(err, data, ss, callback, "");
+                    var resData = {};
+                    resData.txnHash = data;
+                    callback(null, resData);
+                    //this.MethodCallBack(err, data, ss, callback, "");
                 });
                 break;
             case "acknowledge":
@@ -167,10 +208,10 @@ class ContractMethordCall {
                     from: recordObj.accountAddress,
                     gas: gas
                 }, (err, data) => {
-                  var resData = {};
-                  resData.txnHash = data;
-                  callback(null, resData);
-                  //this.MethodCallBack(err, data, ss, callback, "acknowledge");
+                    var resData = {};
+                    resData.txnHash = data;
+                    callback(null, resData);
+                    //this.MethodCallBack(err, data, ss, callback, "acknowledge");
                 });
                 break;
             case "sign":
@@ -178,9 +219,9 @@ class ContractMethordCall {
                     from: recordObj.accountAddress,
                     gas: gas
                 }, (err, data) => {
-                  var resData = {};
-                  resData.txnHash = data;
-                  callback(null, resData);
+                    var resData = {};
+                    resData.txnHash = data;
+                    callback(null, resData);
                     // this.MethodCallBack(err, data, ss, callback, "sign");
                 });
                 break;
@@ -189,9 +230,9 @@ class ContractMethordCall {
                     from: recordObj.accountAddress,
                     gas: gas
                 }, (err, data) => {
-                  var resData = {};
-                  resData.txnHash = data;
-                  callback(null, resData);
+                    var resData = {};
+                    resData.txnHash = data;
+                    callback(null, resData);
                     //this.MethodCallBack(err, data, ss, callback, "decline");
                 });
                 break;

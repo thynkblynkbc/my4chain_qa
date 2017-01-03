@@ -6,12 +6,34 @@ var mongoosemask = require('mongoosemask');
 global.configurationHolder = require('./configurations/DependencyInclude.js')
 
 global.app = module.exports = express();
-var bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(bodyParser.json());
+///
+var bodyParser = require('body-parser')
+//app.use(express.json());
+
+app.use(bodyParser.json({limit: '52428800',type: 'application/json'}));
+app.use(bodyParser.urlencoded({limit: '52428800',extended: true,parameterLimit:52428800}));
+app.use(bodyParser());
+app.use(function(err,req,res,callback){
+	if(err instanceof SyntaxError && err.status===400 && 'body' in err){
+		console.log('Bad json');
+		 configurationHolder.ResponseUtil.responseHandler(res,null,"Wrong body of json" , false, 403);
+	}
+});
+
+
+
 
 app.use(errorHandler());
+
+///
+
+// var bodyParser = require('body-parser');
+// app.use(bodyParser.urlencoded({ extended: false }));
+//
+// app.use(bodyParser.json());
+//
+// app.use(errorHandler());
 
 
 global.router = express.Router();

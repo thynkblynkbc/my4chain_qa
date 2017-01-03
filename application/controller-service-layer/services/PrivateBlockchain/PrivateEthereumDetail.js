@@ -154,8 +154,12 @@ class PrivateEthereumDetail {
                         Logger.info("Result--->", result);
                         console.log("data: ", privateWeb3.eth.getTransaction(tranxHash));
                         resData.transactionDetail = result;
-                        //  var input=new Buffer(result.input.slice(2),'hex');
-                        //resData.data=this.decrypt(input).toString('utf8');
+                        // if(result.input.slice(2).length>0){
+                        //   var input=new Buffer(result.input.slice(2),'hex');
+                        //   resData.data=this.decrypt(input).toString('utf8');
+                        // }else {
+                        //   resData.data="";
+                        // }
                         callback(null, resData);
                     } catch (e) {
                         console.log(e);

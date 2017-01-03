@@ -10,9 +10,9 @@ var initApp = function() {
     Logger.info("config" + configurationHolder.config.accessLevels["anonymous"]);
     startWeb3Ethereum();
     startPrivateWeb3Ethereum();
-    createContractAbi();
+    // createContractAbi();
     createPerson();
-
+    bootApplication();
 }
 
 function createContractAbi() {
@@ -66,14 +66,14 @@ function startWeb3Ethereum() {
     //
     //      // set own provider
     //  } else {
-    web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8485"));
+    web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
     // }
     if (!web3.isConnected()) {
-        Logger.info("ethereum not connected");
+        Logger.info("ethereum public testnet not connected");
         // show some dialog to ask the user to start a node
 
     } else {
-        Logger.info("ethereum connected");
+        Logger.info("ethereum public testnet connected");
         // start web3 filters, calls, etc
 
     }

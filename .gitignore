@@ -1,15 +1,11 @@
 node_modules
-seedInfo.log
-testInfo.log
 .idea
 *.orig
 jmeter.log
 .node*
-logs
 *.log
 upload
 # Optional npm cache directory
 .npm
 npm-debug.log*
 *.sh
-

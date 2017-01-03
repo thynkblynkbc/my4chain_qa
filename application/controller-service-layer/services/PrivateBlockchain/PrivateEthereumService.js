@@ -22,30 +22,31 @@
             //  convert abi defination of contract
         convertToAbi(cb) {
 
-            // fs.readFile(__dirname + '/solidity/binaryContract.sol', 'utf8', function(err, solidityCode) {
-            //     if (err) {
-            //         console.log("error in reading file: ", err);
-            //         return;
-            //     } else {
-            //
-            //         Logger.info("File Path: ", __dirname + '/solidity/binaryContract.sol');
-            //         Logger.info(new Date());
-            //         Logger.info("-----compling solidity code ----------");
-            //         Logger.info(new Date());
-            //         // var compiled = solc.compile(solidityCode, 1).contracts.DieselPrice;
-            //         var compiled = solc.compile(solidityCode, 1).contracts.documentAccessMapping;
-            //         Logger.info("-----complile complete ----------");
-            //         Logger.info(new Date());
-            //         const abi = JSON.parse(compiled.interface);
-            //         Logger.info("bytecode: ", typeof compiled.bytecode, compiled.bytecode.length);
-            //         const bytecode = compiled.bytecode;
-            //         var smartSponsor = privateWeb3.eth.contract(abi);
+          fs.readFile(publicdir + '/solidity/publicFileStorage.sol', 'utf8', function(err, solidityCode) {
+          // fs.readFile(publicdir + '/solidity/binaryContract.sol', 'utf8', function(err, solidityCode) {
+                if (err) {
+                    console.log("error in reading file: ", err);
+                    return;
+                } else {
 
-                    // cb(bytecode, smartSponsor, abi);
-            //     }
-            // });
-            var smartSponsor = privateWeb3.eth.contract(solAbi);
-            cb(solBytecode,smartSponsor,solAbi);
+                    Logger.info("File Path: ", publicdir + '/solidity/binaryContract.sol');
+                    Logger.info(new Date());
+                    Logger.info("-----compling solidity code ----------");
+                    Logger.info(new Date());
+                    // var compiled = solc.compile(solidityCode, 1).contracts.documentAccessMapping;
+                    var compiled = solc.compile(solidityCode, 1).contracts.publicTransaction;
+                    Logger.info("-----complile complete ----------");
+                    Logger.info(new Date());
+                    const abi = JSON.parse(compiled.interface);
+                    Logger.info("bytecode: ", typeof compiled.bytecode, compiled.bytecode.length);
+                    const bytecode = compiled.bytecode;
+                    var smartSponsor = privateWeb3.eth.contract(abi);
+
+                    cb(bytecode, smartSponsor, abi);
+                }
+            });
+            // var smartSponsor = privateWeb3.eth.contract(solAbi);
+            // cb(solBytecode,smartSponsor,solAbi);
         }
         decryptBuffer(buffer, password) {
             var decipher = crypto.createDecipher('aes-256-cbc', password)
@@ -62,10 +63,14 @@
             recordObj.salt=uuid.v1();
             recordObj.encryptHash=this.encrypt(recordObj.fileHash, 'utf8', 'hex',recordObj.salt);
             recordObj.decryptHash=this.decrypt(recordObj.encryptHash,'hex','utf8',recordObj.salt);
-            console.log("recordObj: ",recordObj);
-            var ss = smartSponsor.new(recordObj.to,recordObj.encryptHash,{
+            console.log("recordObj: ",recordObj.data.length);
+            this.estimateGas(recordObj.owner, recordObj.data, (error, gasString) => {
+                console.log("gasString: ",gasString);
+            var dataGas=privateWeb3.eth.getBlock('latest').gasLimit;
+            console.log("dataGas: ",dataGas);
+            var ss = smartSponsor.new(recordObj.data,{
                     from: recordObj.owner,
-                    gas: gas+3000000,
+                    gas: 629779,
                     data : bytecode
 
                   }, (err, contract) => {
@@ -77,9 +82,10 @@
                         Logger.info(new Date());
                         this.saveToDb(contract, abi, recordObj, bytecode, gas, callback);
                     } else {
-                        Logger.info("A transmitted, waiting for mining...");
+                        Logger.info("A transmitted, waiting for mining...",contract.transactionHash);
                         Logger.info(new Date());
                     }
+                });
                 });
         }
 
