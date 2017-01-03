@@ -29,7 +29,7 @@ module.exports = {
             accountAddress: Joi.string().required(),
             password: Joi.string().required(),
             memberAddress: Joi.string().required(),
-            method: Joi.string().required(),
+            action: Joi.string().required(),
         }
     },
     review: {
@@ -59,7 +59,7 @@ module.exports = {
             contractAddress: Joi.string().required(),
             accountAddress: Joi.string().required(),
             password: Joi.string().required(),
-            method: Joi.string().required()
+            action: Joi.string().required()
         }
     },
     userdetail: {
