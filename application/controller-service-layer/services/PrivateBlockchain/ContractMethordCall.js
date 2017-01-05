@@ -76,7 +76,7 @@ class ContractMethordCall {
           contractAddress: recordObj.contractAddress,
           transactionHash: recordObj.txnHash,
           callerAddress: recordObj.accountAddress,
-          action:recordObj.method
+          action:recordObj.action
       }).then(function(databaseReturn) {
           //Logger.info("Inserted data: ", databaseReturn);
           // var arr = {};
@@ -99,7 +99,7 @@ class ContractMethordCall {
     contractMethodCall(recordObj, ss, callback) {
       var gas =300000;
         console.log("This is the action", recordObj.method);
-        switch (recordObj.method) {
+        switch (recordObj.action) {
             case "getData":
                 ss.getData.call({
                     from: recordObj.adminAddress,
@@ -148,23 +148,6 @@ class ContractMethordCall {
                     value: privateWeb3.toWei(20, 'ether')
                 }, (err, data) => {
                     this.MethodCallBack(err, data, ss, callback, "getEther");
-                });
-                break;
-            case "update":
-                privateWeb3.personal.unlockAccount("0xdd27a0f0bc61c5a97cfbbdbfa28e2ca9181c4fa3", "password", 1000, (error, result) => {
-
-                    if (error) {
-                        callback(error, result);
-                        return;
-                    } else {
-                        ss.update({
-                            from: recordObj.adminAddress,
-                            gas: gas
-                        }, (err, data) => {
-                            Logger.info("update: ", data);
-                            callback(err, data);
-                        });
-                    }
                 });
                 break;
             case "usersLog":
@@ -227,7 +210,7 @@ class ContractMethordCall {
             case "assignAction":
                 //gasPrice: 11067000000000000
                   console.log("gasActual: ",recordObj.memberAddress);
-                  this.covertStringRoleToInt(recordObj.action,(intArray)=>{
+                  this.covertStringRoleToInt(recordObj.role,(intArray)=>{
                     var resData = {};
                 ss.assignAction.estimateGas(recordObj.memberAddress, intArray, {
                     from: recordObj.accountAddress
@@ -261,32 +244,6 @@ class ContractMethordCall {
 
           });
               break;
-              case "initAction":
-                  //gasPrice: 11067000000000000
-                    console.log("gasActual: ");
-                  ss.initizeRole.estimateGas("filehash","0xe908c0a14ff6cc5e46c0ada652af2c193b1191b1",["0x33aa12ac60cb8e9969657933bb6d35458b048141","0x9e6941252069c9e34bdfd499fbf0284e501fad77"],[1,2,3,4,0,6,5,4,3],"0x67b0a7666e48503913f5dd3e00a0575547405709",["0xc682096931f49aefe49ab09ded688dc18428c4b9","0x6314a7697d47b4a3e553c301fc93ed76e8d24c60"],[1,2,3,4,0,6,5,4,3],{
-                          from: recordObj.accountAddress
-                  }, (err, gasActual) => {
-                      console.log("gasActual: ", gasActual);
-                      if (!err) {
-                          ss.initizeRole("filehash","0xe908c0a14ff6cc5e46c0ada652af2c193b1191b1",["0x33aa12ac60cb8e9969657933bb6d35458b048141","0x9e6941252069c9e34bdfd499fbf0284e501fad77"],[1,2,3,4,0,6,5,4,3],"0x67b0a7666e48503913f5dd3e00a0575547405709",["0xc682096931f49aefe49ab09ded688dc18428c4b9","0x6314a7697d47b4a3e553c301fc93ed76e8d24c60"],[1,2,3,4,0,6,5,4,3],{
-                            from: recordObj.accountAddress,
-                              gas: 50000000
-                          }, (err, data) => {
-                              var resData = {};
-                              resData.txnHash = data;
-                              recordObj.txnHash=data;
-                              this.contractLogSaveToDb(recordObj);
-                              callback(null, resData);
-                              //this.MethodCallBack(err, data, ss, callback, "assignAction");
-                          });
-
-                } else {
-                  callback(err, err);
-                }
-
-              });
-                break;
             case "getUserAction":
                 ss.getUserAction.call(recordObj.accountAddress,{
                     from: recordObj.accountAddress
@@ -300,7 +257,7 @@ class ContractMethordCall {
                 break;
             case "removeAction":
                 Logger.info("inside remove action");
-                this.covertStringRoleToInt(recordObj.action,(intArray)=>{
+                this.covertStringRoleToInt(recordObj.role,(intArray)=>{
               ss.removeAction.estimateGas(recordObj.memberAddress, intArray, {
                   from: recordObj.accountAddress
               }, (err, gasActual) => {
@@ -312,6 +269,8 @@ class ContractMethordCall {
                 }, (err, data) => {
                     var resData = {};
                     resData.txnHash = data;
+                    recordObj.txnHash = data;
+                    this.contractLogSaveToDb(recordObj);
                     callback(null, resData);
                     //this.MethodCallBack(err, data, ss, callback, "");
                 });
@@ -341,6 +300,8 @@ class ContractMethordCall {
                     callback(resData);
                   }else{
                   resData.txnHash = data;
+                  recordObj.txnHash = data;
+                  this.contractLogSaveToDb(recordObj);
                   callback(null, resData);
                 }
                   //this.MethodCallBack(err, data, ss, callback, "acknowledge");
@@ -364,6 +325,8 @@ class ContractMethordCall {
                     gas: gas
                 }, (err, data) => {
                   resData.txnHash = data;
+                  recordObj.txnHash = data;
+                  this.contractLogSaveToDb(recordObj);
                   callback(null, resData);
                 // this.MethodCallBack(err, data, ss, callback, "sign");
                 });
@@ -383,6 +346,8 @@ class ContractMethordCall {
                 }, (err, data) => {
                     var resData = {};
                     resData.txnHash = data;
+                    recordObj.txnHash = data;
+                    this.contractLogSaveToDb(recordObj);
                     callback(null, resData);
                     //this.MethodCallBack(err, data, ss, callback, "decline");
                 });

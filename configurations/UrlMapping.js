@@ -10,9 +10,16 @@
 	                json: views.jsonView
 	            }
 	        }],
-	        "/api/v1/uploadToGlobalBlockchain": [{
+	        "/api/v1/publishdata": [{
+	            method: "POST",
+	            action: controllers.publishDataController.sendData,
+	            views: {
+	                json: views.jsonView
+	            }
+	        }],
+					"/api/v1/getpublishdata": [{
 	            method: "GET",
-	            action: controllers.publishDataGlobal.sendData,
+	            action: controllers.publishDataController.getData,
 	            views: {
 	                json: views.jsonView
 	            }

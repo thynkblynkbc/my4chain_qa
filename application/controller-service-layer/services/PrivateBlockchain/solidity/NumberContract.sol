@@ -400,20 +400,7 @@ contract documentAccessMapping is docMapping{
         usersLog(msg.sender,msg.sender,message,"review",now);
     }
 
-    function addFileHash(string encryptFileHash) isAcceptDecline {
-        string memory message;
-        if (msg.sender == admin || msg.sender== _otherParty) {
-            hashValue=encryptFileHash;
-            message = 'File Hash added';
-
-        } else {
-            message = 'Sorry, You are not authorized';
-
-        }
-        usersLog(msg.sender,msg.sender,message,'addFileHash',now);
-    }
-
-    /*function revoke(address userId, string _message) isAcceptDecline {*/
+   /*function revoke(address userId, string _message) isAcceptDecline {*/
     function revoke(string reason)  {
         string memory message;
         if (checkRole(msg.sender, roles[2])) {
