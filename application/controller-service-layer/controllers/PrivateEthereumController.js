@@ -27,29 +27,29 @@ module.exports = function() {
     var sponsorPartyContract = function(req, res, callback) {
 
         this.services.privateEthereumPartyService.sponsorPartyContract(req, res, callback);
-
+       // call the azure message queue
     }
 
     var sponsorContract = function(req, res, callback) {
 
         this.services.privateEthereumService.sponsorContract(req, res, callback);
-
+        // call the azure message queue
     }
     var review = function(req, res, callback) {
 
         this.services.privateEthereumService.review(req, res, callback);
-
+        // call the message queue
     }
     var revoke = function(req, res, callback) {
 
         this.services.privateEthereumService.revoke(req, res, callback);
-
+        // call the message queue
     }
 
     var changestate = function(req, res, callback) {
 
         this.services.privateEthereumService.changestate(req, res, callback);
-
+        // call the message queue
     }
 
     var userdetail = function(req, res, callback) {
