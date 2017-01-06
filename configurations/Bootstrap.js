@@ -6,14 +6,29 @@
 //call all the function which are required to perform the require initialization before server will start
 'use strict';
 var Person = require('../application/models/PersonDetail');
+var ConfirmationOfRequest = require('../application-utilities/cron/ConfirmationOfRequest');
 var initApp = function() {
     Logger.info("config" + configurationHolder.config.accessLevels["anonymous"]);
     startWeb3Ethereum();
     startPrivateWeb3Ethereum();
     // createContractAbi();
     createPerson();
+      confirmRequest();
     bootApplication();
+  //  confirmRequestCRON.
+
 }
+
+function confirmRequest(){
+  var cron = require('node-cron');
+   console.log("Cron function call")
+   cron.schedule('*/10 * * * * *', function(){
+     ConfirmationOfRequest.confirmRequestCRON();
+  console.log('running every minute to 1 from 5');
+  console.log(new Date());
+});
+  }
+
 
 // function createContractAbi() {
 //     fs.readFile('./solidity/NumberContract.sol', 'utf8', function(err, solidityCode) {

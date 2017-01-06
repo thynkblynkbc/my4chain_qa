@@ -6,6 +6,7 @@
 global.express = require('express');
 global.errorHandler = require('errorhandler')
 global.bodyParser = require('body-parser')
+global.cron = require('node-cron');
     //   global.ipfs = require('ipfs');
 var ipfsAPI = require('ipfs-api')
 global.validater = require('express-validation')

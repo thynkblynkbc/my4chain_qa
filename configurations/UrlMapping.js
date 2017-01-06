@@ -10,6 +10,34 @@
 	                json: views.jsonView
 	            }
 	        }],
+					"/api/coinbase/balance": [{
+	            method: "GET",
+	            action: controllers.coinbaseController.notifications,
+	            views: {
+	                json: views.jsonView
+	            }
+	        }],
+					"/api/queue/getQueue": [{
+							method: "GET",
+							action: controllers.messageQueueController.getMessageQueue,
+							views: {
+									json: views.jsonView
+							}
+					}],
+					"/api/queue/reciveMessageQueue": [{
+							method: "GET",
+							action: controllers.messageQueueController.reciveMessageQueue,
+							views: {
+									json: views.jsonView
+							}
+					}],
+					"/api/queue/sendToQueue": [{
+							method: "GET",
+							action: controllers.messageQueueController.sendMessageQueue,
+							views: {
+									json: views.jsonView
+							}
+					}],
 	        "/api/v1/publishdata": [{
 	            method: "POST",
 	            action: controllers.publishDataController.sendData,
