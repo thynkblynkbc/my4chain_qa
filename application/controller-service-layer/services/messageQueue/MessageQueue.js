@@ -4,8 +4,8 @@ class MessageQueue {
     constructor() {
         this.azure = require('azure');
         this.nameSpace = "futuron.servicebus.windows.net/blockchaintest";
-        this.accessKey = "Endpoint=sb://himanshumy4chain.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=AubJZWkmCFoUrf3/m1ibdYTEQohfHh1DwtneQcQfh4U=";
-      //  this.accessKey = "Endpoint=sb://futuron.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=hfASZmV9Wc5A+i42JqJuW/RIOpUQzqhw8VPxhIdqtbg=";
+      //  this.accessKey = "Endpoint=sb://himanshumy4chain.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=AubJZWkmCFoUrf3/m1ibdYTEQohfHh1DwtneQcQfh4U=";
+        this.accessKey = "Endpoint=sb://futuron.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=hfASZmV9Wc5A+i42JqJuW/RIOpUQzqhw8VPxhIdqtbg=";
        this.azureObject = this.azure.createServiceBusService(this.accessKey);
     //   this.createAqueue();
     }
@@ -24,19 +24,19 @@ class MessageQueue {
 
     }
     sendToQueue(req,callback) {
-
+Logger.info("helo");
       var message = {
-            body: req.query.name,
+            body: "request Data",
             customProperties: {
-              testproperty: 'TestValue'
+              resultproperty: req.body
             }};
               this.azureObject.sendQueueMessage('my4chain', message, (error) => {
                   if(!error){
-                      callback(null,{message:JSON.stringify(error)});
+                    //  callback(null,{message:JSON.stringify(error)});
                       // message sent
                     }else{
 
-                      callback(null,{message:error});
+                    //  callback(null,{message:error});
                     }
                 });
 

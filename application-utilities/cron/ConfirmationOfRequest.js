@@ -1,9 +1,10 @@
 'use strict';
+var MessageQueue = require("../../application/controller-service-layer/services/messageQueue/MessageQueue");
 class ConfirmRequest {
     confirmRequestCRON() {
 
         domain.ContractLog.query().
-        where("confirmation", "=", true).then((databaseReturn) => {
+        where("confirmation", "=", false).then((databaseReturn) => {
 
             Logger.info("dataReturn", databaseReturn.length)
             Logger.info("dataReturn", databaseReturn[1]);
@@ -19,11 +20,13 @@ class ConfirmRequest {
                                 .query()
                                 .patch({
                                     confirmationCount: confirm.totalConfirmations,
-                                    confirmation : false
+                                    confirmation : true
                                 })
                                 .where('transactionHash', '=', item.transactionHash)
                                 .then((numUpdated) => {
-
+                                  let msg={};
+                                  msg.body=item;
+                                    MessageQueue.sendToQueue(msg,{});
                                     console.log(numUpdated, 'confirmation updateded were updated');
                                 })
                                 .catch((err) => {
