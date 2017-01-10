@@ -139,7 +139,9 @@
                 ownerMember.push(ownerAction.address);
              async.forEach(ownerAction.action, (action, ownerMemberCallback) => {
                // push action of member one by one as member inserted respectively
+                 if(this.rolesInt[action]){
                      ownerMemberAction.push(this.rolesInt[action]);
+                   }
                       ownerMemberCallback();
              },(err)=>{
                console.log()
@@ -166,7 +168,9 @@
                 recipientMember.push(recipientAction.address);
              async.forEach(recipientAction.action, (action, recipientMemberCallback)=> {
                  // push action of member one by one as member inserted in array respectively
-                     recipientMemberAction.push(this.rolesInt[action]);
+                    if(this.rolesInt[action]){
+                        recipientMemberAction.push(this.rolesInt[action]);
+                      }
                      recipientMemberCallback();
              },(err)=>{
                        recipientMemberAction.push(0);

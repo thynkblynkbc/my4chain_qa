@@ -29,17 +29,19 @@ global.should = chai.should();
 
         }
         else if(process.env.TEST_CASE == "seven"){
-                   fileExports.ContractReadTestCases.getContract();
+                  // fileExports.ContractReadTestCases.getContract();
                     fileExports.ContractReadChildTestCases.getContract();
                 }
-        else if(process.env.TEST_CASE == "eight"){
-               fileExports.ContractAssignAllRole.getContract();
-
-          }
-          else if(process.env.TEST_CASE == "nine"){
-                        fileExports.ContractReadTestCases.getContract();
-                     //    fileExports.ContractReadChildTestCases.getContract();
-                    }
+                // should not test  it is ok
+        // else if(process.env.TEST_CASE == "eight"){
+        //        fileExports.ContractAssignAllRole.getContract();
+        //
+        //   }
+        //   // should not test  it is ok
+        //   else if(process.env.TEST_CASE == "nine"){
+        //                 fileExports.ContractReadTestCases.getContract();
+        //              //    fileExports.ContractReadChildTestCases.getContract();
+        //             }
           else if(process.env.TEST_CASE == "ten"){
                fileExports.ContractChangeState.getContract();
                                          //    fileExports.ContractReadChildTestCases.getContract();
@@ -47,21 +49,24 @@ global.should = chai.should();
            else if(process.env.TEST_CASE == "eleven"){
                 fileExports.ContractReadTestCases.getContract();
                                                           //    fileExports.ContractReadChildTestCases.getContract();
-           }else if(process.env.TEST_CASE == "twelve"){
+           }
+           else if(process.env.TEST_CASE == "twelve"){
          // for decline sol
 
 
               fileExports.ContractAcceptOrDecline.changeStateContract(); // decline state
-           }else if(process.env.TEST_CASE == "thirteen"){  /// check state of contract
+           }
+          else if(process.env.TEST_CASE == "thirteen"){  /// check state of contract
             fileExports.ContractReadTestCases.getContract();
 
-           }else if(process.env.TEST_CASE == "fourteen"){  /// assign role to child
-            fileExports.ContractChildAssignAllRole.getContract();
-
-           }else if(process.env.TEST_CASE == "fifteen"){   // read role
-
-            fileExports.ContractReadChildTestCases.getContract();
            }
+        //    else if(process.env.TEST_CASE == "fourteen"){  /// assign role to child
+        //     fileExports.ContractChildAssignAllRole.getContract();
+         //
+        //    }else if(process.env.TEST_CASE == "fifteen"){   // read role
+         //
+        //     fileExports.ContractReadChildTestCases.getContract();
+        //    }
         else{
 
         console.log("YOU HAVE NOT SELECTED ANY TEST CASES");

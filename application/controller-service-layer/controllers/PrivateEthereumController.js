@@ -31,12 +31,20 @@ module.exports = function() {
     }
 
     var sponsorContract = function(req, res, callback) {
-
+          if(req.params){
+          req.body.requestId = req.params.requestId;
+        }else{
+          req.body.requestId =0;
+        }
         this.services.privateEthereumService.sponsorContract(req, res, callback);
         // call the azure message queue
     }
     var review = function(req, res, callback) {
-
+      if(req.params){
+      req.body.requestId = req.params.requestId;
+    }else{
+      req.body.requestId =0;
+    }
         this.services.privateEthereumService.review(req, res, callback);
         // call the message queue
     }
@@ -47,13 +55,17 @@ module.exports = function() {
     }
 
     var changestate = function(req, res, callback) {
-
+      if(req.params){
+      req.body.requestId = req.params.requestId;
+    }else{
+      req.body.requestId =0;
+    }
         this.services.privateEthereumService.changestate(req, res, callback);
         // call the message queue
     }
 
     var userdetail = function(req, res, callback) {
-
+        console.log("userdetail");
         this.services.privateEthereumService.userdetail(req, res, callback);
 
     }

@@ -328,9 +328,10 @@ contract documentAccessMapping is docMapping{
             }
         }
     }
-
+    /*nextState = 1;
+    whichParty = _otherParty;*/
     function acknowledge() isAcceptDecline {
-        if (msg.sender == admin || (checkRole(msg.sender, roles[6]) && users[msg.sender].party!=address(0))) {
+        if (msg.sender == _otherParty || (checkRole(msg.sender, roles[6]) && users[msg.sender].party!=address(0))) {
               contractState = "ACK";
               usersLog(msg.sender,msg.sender,"Contract in acknowledge state","acknowledge",now);
         }else{
@@ -381,7 +382,7 @@ contract documentAccessMapping is docMapping{
 
     function review(uint iscomment,string comment,string encryptFileHash) isAcceptDecline {
         string memory message;
-        if (checkRole(msg.sender, roles[5])) {
+        if (checkRole(msg.sender, roles[5]) ) {
             if (iscomment == 1) {
                 filehashes[fileIndex].fh=encryptFileHash;
                 filehashes[fileIndex].comment=comment;

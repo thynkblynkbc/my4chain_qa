@@ -10,13 +10,6 @@
 	                json: views.jsonView
 	            }
 	        }],
-					"/api/coinbase/balance": [{
-	            method: "GET",
-	            action: controllers.coinbaseController.notifications,
-	            views: {
-	                json: views.jsonView
-	            }
-	        }],
 					"/api/queue/getQueue": [{
 							method: "GET",
 							action: controllers.messageQueueController.getMessageQueue,

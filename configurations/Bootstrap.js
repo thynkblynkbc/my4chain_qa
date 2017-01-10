@@ -11,10 +11,10 @@ var initApp = function() {
     Logger.info("config" + configurationHolder.config.accessLevels["anonymous"]);
     startWeb3Ethereum();
     startPrivateWeb3Ethereum();
-    // createContractAbi();
+     createContractAbi();
     createPerson();
-      confirmRequest();
-    bootApplication();
+    //  confirmRequest();
+  //  bootApplication();
   //  confirmRequestCRON.
 
 }
@@ -30,48 +30,49 @@ function confirmRequest(){
   }
 
 
-// function createContractAbi() {
-//     fs.readFile('./solidity/NumberContract.sol', 'utf8', function(err, solidityCode) {
-//         if (err) {
-//             console.log("error in reading file: ", err);
-//             return;
-//         } else {
-//             Logger.info("File Path: ", './solidity/NumberContract.sol');
-//             Logger.info(new Date());
-//             Logger.info("-----compling solidity code ----------");
-//             Logger.info(new Date());
-//             // var compiled = solc.compile(solidityCode, 1).contracts.DieselPrice;
-//             try {
-//                 var compiled = solc.compile(solidityCode, 1).contracts.documentAccessMapping;
-//                 global.solAbi = JSON.parse(compiled.interface);
-//                 global.solBytecode = compiled.bytecode;
-//                 Logger.info("-----complile complete ----------");
-//                 Logger.info(new Date());
-//                 fs.writeFile('./solidity/abi.json', compiled.interface, (err) => {
-//                     //Logger.info("err", err);
-//                     if (err) {
-//                         console.log("err", err);
-//                     }
-//
-//                     if (!err) {
-//                         fs.writeFile('./solidity/bytecode.txt', solBytecode, (err) => {
-//                             if (err) {
-//                                 console.log("err", err);
-//                             } else {
-//                                 bootApplication();
-//                             }
-//                         });
-//                     }
-//                 });
-//             } catch (e) {
-//                 if (e) {
-//                     Logger.info(e);
-//                     console.log("error:", e);
-//                 }
-//             }
-//         }
-//     });
-// }
+function createContractAbi() {
+    fs.readFile('./solidity/test6.sol', 'utf8', function(err, solidityCode) {
+        if (err) {
+            console.log("error in reading file: ", err);
+            return;
+        } else {
+            Logger.info("File Path: ", './solidity/NumberContract.sol');
+            Logger.info(new Date());
+            Logger.info("-----compling solidity code ----------");
+            Logger.info(new Date());
+            // var compiled = solc.compile(solidityCode, 1).contracts.DieselPrice;
+            try {
+                var compiled = solc.compile(solidityCode, 1).contracts.documentAccessMapping;
+                global.solAbi = JSON.parse(compiled.interface);
+                global.solBytecode = compiled.bytecode;
+                Logger.info("-----complile complete ----------");
+                Logger.info(new Date());
+                fs.writeFile('./solidity/abi.json', compiled.interface, (err) => {
+                    //Logger.info("err", err);
+                    if (err) {
+                        console.log("err", err);
+                    }
+
+                    if (!err) {
+                        fs.writeFile('./solidity/bytecode.txt', solBytecode, (err) => {
+                            if (err) {
+                                console.log("err", err);
+                            } else {
+                          //      bootApplication();
+                            }
+                        });
+                    }
+                });
+                  bootApplication();
+            } catch (e) {
+                if (e) {
+                    Logger.info(e);
+                    console.log("error:", e);
+                }
+            }
+        }
+    });
+}
 
 function startWeb3Ethereum() {
     var Web3 = require('web3');
@@ -125,7 +126,7 @@ function createPerson() {
     //     .then(function (person) {})
     //  .catch(next);
 }
-// code to start the server
+
 function bootApplication() {
     app.listen(configurationHolder.config.port, function() {
         Logger.info("Express server listening on port %d in %s mode", configurationHolder.config.port, app.settings.env);

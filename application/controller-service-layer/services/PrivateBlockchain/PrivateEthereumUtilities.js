@@ -27,29 +27,29 @@ class PrivateEthereumUtilities{
   }
       //  convert abi defination of contract
   convertToAbi(cb) {
-    fs.readFile(__dirname + '/solidity/NumberContract.sol', 'utf8', function(err, solidityCode) {
-          if (err) {
-              console.log("error in reading file: ", err);
-              return;
-          } else {
-              Logger.info("File Path: ", __dirname + '/solidity/NumberContract.sol');
-              Logger.info(new Date());
-              Logger.info("-----compling solidity code ----------");
-              Logger.info(new Date());
-              var compiled = solc.compile(solidityCode, 1).contracts.documentAccessMapping;
-              Logger.info("-----complile complete ----------");
-              Logger.info(new Date());
-              const abi = JSON.parse(compiled.interface);
-              // fs.writeFile('./solidity/abi.json', compiled.interface, (err) => {
-              //   console.log("errrrr",err)
-              //
-              // });
-              Logger.info("bytecode: ", typeof compiled.bytecode, compiled.bytecode.length);
-              const bytecode =compiled.bytecode;
-              var smartSponsor = privateWeb3.eth.contract(abi);
-              cb(bytecode, smartSponsor, abi);
-          }
-      });
+    // fs.readFile(__dirname + '/solidity/NumberContract.sol', 'utf8', function(err, solidityCode) {
+    //       if (err) {
+    //           console.log("error in reading file: ", err);
+    //           return;
+    //       } else {
+    //           Logger.info("File Path: ", __dirname + '/solidity/NumberContract.sol');
+    //           Logger.info(new Date());
+    //           Logger.info("-----compling solidity code ----------");
+    //           Logger.info(new Date());
+    //           var compiled = solc.compile(solidityCode, 1).contracts.documentAccessMapping;
+    //           Logger.info("-----complile complete ----------");
+    //           Logger.info(new Date());
+    //           const abi = JSON.parse(compiled.interface);
+    //           // fs.writeFile('./solidity/abi.json', compiled.interface, (err) => {
+    //           //   console.log("errrrr",err)
+    //           //
+    //           // });
+    //           Logger.info("bytecode: ", typeof compiled.bytecode, compiled.bytecode.length);
+    //           const bytecode =compiled.bytecode;
+    //           var smartSponsor = privateWeb3.eth.contract(abi);
+    //           cb(bytecode, smartSponsor, abi);
+    //       }
+    //   });
   //      var smartSponsor = privateWeb3.eth.contract(solAbi);
   //    cb(solBytecode,smartSponsor,solAbi);
 

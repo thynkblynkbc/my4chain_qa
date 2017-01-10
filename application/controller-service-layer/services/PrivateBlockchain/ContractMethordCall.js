@@ -17,7 +17,9 @@ class ContractMethordCall {
      let strRole = [];
      if(roles.length > 0){
      async.forEach(roles,(item,callback)=>{
+       if(this.rolesInt[item]){
        strRole.push(this.rolesInt[item]);
+     }
        callback();
      },(err)=>{
        console.log(strRole);
@@ -76,7 +78,8 @@ class ContractMethordCall {
           contractAddress: recordObj.contractAddress,
           transactionHash: recordObj.txnHash,
           callerAddress: recordObj.accountAddress,
-          action:recordObj.action
+          action:recordObj.action,
+          requestId:recordObj.requestId
       }).then(function(databaseReturn) {
           //Logger.info("Inserted data: ", databaseReturn);
           // var arr = {};
@@ -324,6 +327,7 @@ class ContractMethordCall {
                     from: recordObj.accountAddress,
                     gas: gas
                 }, (err, data) => {
+                  console.log("errr",err)
                   resData.txnHash = data;
                   recordObj.txnHash = data;
                   this.contractLogSaveToDb(recordObj);

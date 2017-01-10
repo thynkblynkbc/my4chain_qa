@@ -22,17 +22,12 @@ describe('STATE CHANGE ACTION', function() {
           selectContactFormDataBase((selectData,userInfo) =>{
                 let tableData=selectData;
             chai.request(server)
-                .post('/api/v1/privateRunContract')
+                .post('/api/v1/contract/changestate')
                 .send({
                      "contractAddress": tableData.contractAddress,
-                    "adminAddress": userInfo[0].ethAddress,
-                    "password": userInfo[0].password,
                     "accountAddress": userInfo[1].ethAddress,
-                    "action": "NAN",
-                    "method": "review",
-                    "changedFileHash":"0x944f36ea5c4756017ad632d4d7661b9bbf2b63de",
-                    "isModified":1,
-                    "modifyComment":"Changes in file"
+                    "password": userInfo[1].ethPassword,
+                    "action": "acknowledge"
                 })
                 .end(function(err, res) {
                                res.should.have.status(200);

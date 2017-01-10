@@ -2,7 +2,7 @@ module.exports.removeActionContract = function(){
 
 function selectContactFormDataBase(cb){
     domain.Contract.query().orderBy('id', 'desc').limit(1).select().then(function(data) {
-         domain.User.query().orderBy('id', 'asc').limit(3).select().then(function(Usdata) {
+         domain.User.query().orderBy('id', 'asc').limit(4).select().then(function(Usdata) {
       //  console.log("Inserted data: ", data);
         let contData =  JSON.parse(JSON.stringify(data));
         let UserData =  JSON.parse(JSON.stringify(Usdata));
@@ -22,16 +22,14 @@ describe('REMOVE USER ACTION', function() {
           selectContactFormDataBase((selectData,userInfo) =>{
                 let tableData=selectData;
             chai.request(server)
-                .post('/api/v1/privateRunContract')
+                .post('/api/v1/contract/functionexcute')
                 .send({
                      "contractAddress": tableData.contractAddress,
-                    "adminAddress": userInfo[0].ethAddress,
-                    "password": userInfo[0].password,
-                    "accountAddress": userInfo[1].ethAddress,
-                    "action": "CAN_REVOKE",
-                    "method": "removeAction",
-                    "val": 4,
-                    "textValue": "Hello"
+                    "accountAddress": userInfo[0].ethAddress,
+                    "password": userInfo[0].ethPassword,
+                    "memberAddress": userInfo[3].ethAddress,
+                    "role": ["CAN_REVOKE"],
+                    "action": "removeAction"
                 })
                 .end(function(err, res) {
                                res.should.have.status(200);
@@ -53,16 +51,14 @@ describe('REMOVE USER ACTION', function() {
                   selectContactFormDataBase((selectData,userInfo) =>{
                         let tableData=selectData;
                     chai.request(server)
-                        .post('/api/v1/privateRunContract')
+                        .post('/api/v1/contract/functionexcute')
                         .send({
                              "contractAddress": tableData.contractAddress,
-                            "adminAddress": userInfo[1].ethAddress,
-                            "password": userInfo[1].password,
-                            "accountAddress": userInfo[2].ethAddress,
-                            "action": "CAN_REVOKE",
-                            "method": "removeAction",
-                            "val": 4,
-                            "textValue": "Hello"
+                            "accountAddress": userInfo[1].ethAddress,
+                            "password": userInfo[1].ethPassword,
+                            "memberAddress": userInfo[2].ethAddress,
+                            "role": ["CAN_REVOKE"],
+                            "action": "removeAction"
                         })
                         .end(function(err, res) {
                                             res.should.have.status(200);
