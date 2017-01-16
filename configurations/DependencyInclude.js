@@ -16,7 +16,7 @@ global.validationFile = require('../application-utilities/Validater')
 // global.ipfs = ipfsAPI('localhost', '5001', {
 //     protocol: 'http'
 // })
-global.Promise = require('node-promise').Promise
+//global.Promise = require('node-promise').Promise
 global.async = require('async')
 global.crypto = require('crypto')
 global.uuid = require('node-uuid');
@@ -25,7 +25,7 @@ global.ifAsync = require('if-async')
 global.dbConnection = require('./PgDatasource.js').getDbConnection()
     // Database dependencies and Connection setting
 global.mongoose = require('mongoose');
-global.Promise = require("bluebird");
+//global.Promise = require("bluebird");
 var multipart = require('connect-multiparty');
 
 global.multipartMiddleware = multipart();

@@ -4,10 +4,10 @@ class MessageQueue {
     constructor() {
         this.azure = require('azure');
         this.nameSpace = "futuron.servicebus.windows.net/blockchaintest";
-      //  this.accessKey = "Endpoint=sb://himanshumy4chain.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=AubJZWkmCFoUrf3/m1ibdYTEQohfHh1DwtneQcQfh4U=";
-        this.accessKey = "Endpoint=sb://futuron.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=hfASZmV9Wc5A+i42JqJuW/RIOpUQzqhw8VPxhIdqtbg=";
+        this.accessKey = "Endpoint=sb://himanshumy4chain.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=AubJZWkmCFoUrf3/m1ibdYTEQohfHh1DwtneQcQfh4U=";
+      //  this.accessKey = "Endpoint=sb://futuron.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=hfASZmV9Wc5A+i42JqJuW/RIOpUQzqhw8VPxhIdqtbg=";
        this.azureObject = this.azure.createServiceBusService(this.accessKey);
-    //   this.createAqueue();
+       this.createAqueue();
     }
     createAqueue(){
 
@@ -30,6 +30,7 @@ Logger.info("helo");
             customProperties: {
               resultproperty: req.body
             }};
+            console.log("req.body1",req.body);
               this.azureObject.sendQueueMessage('my4chain', message, (error) => {
                   if(!error){
                     //  callback(null,{message:JSON.stringify(error)});
@@ -44,7 +45,7 @@ Logger.info("helo");
     receiveFormQueue(callback) {
       this.azureObject.receiveQueueMessage('my4chain', (error, lockedMessage) =>{
           if(!error){
-          //  console.log("lockedMessage",lockedMessage);
+           console.log("lockedMessage",lockedMessage);
             callback(null,{message:lockedMessage});
               // Message received and locked
         //         this.azureObject.deleteMessage(lockedMessage, function (deleteError){

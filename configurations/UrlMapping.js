@@ -17,6 +17,21 @@
 									json: views.jsonView
 							}
 					}],
+					"/api/v1/insertBalance": [{
+							method: "GET",
+							action: controllers.privateEthereumController.insertBalance,
+							views: {
+									json: views.jsonView
+							}
+					}],
+
+					"/api/v1/checkForRequest": [{
+							method: "GET",
+							action: controllers.privateEthereumController.checkForRequest,
+							views: {
+									json: views.jsonView
+							}
+					}],
 					"/api/queue/reciveMessageQueue": [{
 							method: "GET",
 							action: controllers.messageQueueController.reciveMessageQueue,
@@ -154,6 +169,14 @@
 	                    json: views.jsonView
 	                }
 	            }]
+							,	"/api/v1/sendether": [{
+									method: "POST",
+									action: controllers.ethereumController.createTransaction,
+									views: {
+										json: views.jsonView
+									}
+								}
+							]
 	            // 		,
 	            // "/api/coinbase/accounts": [{
 	            // 				method: "GET",

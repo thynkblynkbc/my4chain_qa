@@ -23,7 +23,7 @@
             console.log("recordObj: ",recordObj);
             this.interpetate(recordObj,(ownerMember,ownerMemberAction,recipientMember,recipientMemberAction)=>{
              console.log("recordObj1111-->",recordObj)
-            var ss = smartSponsor.new("filehash",recordObj.owner,
+            var ss = smartSponsor.new(recordObj.encryptHash,recordObj.owner,
             ownerMember
             ,ownerMemberAction,recordObj.recipient,//[1,2,3,4,0,6,5,4,3]
             recipientMember,
@@ -42,7 +42,7 @@
                         Logger.info(new Date());
                         utility.saveToDb(contract, abi, recordObj, bytecode, gas, callback);
                     } else {
-                        Logger.info("A transmitted, waiting for mining...");
+                        Logger.info("A transmitted, waiting for mining...",contract.transactionHash);
                         Logger.info(new Date());
                     }
                 });
@@ -59,19 +59,20 @@
             utility.convertToAbi((bytecode, smartSponsor, abi) => {
                 Logger.info("Unlocking account -----------");
                   Logger.info(new Date());
-                utility.unlockAccount(recordObj.owner, recordObj.password, 30, (error, result) => {
-                    if (error) {
-                      console.log(error)
-                      resData = new Error("Issue with blockchain");
-                      resData.status = 500;
-
-                        callback(resData, null);
-                        return;
-                    } else {
+                //  utility.unlockAccount(recordObj.owner, recordObj.password, 30, (error, result) => {
+                //     if (!result) {
+                //       console.log(error)
+                //       resData = new Error("Issue with blockchain");
+                //       resData.status = 500;
+                 //
+                //         callback(resData, null);
+                //         return;
+                //     } else {
                         Logger.info(new Date());
                         Logger.info("unlocked");
                       utility.estimateGas(recordObj.owner, bytecode, (error, gas) => {
                             if (error) {
+                              console.log("gas",gas)
                                 resData = new Error("Issue with blockchain");
                                 resData.status = 500;
 
@@ -82,8 +83,8 @@
                                 this.createContract(smartSponsor, recordObj, bytecode, gas, abi, callback);
                             }
                         });
-                    }
-                });
+                //     }
+                // });
             });
             //});
         }
@@ -185,9 +186,6 @@
 
          }
 
-
-
-
       // assign role to smart contract
         sponsorContract(req, res, callback) {
             let recordObj = req.body;
@@ -197,8 +195,9 @@
                 let smartSponsor = privateWeb3.eth.contract(selectData);
                 var ss = smartSponsor.at(recordObj.contractAddress);
                 Logger.info("Unlock Account ----------------");
-                utility.unlockAccount(recordObj.accountAddress, recordObj.password, 30, (error, result) => {
-                    if (error) {
+                utility.unlockAccount(recordObj.accountAddress, recordObj.password,60, (error, result) => {
+                  console.log("err",error,"res",result);
+                    if (!result) {
                         callback(error, result);
                         return;
                     } else {

@@ -16,6 +16,15 @@ var schemaPromise = knex.schema.createTableIfNotExists('Contract', function(tabl
              });
          }
     });
+    knex.schema.hasColumn('Contract', 'fileHash').then((isColumn) => {
+         if (isColumn != true) {
+             knex.schema.table('Contract', function(table) {
+                table.string('fileHash'); // ethereum account address of contract creator/sender(first party admin)
+                }).then(function(data) {
+                 console.log("fileHash Column of Contract Table ");
+             });
+         }
+    });
     knex.schema.hasColumn('Contract', 'bytecode').then((isColumn) => {
          if (isColumn != true) {
              knex.schema.table('Contract', function(table) {
@@ -71,6 +80,15 @@ var schemaPromise = knex.schema.createTableIfNotExists('Contract', function(tabl
          }
     });
 });
+knex.schema.hasColumn('Contract', 'Published').then((isColumn) => {
+     if (isColumn != true) {
+         knex.schema.table('Contract', function(table) {
+            table.string('Published').default("n"); // ethereum account address of contract creator/sender(first party admin)
+            }).then(function(data) {
+             console.log("Published row in table");
+         });
+     }
+});
 
 // Contract model.
 function Contract() {
@@ -92,7 +110,9 @@ Contract.jsonSchema = {
     salt:{type:'string'},
     createdAt:{type:'dateTime'},
     startTime:{type:'dateTime'},
-    endTime:{type:'dateTime'}
+    endTime:{type:'dateTime'},
+    Published:{type : 'string'},
+    fileHash:{type : 'string'}
     }
 };
 // Basic ES6 compatible prototypal inheritance.

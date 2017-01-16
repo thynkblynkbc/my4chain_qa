@@ -3,12 +3,15 @@ class PrivateEthereumUtilities{
   constructor() {
 
   }
-  unlockAccount(owner, password, duration, cb) {
-      privateWeb3.personal.unlockAccount(owner, password, 120, function(error, result) {
+  unlockAccount(owner, password,count, cb) {
+    console.log("unlock function utitlies",owner,password)
+      privateWeb3.personal.unlockAccount(owner, password,  function(error, result) {
+        console.log("result",result)
           cb(error, result);
       });
   }
   estimateGas(account, bytecode, cb) {
+  //  console.log("account ",account,bytecode);
           privateWeb3.eth.estimateGas({
               from: account,
               data: bytecode
@@ -50,8 +53,8 @@ class PrivateEthereumUtilities{
     //           cb(bytecode, smartSponsor, abi);
     //       }
     //   });
-  //      var smartSponsor = privateWeb3.eth.contract(solAbi);
-  //    cb(solBytecode,smartSponsor,solAbi);
+       var smartSponsor = privateWeb3.eth.contract(solAbi);
+     cb("0x"+solBytecode,smartSponsor,solAbi);
 
   }
   decryptBuffer(buffer, password) {
@@ -73,8 +76,9 @@ class PrivateEthereumUtilities{
           bytecode: bytecode,
           salt: recordObj.salt,
           receipentAddress: recordObj.recipient,
-          startTime:knex.fn.now(),
-          endTime:knex.fn.now()
+          startTime:knex.fn.now(recordObj.startfrom*1000),
+          endTime:knex.fn.now(recordObj.expireDate*1000),
+          fileHash:recordObj.encryptHash
       }).then(function(databaseReturn) {
           //Logger.info("Inserted data: ", databaseReturn);
           var arr = {};

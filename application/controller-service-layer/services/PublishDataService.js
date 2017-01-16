@@ -61,8 +61,7 @@ class PublishDataService {
         var ss = smartSponsor.new({
             from: recordObj.owner,
             gas: gas,
-            data: bytecode,
-            gasPrice:0
+            data: bytecode
                      }, (err, contract) => {
             if (err) {
                 console.error(err);

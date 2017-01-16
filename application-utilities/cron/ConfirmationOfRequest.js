@@ -4,16 +4,16 @@ class ConfirmRequest {
     confirmRequestCRON() {
 
         domain.ContractLog.query().
-        where("confirmation", "=", false).then((databaseReturn) => {
+        where("confirmation", "=", false).limit(20).then((databaseReturn) => {
 
             Logger.info("dataReturn", databaseReturn.length)
-            Logger.info("dataReturn", databaseReturn[1]);
+            Logger.info("dataReturn", databaseReturn[0]);
             async.forEach(databaseReturn, (item, next) => {
                     // console.log("data",item)
                     this.checkConfirmation(item.transactionHash, (err, confirm) => {
                         if (err) {
                             next();
-                            console.log("error for transhash", confirm);
+                            console.log("error for transhash",err, confirm);
                         } else {
                           if(confirm.totalConfirmations >= 2){
                             domain.ContractLog
@@ -25,7 +25,7 @@ class ConfirmRequest {
                                 .where('transactionHash', '=', item.transactionHash)
                                 .then((numUpdated) => {
                                   let msg={};
-                                  msg.body=item;
+                                  msg.body=JSON.parse(item);
                                     MessageQueue.sendToQueue(msg,{});
                                     console.log(numUpdated, 'confirmation updateded were updated');
                                 })

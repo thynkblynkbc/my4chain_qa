@@ -40,16 +40,17 @@ EthereumService.prototype.createAccount =function(password,res, callback){
 }
 
 EthereumService.prototype.createTransaction =function(reqData,res, callback){
+	console.log("dddddddddddddd");
 	var fromAddress=reqData.fromAddress;
 	var toAddress=reqData.toAddress;
 	var password=reqData.password;
 	var amount=reqData.amount;
 	var duration=30;
 	var resData={};
-		web3.personal.unlockAccount(fromAddress,password,duration,function(error,result){
+		privateWeb3.personal.unlockAccount(fromAddress,password,function(error,result){
 			if(!error){
-				 Logger.info("Amount sent-->",web3.toWei(1, 'ether'));
-					web3.eth.sendTransaction({from: fromAddress, to: toAddress, value: web3.toWei(amount, 'ether'),gas:21000},function(tx_error,tx_result){
+				 Logger.info("Amount sent-->",privateWeb3.toWei(1, 'ether'));
+					privateWeb3.eth.sendTransaction({from: fromAddress, to: toAddress, value: privateWeb3.toWei(amount, 'ether'),gas:21000},function(tx_error,tx_result){
 						if(!tx_error){
 								resData.transactionResult=tx_result;
 								callback(null,resData);

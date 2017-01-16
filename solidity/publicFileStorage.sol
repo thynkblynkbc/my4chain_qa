@@ -2,7 +2,8 @@ pragma solidity ^ 0.4.4;
 contract publicTransaction {
   string record;
 
-  function publicTransaction(){
+  function publicTransaction(string data){
+    record = data;
   }
   function setData(string transactionData){
       record=transactionData;

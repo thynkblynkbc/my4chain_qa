@@ -107,7 +107,7 @@ class PrivateEthereumDetail {
                                 //callback(null, resData);
                             } else {
 
-                                resData = new Error("cant get blockByHash");
+                                resData = new Error(error);
                                 resData.status = 500;
                                 cb(resData, null);
                                 //callback(resData,null);
