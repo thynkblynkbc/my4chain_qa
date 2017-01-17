@@ -144,20 +144,50 @@ class PublishDataService {
     }
     getData(req, res, callback) {
         console.log("req.query.contractAddress: ", req.query.contractAddress);
-        utility.selectForDataBase(req.query.contractAddress, (selectData, bytecode, salt) => {
-            selectData = JSON.parse(selectData);
-            let smartSponsor = privateWeb3.eth.contract(selectData);
-            var ss = smartSponsor.at(req.query.contractAddress);
-            this.getContractData(ss, callback);
-        });
+        //utility.selectForDataBase(req.query.contractAddress, (selectData, bytecode, salt) => {
+            // selectData = JSON.parse(selectData);
+            // let smartSponsor = privateWeb3.eth.contract(selectData);
+            // var ss = smartSponsor.at(req.query.contractAddress);
+            this.getContractData(req.query.contractAddress,callback);
+      //  });
+
     }
-    getContractData(ss, callback) {
-        ss.getData.call((err, data) => {
+    getContractData(address, callback) {
+      let resData ={};
+      try{
+      fs.readFile('./solidity/publicFileStorage.sol', 'utf8', (err, solidityCode) => {
+          if (err) {
+              console.log("error in reading file: ", err);
+
+              reject({
+                  message: "error in reading file"
+              })
+          } else {
+              Logger.info("-----compling solidity code ----------");
+
+              var compiled = solc.compile(solidityCode, 1).contracts.publicTransaction;
+              let solAbi = JSON.parse(compiled.interface);
+              let solBytecode = compiled.bytecode;
+              Logger.info("-----complile complete ----------",address);
+              Logger.info(new Date());
+
+              let smartSponsor = privateWeb3.eth.contract(solAbi);
+                var ss = smartSponsor.at(address);
+            ss.getData.call((err, data) => {
             Logger.info("getUserAction: ", data.length);
             var resData = {};
             resData.userdetail = JSON.parse(data);
             callback(null, resData);
         });
+      }
+    });
+  }catch(err){
+    resData = new Error("Error in finding conrtact data");
+    resData.status = 403;
+    callback(resData, null);
+
+  }
+
     }
 }
 

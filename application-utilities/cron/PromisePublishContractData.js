@@ -9,6 +9,7 @@ class PublishContractData {
     collectData() {
         return new Promise(function(resolve, reject) {
             let resData = {};
+            //shkjshdkj
             domain.Contract.query().
             where("Published", "=", "n").limit(4).then((databaseReturn) => {
 
@@ -29,14 +30,17 @@ class PublishContractData {
 
     makeJsonData(data) {
         return new Promise((resolve, reject) => {
+          try{
             let resData = {};
+            let contractAddresses =[];
 
             let dataToPublish = [];
             console.log("dataReturn", data.length)
             async.forEach(data, (item, next) => {
 
-                let current = item.contractAddress + "," + item.senderAddress + "," + item.fileHash + "|";
+     let current = item.contractAddress + "," + item.senderAddress + "," + item.fileHash +",http://localhost/block/"+item.id+ "|";
                 dataToPublish.push(current);
+                  contractAddresses.push(item.contractAddress);
                 next()
             }, (err) => {
                 console.log("dataToPublish", dataToPublish);
@@ -46,15 +50,20 @@ class PublishContractData {
                     };
                     reject(resData);
                 } else {
-
+                //  console.log("dataToPublish", dataToPublish);
                     resData = {
-                        data: dataToPublish
+                        data: dataToPublish,
+                        addresses:contractAddresses
                     };
-                    //  console.log("resData",resData);
+
+                  //  console.log("contractAddresses",contractAddresses);
                     resolve(resData);
                 }
                 //  cb(JSON.stringify(dataToPublish));
             });
+          }catch(err){
+            resolve(err);
+          }
 
         });
     }
@@ -95,17 +104,17 @@ class PublishContractData {
         return new Promise((resolve, reject) => {
             try {
                 var smartSponsor = privateWeb3.eth.contract(abi);
-                  var ss = smartSponsor.at("0x925d0a547e8ed929b0d4bfdbb64b3755cdb75ea9");
-
-                ss.getData.call({
-                    from: "0x925d0a547e8ed929b0d4bfdbb64b3755cdb75ea9"
-                }, (err, data) => {
-                    Logger.info("getData: ", data);
-
-
-                });
+                //   var ss = smartSponsor.at("0x925d0a547e8ed929b0d4bfdbb64b3755cdb75ea9");
+                //
+                // ss.getData.call({
+                //     from: "0x925d0a547e8ed929b0d4bfdbb64b3755cdb75ea9"
+                // }, (err, data) => {
+                //     Logger.info("getData: ", data);
+                //
+                //
+                // });
                 var contractData = smartSponsor.new.getData(dataJSON, {
-                    from: "0xe908c0a14ff6cc5e46c0ada652af2c193b1191b1",
+                    from: privateWeb3.eth.coinbase,
                     data: bytecode
                 });
                 var estimate = privateWeb3.eth.estimateGas({
@@ -114,7 +123,7 @@ class PublishContractData {
 
                 console.log("estimate-->", estimate);
                 var ss = smartSponsor.new(dataJSON, {
-                    from: "0xe908c0a14ff6cc5e46c0ada652af2c193b1191b1",
+                    from: privateWeb3.eth.coinbase,
                     gas: estimate,
                     data: bytecode
                 }, (err, contract) => {
@@ -128,7 +137,8 @@ class PublishContractData {
                     } else if (contract.address) {
                         Logger.info("contract address : ", contract.address);
                         resolve({
-                            contractData: contract
+                            contractaddress: contract.address,
+                            contracttrans : contract.transactionHash
                         });
                     } else {
                         Logger.info("A transmitted, waiting for mining...");
@@ -142,9 +152,32 @@ class PublishContractData {
 
     }
 
+    updateTheDatabase(updateAddress,contractAddress){
+      return new Promise((resolve, reject) => {
+        let resData ={};
+        console.log("contractAddress-->",updateAddress,contractAddress[0])
+  //       .query()
+  // .patch({lastName: 'Dinosaur'})
+  // .where('age', '>', 60)
+  // .then(function (numUpdated) {
+        domain.Contract.query()
+         .patch({'publishedAddress': updateAddress,'Published':'y'})
+        .where('contractAddress','in', contractAddress).then((databaseReturn) => {
+          if(!databaseReturn){
+            resData = {data:databaseReturn};
+            resolve(resData);
+          }else{
+            resData = {message:"data not updated"};
+            reject(resData)
+          }
+        });
+      });
+    }
+
     callFunction() {
         console.log("Promise-->", Promise);
         var Json = {};
+        var contractAddress =[];
         this.collectData().then((data) => {
                 //  Logger.info("data111", data);
 
@@ -152,17 +185,23 @@ class PublishContractData {
                 console.log("data is present", data.message)
             }).then((JSONdata) => {
                 Json = JSON.stringify(JSONdata.data);
-                console.log("Json is present", JSONdata)
+                contractAddress = JSONdata.addresses;
+              //  console.log("Json is present", JSONdata,contractAddress)
                 return this.createContractAbi();
 
             })
             .then((data) => {
                 console.log("contract abi")
                 return this.createContract(Json, "0x" + data.bytecode, data.abi);
+            }).then((sucess) => {
+                this.updateTheDatabase(sucess.contractaddress,contractAddress);
+            //  console.log("contractAddress",sucess,contractAddress);
+            }).then((updateSuccess) =>{
+                console.log("updateSuccess",updateSuccess);
             })
-            .catch(function(catchErr) {
+            .catch((catchErr) => {
                 Logger.info("catchErr", catchErr)
-            })
+            });
     }
 
 }

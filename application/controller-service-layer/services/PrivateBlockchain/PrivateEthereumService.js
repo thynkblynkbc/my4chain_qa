@@ -22,7 +22,22 @@
             recordObj.decryptHash=utility.decrypt(recordObj.encryptHash,'hex','utf8',recordObj.salt);
             console.log("recordObj: ",recordObj);
             this.interpetate(recordObj,(ownerMember,ownerMemberAction,recipientMember,recipientMemberAction)=>{
-             console.log("recordObj1111-->",recordObj)
+          //   console.log("recordObj1111-->",recordObj)
+             var contractData = smartSponsor.new.getData(recordObj.encryptHash,recordObj.owner,
+             ownerMember
+             ,ownerMemberAction,recordObj.recipient,//[1,2,3,4,0,6,5,4,3]
+             recipientMember,
+             recipientMemberAction,
+             recordObj.startfrom,
+             recordObj.expireDate,{
+                   from: recordObj.owner,
+                     gas: gas,
+                     data : bytecode
+                   });
+                   var estimate = privateWeb3.eth.estimateGas({
+                       data: contractData
+                   })
+                   Logger.info("estimate ",estimate);
             var ss = smartSponsor.new(recordObj.encryptHash,recordObj.owner,
             ownerMember
             ,ownerMemberAction,recordObj.recipient,//[1,2,3,4,0,6,5,4,3]
@@ -31,18 +46,20 @@
             recordObj.startfrom,
             recordObj.expireDate,{
                   from: recordObj.owner,
-                    gas: gas+3000000,
+                    gas: estimate,
                     data : bytecode
                   }, (err, contract) => {
                     if (err) {
                         console.error(err);
-                        callback(err, err);
-                        return;
+                      //  callback(err, err);
+                      //  return;
                     } else if (contract.address) {
+                      console.log("address ",contract.address);
                         Logger.info(new Date());
                         utility.saveToDb(contract, abi, recordObj, bytecode, gas, callback);
                     } else {
                         Logger.info("A transmitted, waiting for mining...",contract.transactionHash);
+                       callback(null,{contractDet:contract.transactionHash})
                         Logger.info(new Date());
                     }
                 });
@@ -57,7 +74,7 @@
                  console.log("run interpetate")
 
             utility.convertToAbi((bytecode, smartSponsor, abi) => {
-                Logger.info("Unlocking account -----------");
+                Logger.info("Unlocking account1 -----------");
                   Logger.info(new Date());
                 //  utility.unlockAccount(recordObj.owner, recordObj.password, 30, (error, result) => {
                 //     if (!result) {
@@ -70,19 +87,20 @@
                 //     } else {
                         Logger.info(new Date());
                         Logger.info("unlocked");
-                      utility.estimateGas(recordObj.owner, bytecode, (error, gas) => {
-                            if (error) {
-                              console.log("gas",gas)
-                                resData = new Error("Issue with blockchain");
-                                resData.status = 500;
-
-                                callback(resData, null);
-                                // callback(error, gas);
-                                // return;
-                            } else {
+                        let gas =0;
+                      // utility.estimateGas(recordObj.owner, bytecode, (error, gas) => {
+                      //       if (error) {
+                      //         console.log("gas",gas)
+                      //           resData = new Error("Issue with blockchain");
+                      //           resData.status = 500;
+                      //
+                      //           callback(resData, null);
+                      //           // callback(error, gas);
+                      //           // return;
+                      //       } else {
                                 this.createContract(smartSponsor, recordObj, bytecode, gas, abi, callback);
-                            }
-                        });
+                        //     }
+                        // });
                 //     }
                 // });
             });
@@ -119,11 +137,11 @@
                         }]
                     }, (err, results)=> {
                         console.log('err = ', err);
-                        console.log('results = ', results);
-                        console.log("ownerMember -->",ownerMember);
-                        console.log("ownerMemberAction -->",ownerMemberAction);
-                          console.log("recipientMember -->",recipientMember);
-                            console.log("recipientMemberAction -->",recipientMemberAction);
+                        // console.log('results = ', results);
+                        // console.log("ownerMember -->",ownerMember);
+                        // console.log("ownerMemberAction -->",ownerMemberAction);
+                        //   console.log("recipientMember -->",recipientMember);
+                        //     console.log("recipientMemberAction -->",recipientMemberAction);
                         funCallback(ownerMember,ownerMemberAction,recipientMember,recipientMemberAction);
 
                     });
@@ -194,13 +212,13 @@
                 selectData = JSON.parse(selectData);
                 let smartSponsor = privateWeb3.eth.contract(selectData);
                 var ss = smartSponsor.at(recordObj.contractAddress);
-                Logger.info("Unlock Account ----------------");
-                utility.unlockAccount(recordObj.accountAddress, recordObj.password,60, (error, result) => {
-                  console.log("err",error,"res",result);
-                    if (!result) {
-                        callback(error, result);
-                        return;
-                    } else {
+            //    Logger.info("Unlock Account ----------------");
+                // utility.unlockAccount(recordObj.accountAddress, recordObj.password,60, (error, result) => {
+                //   console.log("err",error,"res",result);
+                //     if (!result) {
+                //         callback(error, result);
+                //         return;
+                //     } else {
                         // utility.estimateGas(recordObj.parentAddress, bytecode, (error, gas) => {
                         //     if (error) {
                         //         callback(error, gas);
@@ -211,8 +229,8 @@
 
                           //  }
                         //});
-                    }
-                });
+                //     }
+                // });
 
             });
 

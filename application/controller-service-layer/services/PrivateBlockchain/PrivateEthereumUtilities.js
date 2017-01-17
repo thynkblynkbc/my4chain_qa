@@ -87,7 +87,7 @@ class PrivateEthereumUtilities{
           arr.gasUsed = gas;
           //arr.tranHash = transactionHash;
           Logger.info("contractAddress: ", arr.contractAddress);
-          callback(null, arr);
+        //  callback(null, arr);
       });
   }
   encrypt(text, from, to, password) {

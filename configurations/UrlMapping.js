@@ -17,6 +17,14 @@
 									json: views.jsonView
 							}
 					}],
+					"/api/contractPublish/fetchData": [{
+							method: "GET",
+							action: controllers.publishDataController.fetchData,
+							views: {
+									json: views.jsonView
+							}
+					}],
+
 					"/api/v1/insertBalance": [{
 							method: "GET",
 							action: controllers.privateEthereumController.insertBalance,

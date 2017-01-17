@@ -106,10 +106,11 @@ class PrivateEthereumDetail {
                                 cb(null, resData);
                                 //callback(null, resData);
                             } else {
-
-                                resData = new Error(error);
-                                resData.status = 500;
-                                cb(resData, null);
+                                resData.totalConfirmations = 0;
+                                resData.message ="Block hash not genrated"
+                                //resData = new Error(error);
+                                //resData.status = 500;
+                                cb(null, resData);
                                 //callback(resData,null);
 
                             }

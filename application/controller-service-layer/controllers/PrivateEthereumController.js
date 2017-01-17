@@ -16,6 +16,8 @@ module.exports = function() {
         this.services.privateEthereumService.createAccount(req.body, res, callback);
     }
 
+  
+
     var smartContract = function(req, res, callback) {
 
         this.services.privateEthereumService.smartContract(req, res, callback);

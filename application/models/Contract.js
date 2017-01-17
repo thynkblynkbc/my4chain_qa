@@ -89,6 +89,16 @@ knex.schema.hasColumn('Contract', 'Published').then((isColumn) => {
          });
      }
 });
+knex.schema.hasColumn('Contract', 'publishedAddress').then((isColumn) => {
+     if (isColumn != true) {
+         knex.schema.table('Contract', function(table) {
+            table.string('publishedAddress'); // ethereum account address of contract creator/sender(first party admin)
+            }).then(function(data) {
+             console.log("publishedAddress row in table");
+         });
+     }
+});
+
 
 // Contract model.
 function Contract() {
@@ -112,7 +122,8 @@ Contract.jsonSchema = {
     startTime:{type:'dateTime'},
     endTime:{type:'dateTime'},
     Published:{type : 'string'},
-    fileHash:{type : 'string'}
+    fileHash:{type : 'string'},
+    publishedAddress:{type:'string'}
     }
 };
 // Basic ES6 compatible prototypal inheritance.
