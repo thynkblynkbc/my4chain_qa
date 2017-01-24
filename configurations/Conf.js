@@ -16,7 +16,7 @@ var configVariables = function () {
     switch (process.env.NODE_ENV) {
     case 'development':
         var config = {
-            port:3001,
+            port:3000,
             host: 'http://localhost:3001/',
             verificationUrl:'http://localhost:3001/verify/',
             emailFrom:'himanshu.sharma@oodlestechnologies.com',
@@ -31,7 +31,7 @@ var configVariables = function () {
 
     case 'staging':
         var config = {
-            port:80,
+            port:3000,
             host: 'http://localhost:3000/',
             verificationUrl:'http://localhost:3000/verify/',
             emailFrom:'himanshu.sharma@oodlestechnologies.com',
