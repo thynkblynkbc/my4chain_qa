@@ -82,7 +82,7 @@ class ConfirmRequest {
                         }
                     } else {
 
-                        resData = new Error("Issue with blockchain");
+                        resData = new Error(configurationHolder.errorMessage.blockchainIssue);
                         resData.status = 500;
                         cb(resData, null);
                         // callback(resData,null);
@@ -90,7 +90,7 @@ class ConfirmRequest {
                 });
 
             } else {
-                resData = new Error("Issue with blockchain");
+                resData = new Error(configurationHolder.errorMessage.blockchainIssue);
                 resData.status = 500;
                 cb(resData, null);
                 //callback(resData,null);

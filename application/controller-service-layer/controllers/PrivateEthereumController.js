@@ -15,8 +15,10 @@ module.exports = function() {
         // console.log(one);
         this.services.privateEthereumService.createAccount(req.body, res, callback);
     }
+    var latestBlock = function(req, res, callback){
+      return callback(null,privateWeb3.eth.getBlock(req.query.block));
+    }
 
-  
 
     var smartContract = function(req, res, callback) {
 
@@ -251,6 +253,7 @@ module.exports = function() {
         changestate: changestate,
         userdetail: userdetail,
         log: log,
+        latestBlock: latestBlock,
         requestConfirmation: requestConfirmation
 
     }

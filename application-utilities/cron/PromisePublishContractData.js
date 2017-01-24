@@ -13,7 +13,7 @@ class PublishContractData {
             domain.Contract.query().
             where("Published", "=", "n").limit(4).then((databaseReturn) => {
 
-                if (!databaseReturn) {
+                if (!databaseReturn || databaseReturn.length <= 0) {
                     //    Logger.info("error in data");
                     resData.message = "No data found";
                     reject(resData);
@@ -38,12 +38,15 @@ class PublishContractData {
             console.log("dataReturn", data.length)
             async.forEach(data, (item, next) => {
 
-     let current = item.contractAddress + "," + item.senderAddress + "," + item.fileHash +",http://localhost/block/"+item.id+ "|";
-                dataToPublish.push(current);
+     let current =   "extra data of transaction,"+item.fileHash +",http://localhost/block/"+item.id+ "|";
+
+                for(let i=0;i < 25;i++){
+                         dataToPublish.push(current);
+                }
                   contractAddresses.push(item.contractAddress);
                 next()
             }, (err) => {
-                console.log("dataToPublish", dataToPublish);
+                console.log("dataToPublish", dataToPublish.length);
                 if (err) {
                     resData = {
                         message: "error in genrating JSON"
@@ -117,15 +120,18 @@ class PublishContractData {
                     from: privateWeb3.eth.coinbase,
                     data: bytecode
                 });
+
+                  console.log("privateWeb3.eth.coinbase");
                 var estimate = privateWeb3.eth.estimateGas({
                     data: contractData
                 })
 
-                console.log("estimate-->", estimate);
+                console.log("estimate-->", estimate," length of ",bytecode.length);
                 var ss = smartSponsor.new(dataJSON, {
-                    from: privateWeb3.eth.coinbase,
+                    from: privateWeb3.eth.coinbase,//privateWeb3.eth.coinbase,
                     gas: estimate,
-                    data: bytecode
+                    data: bytecode,
+                  //  gasPrice:3000000000
                 }, (err, contract) => {
                     Logger.info("createContract");
                     if (err) {
@@ -141,7 +147,7 @@ class PublishContractData {
                             contracttrans : contract.transactionHash
                         });
                     } else {
-                        Logger.info("A transmitted, waiting for mining...");
+                        Logger.info("A transmitted, waiting for mining...",contract.transactionHash);
                         Logger.info(new Date());
                     }
                 });

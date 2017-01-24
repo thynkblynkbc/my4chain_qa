@@ -12,6 +12,8 @@ var ipfsAPI = require('ipfs-api')
 global.validater = require('express-validation')
 global.validationFile = require('../application-utilities/Validater')
 
+global.nonce = 2;
+
 // connect to ipfs daemon API server
 // global.ipfs = ipfsAPI('localhost', '5001', {
 //     protocol: 'http'
@@ -65,7 +67,7 @@ redisClient.on('connect', function(err, reply) {
 // Give the connection to objection.
 Model.knex(knex);
 //global.dbConnection = require('./Datasource.js').getDbConnection()
-
+global.domain = require('../configurations/DomainInclude.js');
 global.dbConnection = require('./PgDatasource.js')
     //Ethereum_Web3 Library dependency
 //global.web3_extended = require('web3_ipc');
@@ -85,6 +87,7 @@ configurationHolder.security = require('../application-middlewares/Authorization
 //UTILITY CLASSES
 configurationHolder.EmailUtil = require('../application-utilities/EmailUtility')
 configurationHolder.errorMessage = require('./ApplicationMessages').appErrorMessages
+configurationHolder.successMessage = require('./ApplicationMessages').appSuccessMessage
 global.Logger = require('../application-utilities/LoggerUtility').logger
 
 module.exports = configurationHolder

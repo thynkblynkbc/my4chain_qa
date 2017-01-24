@@ -24,6 +24,27 @@ class PublishDataService {
             }
         });
     }
+    batchData(req,res,callback){
+        let batch = req.params.id;
+        let resData = {};
+        domain.Contract.query()
+        .select("id", "contractAddress", "transactionHash", "senderAddress", 
+       "createdAt", "receipentAddress", "fileHash", "publishedAddress")
+            .where("id", "=", batch).then((databaseReturn) => {
+
+                if (!databaseReturn) {
+                    //    Logger.info("error in data");
+                    resData.message = ("No data found");
+                    callback(null,resData);
+                } else {
+                    //  Logger.info("Data is found",resData);
+                    resData.message = "data found";
+                    resData.data = databaseReturn;
+                    callback(null,resData);
+                }
+
+            });
+    }
     sendData(req, res, callback) {
         var recordObj = req.body;
         var resData = {};
@@ -34,7 +55,7 @@ class PublishDataService {
             utility.unlockAccount(recordObj.owner, recordObj.password, 30, (error, result) => {
                 if (error) {
                     console.log(error)
-                    resData = new Error("Issue with blockchain");
+                    resData = new Error(configurationHolder.errorMessage.blockchainIssue);
                     resData.status = 500;
                     callback(resData, null);
                     return;
@@ -43,7 +64,7 @@ class PublishDataService {
                     Logger.info("unlocked");
                     utility.estimateGas(recordObj.owner, bytecode, (error, gas) => {
                         if (error) {
-                            resData = new Error("Issue with blockchain");
+                            resData = new Error(configurationHolder.errorMessage.blockchainIssue);
                             resData.status = 500;
                             callback(resData, null);
                         } else {

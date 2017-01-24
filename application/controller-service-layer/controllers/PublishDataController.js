@@ -8,8 +8,14 @@ module.exports = function() {
 
         this.services.publishDataService.getData(req, res, callback);
     }
+    var batchData = function(req, res, callback) {
+        //	var password=req.body.password;
+
+        this.services.publishDataService.batchData(req, res, callback);
+    }
     return {
         sendData: sendData,
-        fetchData: fetchData
+        fetchData: fetchData,
+        batchData: batchData
     }
 }

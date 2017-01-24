@@ -58,12 +58,13 @@ class PrivateEthereumUtilities{
 
   }
   decryptBuffer(buffer, password) {
-      var decipher = crypto.createDecipher('aes-256-cbc', password)
+
+      var decipher = crypto.createDecipher('aes-128-cbc', password)
       var dec = Buffer.concat([decipher.update(buffer), decipher.final()]);
       return dec;
   }
   encryptBuffer(buffer, password) {
-      var cipher = crypto.createCipher('aes-256-cbc', password)
+      var cipher = crypto.createCipher('aes-128-cbc', password)
       var crypted = Buffer.concat([cipher.update(buffer), cipher.final()]);
       return crypted;
   }
@@ -84,10 +85,10 @@ class PrivateEthereumUtilities{
           var arr = {};
           arr.contractAddress = contract.address;
           arr.txnHash = contract.transactionHash;
-          arr.gasUsed = gas;
+           //arr.gasUsed = gas;
           //arr.tranHash = transactionHash;
           Logger.info("contractAddress: ", arr.contractAddress);
-        //  callback(null, arr);
+         //callback(null, arr);
       });
   }
   encrypt(text, from, to, password) {

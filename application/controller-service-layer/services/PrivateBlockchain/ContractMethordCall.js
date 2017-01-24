@@ -212,13 +212,17 @@ class ContractMethordCall {
 
             case "assignAction":
                 //gasPrice: 11067000000000000
-                  console.log("gasActual: ",recordObj.memberAddress);
+                  Logger.info("gasActual: ",recordObj.memberAddress);
+                  Logger.info(new Date());
                   this.covertStringRoleToInt(recordObj.role,(intArray)=>{
                     var resData = {};
+                    Logger.info(new Date());
                 ss.assignAction.estimateGas(recordObj.memberAddress, intArray, {
                     from: recordObj.accountAddress
                 }, (err, gasActual) => {
-                    console.log("gasActual: ", gasActual);
+
+                    Logger.info("gasActual: ", gasActual);
+                    Logger.info(new Date());
                     if (!err) {
                         ss.assignAction(recordObj.memberAddress, intArray, {
                             from: recordObj.accountAddress,
@@ -226,7 +230,7 @@ class ContractMethordCall {
                         }, (err, data) => {
                           if(!err){
                           //console.log("err",err,"data",data)
-
+                            Logger.info(new Date());
                             resData.txnHash = data;
                             recordObj.txnHash = data;
                             this.contractLogSaveToDb(recordObj);
@@ -356,17 +360,17 @@ class ContractMethordCall {
                     //this.MethodCallBack(err, data, ss, callback, "decline");
                 });
                 break;
-            case "expire":
-                ss.expire.call({
-                    from: recordObj.accountAddress,
-                    gas: gas
-                }, (err, data) => {
-                    Logger.info("expire: ", data);
-                    var resData = {};
-                    resData.isExpire = data;
-                    callback(null, resData);
-                });
-                break;
+            // case "expire":
+            //     ss.expire.call({
+            //         from: recordObj.accountAddress,
+            //         gas: gas
+            //     }, (err, data) => {
+            //         Logger.info("expire: ", data);
+            //         var resData = {};
+            //         resData.isExpire = data;
+            //         callback(null, resData);
+            //     });
+            //     break;
             default:
                 var arr = {};
                 arr.message = "Method does not exit";

@@ -16,11 +16,13 @@
         // unlock account before transaction
 
         createContract(smartSponsor, recordObj, bytecode, gas, abi, callback) {
+            let  resData ={};
             Logger.info("-----Contract creation ----------", gas,recordObj.expireDate);
-            recordObj.salt=uuid.v1();
+            Logger.info(new Date());
+            recordObj.salt="123456";//uuid.v1();
             recordObj.encryptHash=utility.encrypt(recordObj.fileHash, 'utf8', 'hex',recordObj.salt);
             recordObj.decryptHash=utility.decrypt(recordObj.encryptHash,'hex','utf8',recordObj.salt);
-            console.log("recordObj: ",recordObj);
+          //  Logger.info("recordObj: ",recordObj);
             this.interpetate(recordObj,(ownerMember,ownerMemberAction,recipientMember,recipientMemberAction)=>{
           //   console.log("recordObj1111-->",recordObj)
              var contractData = smartSponsor.new.getData(recordObj.encryptHash,recordObj.owner,
@@ -34,35 +36,51 @@
                      gas: gas,
                      data : bytecode
                    });
-                   var estimate = privateWeb3.eth.estimateGas({
+                   privateWeb3.eth.estimateGas({
                        data: contractData
-                   })
-                   Logger.info("estimate ",estimate);
-            var ss = smartSponsor.new(recordObj.encryptHash,recordObj.owner,
-            ownerMember
-            ,ownerMemberAction,recordObj.recipient,//[1,2,3,4,0,6,5,4,3]
-            recipientMember,
-            recipientMemberAction,
-            recordObj.startfrom,
-            recordObj.expireDate,{
-                  from: recordObj.owner,
-                    gas: estimate,
-                    data : bytecode
-                  }, (err, contract) => {
-                    if (err) {
-                        console.error(err);
-                      //  callback(err, err);
-                      //  return;
-                    } else if (contract.address) {
-                      console.log("address ",contract.address);
-                        Logger.info(new Date());
-                        utility.saveToDb(contract, abi, recordObj, bytecode, gas, callback);
-                    } else {
-                        Logger.info("A transmitted, waiting for mining...",contract.transactionHash);
-                       callback(null,{contractDet:contract.transactionHash})
-                        Logger.info(new Date());
-                    }
-                });
+                   },(err,estimate)=>{
+                       if(err){
+                       Logger.info("error in estimate");
+                        resData = new Error(configurationHolder.errorMessage.blockchainIssue);
+                          resData.status = 500;
+
+                          callback(resData, null);
+                       }else{
+                   Logger.info("estimate ",estimate); Logger.info(new Date());
+                   let Trans = null;
+                                var ss = smartSponsor.new(recordObj.encryptHash,recordObj.owner,
+                                ownerMember
+                                ,ownerMemberAction,recordObj.recipient,//[1,2,3,4,0,6,5,4,3]
+                                recipientMember,
+                                recipientMemberAction,
+                                recordObj.startfrom,
+                                recordObj.expireDate,{
+                                    from: recordObj.owner,
+                                        gas: estimate,
+                                        data : bytecode,
+                                        gasPrice : 0
+                                  //      nonce : ++nonce
+                                    }, (err, contract) => {
+                                        if (err) {
+                                          console.error("err in contract creation",err);
+
+                                        callback(err, err);
+                                        //  return;
+                                        } else if (contract.address) {
+                                        console.log("address ",contract.address);
+                                            Logger.info(new Date());
+                                            utility.saveToDb(contract, abi, recordObj, bytecode, gas, callback);
+                                        } else {
+                                          Trans = contract.transactionHash;
+                                          Logger.info("A transmitted, waiting for mining...",contract.transactionHash);
+
+                                         Logger.info(new Date());
+                                             return callback(null,{contractDet:contract.transactionHash});
+
+                                        }
+                                    });
+                       }
+                 })
 
               });
         }
@@ -79,7 +97,7 @@
                 //  utility.unlockAccount(recordObj.owner, recordObj.password, 30, (error, result) => {
                 //     if (!result) {
                 //       console.log(error)
-                //       resData = new Error("Issue with blockchain");
+                //       resData = new Error(configurationHolder.errorMessage.blockchainIssue);
                 //       resData.status = 500;
                  //
                 //         callback(resData, null);
@@ -91,7 +109,7 @@
                       // utility.estimateGas(recordObj.owner, bytecode, (error, gas) => {
                       //       if (error) {
                       //         console.log("gas",gas)
-                      //           resData = new Error("Issue with blockchain");
+                      //           resData = new Error(configurationHolder.errorMessage.blockchainIssue);
                       //           resData.status = 500;
                       //
                       //           callback(resData, null);
@@ -115,28 +133,28 @@
             var recipientMemberAction = [];
                       async.auto({
                         owner_data: (callback)=>{
-                            console.log('in get_data');
+                          //  console.log('in get_data');
                             // async code to get some data
                             this.ownerArray(bodyData,ownerMember,ownerMemberAction,callback);
-                              console.log('out get_data');
+                          //    console.log('out get_data');
                           //  callback(null, 'data', 'owner in array');
                         },
                         recipient_data: (callback)=>{
-                            console.log('in make_folder');
+                          //  console.log('in make_folder');
                             this.recipientArray(bodyData,recipientMember,recipientMemberAction,callback);
-                            console.log('out make_data');
+                        //    console.log('out make_data');
                             // async code to create a directory to store a file in
                             // this is run at the same time as getting the data
                             //callback(null, 'recipent in array');
                         },
                         write_file: ['owner_data', 'recipient_data', (callback, results)=>{
-                          console.log('in write_file');
+                        //  console.log('in write_file');
                             // once there is some data and the directory exists,
                             // write the data to a file in the directory
                             callback(null, 'filename');
                         }]
                     }, (err, results)=> {
-                        console.log('err = ', err);
+                      //  console.log('err = ', err);
                         // console.log('results = ', results);
                         // console.log("ownerMember -->",ownerMember);
                         // console.log("ownerMemberAction -->",ownerMemberAction);
@@ -154,7 +172,7 @@
            async.forEach(bodyData.ownerMember, (ownerAction, ownerCallback) => {
              // push one by one address into owner member
 
-             console.log(count++);
+          //   console.log(count++);
                 ownerMember.push(ownerAction.address);
              async.forEach(ownerAction.action, (action, ownerMemberCallback) => {
                // push action of member one by one as member inserted respectively
@@ -163,14 +181,14 @@
                    }
                       ownerMemberCallback();
              },(err)=>{
-               console.log()
+          //     console.log()
                // insert 0 (zero) as delimiter of each use action
                        ownerMemberAction.push(0);
                   //     ownerMemberCallback();
                       ownerCallback();
              });
            } , (err)=>{
-             console.log("owner end----------------->")
+        //     console.log("owner end----------------->")
                 // ownerCallback();
                  ownerDataCallback(null,{});
 
@@ -183,7 +201,7 @@
            // take recipient member array
            async.forEach(bodyData.recipientMember, (recipientAction, recipientCallback) => {
                // push one by one address into recipient member
-                console.log("count",count++);
+            //    console.log("count",count++);
                 recipientMember.push(recipientAction.address);
              async.forEach(recipientAction.action, (action, recipientMemberCallback)=> {
                  // push action of member one by one as member inserted in array respectively
@@ -196,7 +214,7 @@
                        recipientCallback();
              });
            } , (err)=>{
-              console.log("recipient end")
+            //  console.log("recipient end")
                  //recipientCallback();
                  recipientDataCallback(null,{});
 
@@ -212,6 +230,7 @@
                 selectData = JSON.parse(selectData);
                 let smartSponsor = privateWeb3.eth.contract(selectData);
                 var ss = smartSponsor.at(recordObj.contractAddress);
+                Logger.info(new Date());
             //    Logger.info("Unlock Account ----------------");
                 // utility.unlockAccount(recordObj.accountAddress, recordObj.password,60, (error, result) => {
                 //   console.log("err",error,"res",result);
@@ -564,13 +583,13 @@
         createAccount(recordObj, res, callback) {
             var resData = {};
             //	Logger.info("privateWeb3.personal",privateWeb3.personal.newAccount);
-            Logger.info("In CreateAccount controller");
+            Logger.info("In CreateAccount  controller");
             privateWeb3.personal.newAccount(recordObj.ethPassword, function(error, result) {
                 if (!error) {
                     domain.User.query().insert({
                         email: recordObj.email,
                         ethPassword: recordObj.ethPassword,
-                        ethAddress: result
+                        accountAddress: result
                     }).then(function(data) {
                         console.log("Inserted data: ", data);
                         var databaseReturn = data;
@@ -583,7 +602,8 @@
                     // resData.address = result;
                     // callback(null, resData);
                 } else {
-                    resData = new Error("Issue with blockchain");
+                  console.log("error",error);
+                    resData = new Error(configurationHolder.errorMessage.blockchainIssue);
                     resData.status = 500;
                     callback(resData, null);
                 }
@@ -603,23 +623,18 @@
             var resData = {};
             Logger.info("gas needed");
             //  var data = 'Imroz created a transaction';
-            var encrypted = utility.encrypt(data, 'utf8', 'hex', 'oodles');
-            var decrypted = utility.decrypt(encrypted, 'hex', 'utf8', 'oodles');
-            console.log("data: ", data, encrypted, decrypted);
+            // var encrypted = utility.encrypt(data, 'utf8', 'hex', 'oodles');
+            // var decrypted = utility.decrypt(encrypted, 'hex', 'utf8', 'oodles');
+            // console.log("data: ", data, encrypted, decrypted);
 
-            privateWeb3.personal.unlockAccount(fromAddress, password, duration, (error, result) => {
-                if (!error) {
+            // privateWeb3.personal.unlockAccount(fromAddress, password, duration, (error, result) => {
+            //     if (!error) {
                     Logger.info("Amount sent-->", privateWeb3.toWei(1, 'ether'));
-                    utility.estimateGas(fromAddress, encrypted, (error, gas) => {
-                        if (error) {
-                            callback(error, gas);
-                            return;
-                        } else {
+
                             privateWeb3.eth.sendTransaction({
                                 from: fromAddress,
                                 to: toAddress,
-                                value: privateWeb3.toWei(amount, 'ether'),
-                                data: encrypted
+                                value: privateWeb3.toWei(amount, 'ether')
                             }, (tx_error, tx_result) => {
                                 if (!tx_error) {
                                     resData.transactionResult = tx_result;
@@ -629,12 +644,11 @@
                                     callback(tx_error);
                                 }
                             });
-                        }
-                    });
-                } else {
-                    callback(error);
-                }
-            });
+
+            //     } else {
+            //         callback(error);
+            //     }
+            // });
         }
         storeRequestConfirmation(requestid,tx_result){
           // redisClient.hmset(requestid,tx_result,0,function(err,object){

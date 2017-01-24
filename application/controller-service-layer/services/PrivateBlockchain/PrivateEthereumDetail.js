@@ -116,7 +116,7 @@ class PrivateEthereumDetail {
                             }
                         } else {
 
-                            resData = new Error("Issue with blockchain");
+                            resData = new Error(configurationHolder.errorMessage.blockchainIssue);
                             resData.status = 500;
                             cb(resData, null);
                             // callback(resData,null);
@@ -124,7 +124,7 @@ class PrivateEthereumDetail {
                     });
 
                 } else {
-                    resData = new Error("Issue with blockchain");
+                    resData = new Error(configurationHolder.errorMessage.blockchainIssue);
                     resData.status = 500;
                     cb(resData, null);
                     //callback(resData,null);
@@ -152,14 +152,17 @@ class PrivateEthereumDetail {
             if (!error) {
                 if (result != null) {
                     try {
-                        Logger.info("Result--->", result);
-                        console.log("data: ", privateWeb3.eth.getTransaction(tranxHash));
+                      // delete the contract data
+
+                      //  Logger.info("Result--->", result);
+                      //  console.log("data: ", privateWeb3.eth.getTransaction(tranxHash));
                         resData.transactionDetail = result;
                         if(result.input.slice(2).length>0){
-                           var input=new Buffer(result.input.slice(2),'hex').toString('utf8');
+                      //     var input=new Buffer(result.input.slice(2),'hex').toString('utf8');
+                             delete result.input;
                           //  resData.data=this.decrypt(input).toString('utf8');
-                          resData.data=input;
-                          console.log("input: ",input);
+                        //  resData.data=input;
+                        //  console.log("input: ",input);
                          }else {
                           resData.data="";
                         }
@@ -173,13 +176,13 @@ class PrivateEthereumDetail {
                         callback(resData, null);
                     }
                 } else {
-                    resData = new Error("Issue with blockchain");
+                    resData = new Error(configurationHolder.errorMessage.blockchainIssue);
                     resData.status = 500;
 
                     callback(resData, null);
                 }
             } else {
-                resData = new Error("Issue with blockchain");
+                resData = new Error(configurationHolder.errorMessage.blockchainIssue);
                 resData.status = 500;
 
                 callback(resData, null);

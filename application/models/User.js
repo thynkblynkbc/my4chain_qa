@@ -25,7 +25,7 @@ function User() {
 User.tableName = 'User';
 User.jsonSchema = {
   type: 'object',
-  required: ['email','password','ethPassword','accountAddress'],
+  required: ['email','ethPassword','accountAddress'],
   properties: {
     id: {type: 'integer'},
     email: {type: 'string', minLength: 1, maxLength: 255},
