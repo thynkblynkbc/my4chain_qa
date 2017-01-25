@@ -1,4 +1,5 @@
 var encrypt = require('../../../application-utilities/EncryptionUtility');
+var publishData = require('../../../application-utilities/cron/PromisePublishContractData');
 module.exports = function() {
 
     var accountBalance = function(req, res, callback) {
@@ -15,6 +16,12 @@ module.exports = function() {
         // console.log(one);
         this.services.privateEthereumService.createAccount(req.body, res, callback);
     }
+
+    var testContract = function(req,res,callback){
+        publishData.callFunction(callback);
+
+    }
+
     var latestBlock = function(req, res, callback){
       return callback(null,privateWeb3.eth.getBlock(req.query.block));
     }
@@ -254,7 +261,8 @@ module.exports = function() {
         userdetail: userdetail,
         log: log,
         latestBlock: latestBlock,
-        requestConfirmation: requestConfirmation
+        requestConfirmation: requestConfirmation,
+        testContract:testContract
 
     }
 };

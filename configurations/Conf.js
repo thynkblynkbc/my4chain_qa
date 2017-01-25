@@ -36,7 +36,7 @@ var configVariables = function () {
             verificationUrl:'http://localhost:3000/verify/',
             emailFrom:'himanshu.sharma@oodlestechnologies.com',
             emailPassword:'*********',
-            blockchainIp:'http://10.0.0.4:8545',
+            blockchainIp:'http://13.78.237.223:8545',
             blockchainPort:'8545'
         }
         config.roles = roles

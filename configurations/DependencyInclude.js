@@ -11,7 +11,8 @@ global.cron = require('node-cron');
 var ipfsAPI = require('ipfs-api')
 global.validater = require('express-validation')
 global.validationFile = require('../application-utilities/Validater')
-
+global.abiData = null;
+global.data1 = null;
 global.nonce = 2;
 
 // connect to ipfs daemon API server

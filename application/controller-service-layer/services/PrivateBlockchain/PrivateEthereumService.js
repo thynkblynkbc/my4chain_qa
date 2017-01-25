@@ -34,6 +34,7 @@
              recordObj.expireDate,{
                    from: recordObj.owner,
                      gas: gas,
+                     gasPrice :0,
                      data : bytecode
                    });
                    privateWeb3.eth.estimateGas({

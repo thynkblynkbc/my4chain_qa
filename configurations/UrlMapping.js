@@ -227,6 +227,13 @@
 	                    json: views.jsonView
 	                }
 	            }],
+							"/api/v1/contract/testContract": [{
+											method: "GET",
+											action: controllers.privateEthereumController.testContract,
+											views: {
+													json: views.jsonView
+											}
+									}],
 
 
 
