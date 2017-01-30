@@ -16,6 +16,8 @@
         // unlock account before transaction
 
         createContract(smartSponsor, recordObj, bytecode, gas, abi, callback) {
+
+          try{
             let  resData ={};
             Logger.info("-----Contract creation ----------", gas,recordObj.expireDate);
             Logger.info(new Date());
@@ -30,8 +32,8 @@
              ,ownerMemberAction,recordObj.recipient,//[1,2,3,4,0,6,5,4,3]
              recipientMember,
              recipientMemberAction,
-             recordObj.startfrom,
-             recordObj.expireDate,{
+             recordObj.startfromMilli,
+             recordObj.expireDateMilli,{
                    from: recordObj.owner,
                      gas: gas,
                      gasPrice :0,
@@ -47,15 +49,15 @@
 
                           callback(resData, null);
                        }else{
-                   Logger.info("estimate ",estimate); Logger.info(new Date());
+                   Logger.info("estimate ",estimate,recordObj.expireDateMilli); Logger.info(new Date());
                    let Trans = null;
                                 var ss = smartSponsor.new(recordObj.encryptHash,recordObj.owner,
                                 ownerMember
                                 ,ownerMemberAction,recordObj.recipient,//[1,2,3,4,0,6,5,4,3]
                                 recipientMember,
                                 recipientMemberAction,
-                                recordObj.startfrom,
-                                recordObj.expireDate,{
+                                recordObj.startfromMilli,
+                                recordObj.expireDateMilli,{
                                     from: recordObj.owner,
                                         gas: estimate,
                                         data : bytecode,
@@ -84,6 +86,14 @@
                  })
 
               });
+            }catch(err){
+              resData = new Error(configurationHolder.errorMessage.errorInApi);
+                resData.status = 409;
+
+                callback(resData, null);
+
+            }
+
         }
         // create a  smart contract
         smartContract(req, res, callback) {
@@ -98,12 +108,17 @@
                 //  utility.unlockAccount(recordObj.owner, recordObj.password, 30, (error, result) => {
                 //     if (!result) {
                 //       console.log(error)
-                //       resData = new Error(configurationHolder.errorMessage.blockchainIssue);
+                //       resData = new Error(configuratiorecordObj.startfromnHolder.errorMessage.blockchainIssue);
                 //       resData.status = 500;
                  //
                 //         callback(resData, null);
                 //         return;
                 //     } else {
+
+                      let startMilli = new Date(recordObj.startfrom).getTime()+"";
+                      let endMilli = new Date(recordObj.expireDate).getTime()+"";
+                      recordObj.startfromMilli = startMilli.slice(0,-3);
+                      recordObj.expireDateMilli = endMilli.slice(0,-3);
                         Logger.info(new Date());
                         Logger.info("unlocked");
                         let gas =0;

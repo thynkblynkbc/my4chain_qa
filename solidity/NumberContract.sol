@@ -458,7 +458,7 @@ contract documentAccessMapping is docMapping{
       return false;
     }
 
-    function getUserAction(address userId) public returns(string action, string state, address parent,address party,address expire,uint8 stateNext) {
+    function getUserAction(address userId) public returns(string action, string state, address parent,address party,uint expireContract) {
         uint8[] actionArray = users[userId].actions;
         string memory finalStrAction;
         string memory comma = ',';
@@ -469,7 +469,7 @@ contract documentAccessMapping is docMapping{
             finalStrAction = strConcat(finalStrAction, comma, rolesInt[actionArray[i]]);
         }
         usersLog(msg.sender,userId,finalStrAction,"getUserAction",now);
-        return (finalStrAction,contractState, users[userId].parentId,users[userId].party,whichParty,nextState);
+        return (finalStrAction,contractState, users[userId].parentId,users[userId].party,expireDate);
     }
 
     function expire() internal returns(bool isExpire) {

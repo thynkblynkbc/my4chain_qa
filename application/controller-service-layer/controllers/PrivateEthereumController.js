@@ -77,7 +77,7 @@ module.exports = function() {
     }
 
     var userdetail = function(req, res, callback) {
-        console.log("userdetail");
+        Logger.info("userdetail");
         this.services.privateEthereumService.userdetail(req, res, callback);
 
     }

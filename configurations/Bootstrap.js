@@ -26,23 +26,22 @@ var initApp = function() {
 function confirmRequest(){
 
     var cron = require('node-cron');
-    Logger.info("Cron function call")
-  //  
+    console.log("Cron function call")
+  //  publishData.callFunction();
     //   cron.schedule('*/5 * * * * *', function(){
     //     //   ConfirmationOfRequest.confirmRequestCRON();
     // publishData.callFunction();
-    // Logger.info('running every minute to 1 from 5');
-    // Logger.info(new Date());
+    // console.log('running every minute to 1 from 5');
+    // console.log(new Date());
     // });
 
 
   }
 
-
 function createContractAbi() {
     fs.readFile('./solidity/NumberContract.sol', 'utf8', function(err, solidityCode) {
         if (err) {
-            Logger.info("error in reading file: ", err);
+            console.log("error in reading file: ", err);
             return;
         } else {
             Logger.info("File Path: ", './solidity/NumberContract.sol');
@@ -61,7 +60,7 @@ function createContractAbi() {
             } catch (e) {
                 if (e) {
                     Logger.info(e);
-                    Logger.info("error:", e);
+                    console.log("error:", e);
                 }
             }
         }
