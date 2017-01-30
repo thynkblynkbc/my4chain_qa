@@ -45,7 +45,7 @@ var configVariables = function () {
 
     case 'production':
        var config = {
-            port:80,
+            port:3000,
             host: 'http://localhost:3000/',
             verificationUrl:'http://localhost:3000/verify/',
             emailFrom:'himanshu.sharma@oodlestechnologies.com',
