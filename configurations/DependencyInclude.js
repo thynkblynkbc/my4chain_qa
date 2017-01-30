@@ -54,15 +54,15 @@ var redis = require('redis');
 var port = 6379;
 var host = "127.0.0.1";
 global.redisClient = null;
-redisClient = redis.createClient(port, host);
-redisClient.on('connect', function(err, reply) {
-    if (err) {
-        Logger.info("Error with connection with redis");
-
-    } else {
-        Logger.info("connected with redis");
-    }
-});
+// redisClient = redis.createClient(port, host);
+// redisClient.on('connect', function(err, reply) {
+//     if (err) {
+//         Logger.info("Error with connection with redis");
+//
+//     } else {
+//         Logger.info("connected with redis");
+//     }
+// });
 //global.knex = Promise.promisifyAll(global.knex);
 
 // Give the connection to objection.
