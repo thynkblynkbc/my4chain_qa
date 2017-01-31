@@ -669,7 +669,7 @@
                             }, (tx_error, tx_result) => {
                                 if (!tx_error) {
                                     resData.transactionResult = tx_result;
-                                    this.storeRequestConfirmation(requestid,tx_result);
+                                //    this.storeRequestConfirmation(requestid,tx_result);
                                     callback(null, resData);
                                 } else {
                                     callback(tx_error);
