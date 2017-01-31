@@ -68,8 +68,13 @@
                                     }, (err, contract) => {
                                         if (err) {
 //                                        Logger.info("err in contract creation1",err);
+                                          try{
+                                        Logger.info("err in contract creation",err);
 
                                         callback(err, null);
+                                      }catch(catchErr){
+                                          Logger.info("secondcallback error",catchErr);
+                                      }
                                         //  return;
                                         } else if (contract.address) {
                                         console.log("address ",contract.address);
