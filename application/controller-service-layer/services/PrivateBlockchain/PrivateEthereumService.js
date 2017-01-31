@@ -67,9 +67,13 @@
                                   //      nonce : ++nonce
                                     }, (err, contract) => {
                                         if (err) {
+                                          try{
                                         Logger.info("err in contract creation",err);
 
                                         callback(err, null);
+                                      }catch(catchErr){
+                                          Logger.info("secondcallback error",catchErr);
+                                      }
                                         //  return;
                                         } else if (contract.address) {
                                         console.log("address ",contract.address);
