@@ -66,6 +66,7 @@
                                   //      nonce : ++nonce
                                     }, (err, contract) => {
                                         if (err) {
+//                                        Logger.info("err in contract creation1",err);
                                           try{
                                         Logger.info("err in contract creation",err);
 
