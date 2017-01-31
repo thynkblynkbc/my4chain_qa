@@ -328,10 +328,9 @@ contract documentAccessMapping is docMapping{
             }
         }
     }
-    /*nextState = 1;
-    whichParty = _otherParty;*/
+
     function acknowledge() isAcceptDecline {
-        if (msg.sender == _otherParty || (checkRole(msg.sender, roles[6]) && users[msg.sender].party!=address(0))) {
+        if (msg.sender == admin || (checkRole(msg.sender, roles[6]) && users[msg.sender].party!=address(0))) {
               contractState = "ACK";
               usersLog(msg.sender,msg.sender,"Contract in acknowledge state","acknowledge",now);
         }else{
@@ -382,7 +381,7 @@ contract documentAccessMapping is docMapping{
 
     function review(uint iscomment,string comment,string encryptFileHash) isAcceptDecline {
         string memory message;
-        if (checkRole(msg.sender, roles[5]) ) {
+        if (checkRole(msg.sender, roles[5])) {
             if (iscomment == 1) {
                 filehashes[fileIndex].fh=encryptFileHash;
                 filehashes[fileIndex].comment=comment;
@@ -459,7 +458,7 @@ contract documentAccessMapping is docMapping{
       return false;
     }
 
-    function getUserAction(address userId) public returns(string action, string state, address parent,address party,address expire,uint8 stateNext) {
+    function getUserAction(address userId) public returns(string action, string state, address parent,address party,uint expireContract) {
         uint8[] actionArray = users[userId].actions;
         string memory finalStrAction;
         string memory comma = ',';
@@ -470,7 +469,7 @@ contract documentAccessMapping is docMapping{
             finalStrAction = strConcat(finalStrAction, comma, rolesInt[actionArray[i]]);
         }
         usersLog(msg.sender,userId,finalStrAction,"getUserAction",now);
-        return (finalStrAction,contractState, users[userId].parentId,users[userId].party,whichParty,nextState);
+        return (finalStrAction,contractState, users[userId].parentId,users[userId].party,expireDate);
     }
 
     function expire() internal returns(bool isExpire) {

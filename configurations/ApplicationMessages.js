@@ -1,6 +1,8 @@
 var appErrorMessages = {
     blockchainIssue :"Issue with blockchain",
-    errorInApi :"Error in api"
+    errorInApi :"Error in api",
+    errorInContract :"Error in contract creation.",
+    errorMsgForLogger:"Exception in project: "
 }
 var appSuccessMessage = {
 

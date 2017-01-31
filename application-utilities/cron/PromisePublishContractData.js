@@ -10,6 +10,7 @@ class PublishContractData {
         return new Promise(function(resolve, reject) {
             let resData = {};
             //shkjshdkj
+              Logger.info("Promise-->");
             domain.Contract.query().
             where("Published", "=", "n").limit(4).then((databaseReturn) => {
 
@@ -80,6 +81,7 @@ class PublishContractData {
                         message: "error in reading file"
                     })
                 } else {
+                  try{
                     Logger.info("-----compling solidity code ----------");
 
                     var compiled = solc.compile(solidityCode, 1).contracts.publicTransaction;
@@ -93,6 +95,12 @@ class PublishContractData {
                         abi: solAbi,
                         bytecode: solBytecode
                     });
+
+                  }catch(err){
+                    reject({
+                        message: err
+                    })
+                  }
                     //  cb(solAbi, "0x"+solBytecode,smartSponsor);
 
                 }
@@ -181,10 +189,11 @@ class PublishContractData {
     }
 
     callFunction() {
-        Logger.info("Promise-->", Promise);
+        Logger.info("Promise-->");
         var Json = {};
         var contractAddress =[];
         this.collectData().then((data) => {
+            Logger.info("Promise-->");
                 //  Logger.info("data111", data);
 
                 return this.makeJsonData(data.data); //.bind(this, data.data);

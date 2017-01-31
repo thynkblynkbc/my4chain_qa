@@ -39,6 +39,7 @@
                      gasPrice :0,
                      data : bytecode
                    });
+              //     Logger.info("contractData -->",contractData)
                    privateWeb3.eth.estimateGas({
                        data: contractData
                    },(err,estimate)=>{
@@ -51,6 +52,7 @@
                        }else{
                    Logger.info("estimate ",estimate,recordObj.expireDateMilli); Logger.info(new Date());
                    let Trans = null;
+                   try{
                                 var ss = smartSponsor.new(recordObj.encryptHash,recordObj.owner,
                                 ownerMember
                                 ,ownerMemberAction,recordObj.recipient,//[1,2,3,4,0,6,5,4,3]
@@ -65,9 +67,9 @@
                                   //      nonce : ++nonce
                                     }, (err, contract) => {
                                         if (err) {
-                                          console.error("err in contract creation",err);
+                                        Logger.info("err in contract creation",err);
 
-                                        callback(err, err);
+                                        callback(err, null);
                                         //  return;
                                         } else if (contract.address) {
                                         console.log("address ",contract.address);
@@ -82,6 +84,11 @@
 
                                         }
                                     });
+                                }catch(catchErr){
+                                 Logger.info(configurationHolder.errorMessage.errorMsgForLogger+catchErr);
+                                    callback(catchErr, null);
+                                    return;
+                                }
                        }
                  })
 
@@ -102,7 +109,14 @@
             // call a function to covert abi defination of contract
                  console.log("run interpetate")
 
-            utility.convertToAbi((bytecode, smartSponsor, abi) => {
+            utility.convertToAbi((error,utiData) => {
+              if(error){
+                resData = new Error(configurationHolder.errorMessage.errorInContract);
+                  resData.status = 403;
+
+                  callback(resData, null);
+              }else{
+              let bytecode =utiData.bytecode, smartSponsor =utiData.smartSponsor, abi =utiData.abi;
                 Logger.info("Unlocking account1 -----------");
                   Logger.info(new Date());
                 //  utility.unlockAccount(recordObj.owner, recordObj.password, 30, (error, result) => {
@@ -137,6 +151,7 @@
                         // });
                 //     }
                 // });
+              }
             });
             //});
         }

@@ -105,8 +105,8 @@ class ContractMethordCall {
         switch (recordObj.action) {
             case "getData":
                 ss.getData.call({
-                    from: recordObj.adminAddress,
-                    gas: gas
+                    // from: recordObj.adminAddress,
+                    // gas: gas
                 }, (err, data) => {
                     Logger.info("getUserAction: ", data);
                     var resData = {};
@@ -217,6 +217,7 @@ class ContractMethordCall {
                   this.covertStringRoleToInt(recordObj.role,(intArray)=>{
                     var resData = {};
                     Logger.info(new Date());
+                    try{
                 ss.assignAction.estimateGas(recordObj.memberAddress, intArray, {
                     from: recordObj.accountAddress
                 }, (err, gasActual) => {
@@ -249,11 +250,20 @@ class ContractMethordCall {
 
             });
 
+          }catch(catchErr){
+            Logger.info(configurationHolder.errorMessage.errorMsgForLogger+catchErr);
+            resData = new Error(catchErr);
+              resData.status = 409;
+
+              callback(resData, null);
+              return;
+          }
+
           });
               break;
             case "getUserAction":
                 ss.getUserAction.call(recordObj.accountAddress,{
-                    from: recordObj.accountAddress
+                    //from:recordObj.accountAddress
                 }, (err, data) => {
                     Logger.info("getUserAction: ", data);
                     var resData = {};
