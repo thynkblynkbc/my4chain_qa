@@ -14,11 +14,11 @@ var initApp = function() {
     Logger.info("config" + configurationHolder.config.accessLevels["anonymous"]);
     //  startWeb3Ethereum();
       startPrivateWeb3Ethereum();
-     //createContractAbi();
+     createContractAbi();
       createPerson();
 
      confirmRequest();
-     bootApplication();
+  //   bootApplication();
   //  confirmRequestCRON.
 
 }
