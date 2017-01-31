@@ -62,8 +62,7 @@
                                 recordObj.expireDateMilli,{
                                     from: recordObj.owner,
                                         gas: estimate,
-                                        data : bytecode,
-                                        gasPrice : 0
+                                        data : bytecode
                                   //      nonce : ++nonce
                                     }, (err, contract) => {
                                         if (err) {
