@@ -84,7 +84,7 @@
                                           Logger.info("A transmitted, waiting for mining...",contract.transactionHash);
 
                                          Logger.info(new Date());
-                                            // return callback(null,{contractDet:contract.transactionHash});
+                                             return callback(null,{contractDet:contract.transactionHash});
 
                                         }
                                     });
