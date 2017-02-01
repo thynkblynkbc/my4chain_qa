@@ -27,30 +27,30 @@
           //  Logger.info("recordObj: ",recordObj);
             this.interpetate(recordObj,(ownerMember,ownerMemberAction,recipientMember,recipientMemberAction)=>{
           //   console.log("recordObj1111-->",recordObj)
-             var contractData = smartSponsor.new.getData(recordObj.encryptHash,recordObj.owner,
-             ownerMember
-             ,ownerMemberAction,recordObj.recipient,//[1,2,3,4,0,6,5,4,3]
-             recipientMember,
-             recipientMemberAction,
-             recordObj.startfromMilli,
-             recordObj.expireDateMilli,{
-                   from: recordObj.owner,
-                     gas: gas,
-                     gasPrice :0,
-                     data : bytecode
-                   });
-              //     Logger.info("contractData -->",contractData)
-                   privateWeb3.eth.estimateGas({
-                       data: contractData
-                   },(err,estimate)=>{
-                       if(err){
-                       Logger.info("error in estimate");
-                        resData = new Error(configurationHolder.errorMessage.blockchainIssue);
-                          resData.status = 500;
-
-                          callback(resData, null);
-                       }else{
-                   Logger.info("estimate ",estimate," milli ",recordObj.expireDateMilli); Logger.info(new Date());
+            //  var contractData = smartSponsor.new.getData(recordObj.encryptHash,recordObj.owner,
+            //  ownerMember
+            //  ,ownerMemberAction,recordObj.recipient,//[1,2,3,4,0,6,5,4,3]
+            //  recipientMember,
+            //  recipientMemberAction,
+            //  recordObj.startfromMilli,
+            //  recordObj.expireDateMilli,{
+            //        from: recordObj.owner,
+            //          gas: gas,
+            //          gasPrice :0,
+            //          data : bytecode
+            //        });
+            //   //     Logger.info("contractData -->",contractData)
+            //        privateWeb3.eth.estimateGas({
+            //            data: contractData
+            //        },(err,estimate)=>{
+            //            if(err){
+            //            Logger.info("error in estimate");
+            //             resData = new Error(configurationHolder.errorMessage.blockchainIssue);
+            //               resData.status = 500;
+             //
+            //               callback(resData, null);
+            //            }else{
+            //       Logger.info("estimate ",estimate," milli ",recordObj.expireDateMilli); Logger.info(new Date());
                    let Trans = null;
                    try{
                                 var ss = smartSponsor.new(recordObj.encryptHash,recordObj.owner,
@@ -61,7 +61,7 @@
                                 recordObj.startfromMilli,
                                 recordObj.expireDateMilli,{
                                     from: recordObj.owner,
-                                        gas: estimate,
+                                        gas: 8518064,//estimate,
                                         data : bytecode
                                   //      nonce : ++nonce
                                     }, (err, contract) => {
@@ -92,10 +92,10 @@
                                     callback(catchErr, null);
                                     return;
                                 }
-                       }
-                 })
-
-              });
+              //          }
+              //    })
+              //
+              // });
             }catch(err){
               resData = new Error(configurationHolder.errorMessage.errorInApi);
                 resData.status = 409;
