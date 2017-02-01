@@ -215,7 +215,7 @@ class PublishContractData {
                 Logger.info("updateSuccess",updateSuccess);
             })
             .catch((catchErr) => {
-                Logger.info("catchErr", catchErr)
+                Logger.info( catchErr)
             });
     }
 

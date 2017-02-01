@@ -67,7 +67,7 @@
                                     }, (err, contract) => {
                                         if (err) {
                                           try{
-                                        Logger.info("err in contract creation",err);
+    //                                    Logger.info("err in contract creation",err);
 
                                         callback(err, null);
                                       }catch(catchErr){
