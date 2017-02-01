@@ -8,6 +8,7 @@ class PrivateEthereumUtilities{
       privateWeb3.personal.unlockAccount(owner, password,  function(error, result) {
         console.log("result",result)
           cb(error, result);
+          return
       });
   }
   estimateGas(account, bytecode, cb) {
@@ -18,6 +19,7 @@ class PrivateEthereumUtilities{
           }, function(error, gas) {
               Logger.info("gas: ", error, gas);
               cb(error, gas);
+              return;
           });
       }
   selectForDataBase(contractAddress, cb) {
@@ -26,6 +28,7 @@ class PrivateEthereumUtilities{
               }).select().then(function(data) {
                   let contData = data;
                   cb(contData[0].abi, contData[0].bytecode, contData[0].salt);
+                  return;
               });
   }
       //  convert abi defination of contract
@@ -72,7 +75,7 @@ class PrivateEthereumUtilities{
     resData.bytecode="0x"+solBytecode;
     resData.smartSponsor=smartSponsor; resData.abi=solAbi;
      cb(null,resData);
-
+     return;
 
   }
   decryptBuffer(buffer, password) {
@@ -106,7 +109,7 @@ class PrivateEthereumUtilities{
            //arr.gasUsed = gas;
           //arr.tranHash = transactionHash;
           Logger.info("contractAddress: ", arr.contractAddress);
-         //return callback(null, arr);
+         return ;
       });
   }
   encrypt(text, from, to, password) {

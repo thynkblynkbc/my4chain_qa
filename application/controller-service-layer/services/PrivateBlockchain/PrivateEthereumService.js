@@ -78,7 +78,7 @@
                                         console.log("address ",contract.address);
                                             Logger.info(new Date());
 
-                                            utility.saveToDb(contract, abi, recordObj, bytecode, gas, callback);
+                                          return  utility.saveToDb(contract, abi, recordObj, bytecode, gas, callback);
                                         } else {
                                           Trans = contract.transactionHash;
                                           Logger.info("A transmitted, waiting for mining...",contract.transactionHash);
@@ -118,7 +118,7 @@
                 resData = new Error(configurationHolder.errorMessage.errorInContract);
                   resData.status = 403;
 
-                  callback(resData, null);
+                  return callback(resData, null);
               }else{
               let bytecode =utiData.bytecode, smartSponsor =utiData.smartSponsor, abi =utiData.abi;
                 Logger.info("Unlocking account1 -----------");
@@ -196,7 +196,7 @@
                         //   console.log("recipientMember -->",recipientMember);
                         //     console.log("recipientMemberAction -->",recipientMemberAction);
                         funCallback(ownerMember,ownerMemberAction,recipientMember,recipientMemberAction);
-
+                        return;
                     });
 
          }
@@ -226,6 +226,7 @@
         //     console.log("owner end----------------->")
                 // ownerCallback();
                  ownerDataCallback(null,{});
+                 return;
 
            });
 
@@ -252,7 +253,7 @@
             //  console.log("recipient end")
                  //recipientCallback();
                  recipientDataCallback(null,{});
-
+                 return;
            });
 
          }
