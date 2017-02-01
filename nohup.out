@@ -206,3 +206,291 @@ ContractLog Table added
   "level": "info",
   "message": "address=------> 0xb599b97c94de8150e4e4ea26c0c00d5dc933a512"
 }
+Live logging framwork
+Tue, 31 Jan 2017 14:12:46 GMT body-parser deprecated bodyParser: use individual json/urlencoded middlewares at app.js:16:9
+Tue, 31 Jan 2017 14:12:46 GMT body-parser deprecated undefined extended: provide extended option at node_modules/body-parser/index.js:105:29
+in load layers
+[ 'controllers', 'services', 'views' ]
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/controllers
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/controllers
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/controllers
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/controllers
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/messageQueue
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/views
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/views
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/views
+{ '/api/v1/contract/createaccount': 
+   [ { method: 'POST',
+       action: [Function: createAccount],
+       middleware: [Object],
+       views: [Object] } ],
+  '/api/v1/contract/txconfirmations': 
+   [ { method: 'GET',
+       action: [Function: transactionConfirmations],
+       views: [Object] } ],
+  '/api/v1/contract/transactiondetail': 
+   [ { method: 'GET',
+       action: [Function: transactionDetail],
+       views: [Object] } ],
+  '/api/v1/contract/createcontract': 
+   [ { method: 'POST',
+       action: [Function: smartContract],
+       middleware: [Object],
+       views: [Object] } ],
+  '/api/v1/contract/functionexcute': 
+   [ { method: 'POST',
+       action: [Function: sponsorContract],
+       middleware: [Object],
+       views: [Object] } ],
+  '/api/v1/contract/review': 
+   [ { method: 'POST',
+       action: [Function: review],
+       middleware: [Object],
+       views: [Object] } ],
+  '/api/v1/contract/revoke': 
+   [ { method: 'POST',
+       action: [Function: revoke],
+       middleware: [Object],
+       views: [Object] } ],
+  '/api/v1/contract/changestate': 
+   [ { method: 'POST',
+       action: [Function: changestate],
+       middleware: [Object],
+       views: [Object] } ],
+  '/api/v1/contract/userdetail': 
+   [ { method: 'POST',
+       action: [Function: userdetail],
+       middleware: [Object],
+       views: [Object] } ],
+  '/api/v1/contract/log': 
+   [ { method: 'POST',
+       action: [Function: log],
+       middleware: [Object],
+       views: [Object] } ],
+  '/api/v1/contract/fileModifylog': 
+   [ { method: 'POST',
+       action: [Function: fileModifylog],
+       middleware: [Object],
+       views: [Object] } ],
+  '/api/v1/contractPublish/fetchData': [ { method: 'GET', action: [Function: fetchData], views: [Object] } ],
+  '/api/v1/contractPublish/batchData/:id': [ { method: 'GET', action: [Function: batchData], views: [Object] } ],
+  '/api/v1/queue/reciveMessageQueue': 
+   [ { method: 'GET',
+       action: [Function: reciveMessageQueue],
+       views: [Object] } ],
+  '/api/v1/queue/sendToQueue': 
+   [ { method: 'GET',
+       action: [Function: sendMessageQueue],
+       views: [Object] } ],
+  '/api/v1/contract/Balance': 
+   [ { method: 'GET',
+       action: [Function: accountBalance],
+       views: [Object] } ],
+  '/api/v1/contract/sendether/:requestid': 
+   [ { method: 'POST',
+       action: [Function: privateSendether],
+       middleware: [Object],
+       views: [Object] } ],
+  '/api/v1/insertBalance': 
+   [ { method: 'GET',
+       action: [Function: insertBalance],
+       views: [Object] } ],
+  '/api/v1/publishdata': [ { method: 'POST', action: [Function: sendData], views: [Object] } ],
+  '/api/v1/contract/testContract': 
+   [ { method: 'GET',
+       action: [Function: testContract],
+       views: [Object] } ],
+  '/api/v1/requestconfirmation/:requestid': 
+   [ { method: 'GET',
+       action: [Function: requestConfirmation],
+       views: [Object] } ],
+  '/api/v1/chain/latestBlockdata': 
+   [ { method: 'GET',
+       action: [Function: latestBlock],
+       views: [Object] } ] }
+post
+get
+get
+post
+post
+post
+post
+post
+post
+post
+post
+get
+get
+get
+get
+get
+post
+get
+post
+get
+get
+get
+{
+  "level": "info",
+  "message": "configROLE_USER,ROLE_ADMIN,ROLE_SUPERADMIN,ROLE_DELEGATEADMIN"
+}
+{
+  "level": "info",
+  "message": "ethereum private network connected"
+}
+Cron function call
+{
+  "level": "info",
+  "message": "File Path:  ./solidity/NumberContract.sol"
+}
+"2017-01-31T14:12:46.630Z"
+{
+  "level": "info",
+  "message": "-----compling solidity code ----------"
+}
+"2017-01-31T14:12:46.630Z"
+{
+  "level": "info",
+  "message": "-----complile complete ----------"
+}
+"2017-01-31T14:12:58.219Z"
+{
+  "level": "info",
+  "message": "Express server listening on port 3000 in production mode"
+}
+Person Table added
+User Table added 
+Contract Table added 
+ContractLog Table added 
+{
+  "name": "brianc",
+  "level": "info",
+  "message": ""
+}
+{
+  "level": "info",
+  "message": "create a queue"
+}
+{
+  "level": "info",
+  "message": "Successfull"
+}
+run interpetate
+{
+  "level": "info",
+  "message": "Unlocking account1 -----------"
+}
+"2017-01-31T16:38:33.992Z"
+"2017-01-31T16:38:33.992Z"
+{
+  "level": "info",
+  "message": "unlocked"
+}
+{
+  "level": "info",
+  "message": "-----Contract creation ---------- 0 2018-01-26T10:07:16Z"
+}
+"2017-01-31T16:38:33.993Z"
+{
+  "level": "info",
+  "message": "estimate  3518064  milli  1516961236"
+}
+"2017-01-31T16:38:34.124Z"
+{
+  "level": "info",
+  "message": "A transmitted, waiting for mining... 0x4fd51dd979b8208be047e3311109f0baeb0d0c10a81c7beae521691cef928786"
+}
+"2017-01-31T16:38:34.147Z"
+run interpetate
+{
+  "level": "info",
+  "message": "Unlocking account1 -----------"
+}
+"2017-01-31T16:38:34.232Z"
+"2017-01-31T16:38:34.232Z"
+{
+  "level": "info",
+  "message": "unlocked"
+}
+{
+  "level": "info",
+  "message": "-----Contract creation ---------- 0 2018-01-26T10:07:16Z"
+}
+"2017-01-31T16:38:34.233Z"
+{
+  "level": "info",
+  "message": "estimate  3518064  milli  1516961236"
+}
+"2017-01-31T16:38:34.353Z"
+{
+  "level": "info"
+}
+Tue, 31 Jan 2017 16:38:34 GMT express deprecated res.send(body, status): Use res.status(status).send(body) instead at application/controller-service-layer/views/ErrorView.js:26:7
+run interpetate
+{
+  "level": "info",
+  "message": "Unlocking account1 -----------"
+}
+"2017-01-31T16:38:34.742Z"
+"2017-01-31T16:38:34.743Z"
+{
+  "level": "info",
+  "message": "unlocked"
+}
+{
+  "level": "info",
+  "message": "-----Contract creation ---------- 0 2018-01-26T10:07:16Z"
+}
+"2017-01-31T16:38:34.743Z"
+{
+  "level": "info",
+  "message": "estimate  3518064  milli  1516961236"
+}
+"2017-01-31T16:38:34.880Z"
+{
+  "level": "info"
+}
+/home/chaintrailadmin/nodeProject/my4chain/node_modules/solc/soljson.js:1
+(function (exports, require, module, __filename, __dirname) { var Module;if(!Module)Module=(typeof Module!=="undefined"?Module:null)||{};var moduleOverrides={};for(var key in Module){if(Module.hasOwnProperty(key)){moduleOverrides[key]=Module[key]}}var ENVIRONMENT_IS_WEB=typeof window==="object";var ENVIRONMENT_IS_WORKER=typeof importScripts==="function";var ENVIRONMENT_IS_NODE=typeof process==="object"&&typeof require==="function"&&!ENVIRONMENT_IS_WEB&&!ENVIRONMENT_IS_WORKER;var ENVIRONMENT_IS_SHELL=!ENVIRONMENT_IS_WEB&&!ENVIRONMENT_IS_NODE&&!ENVIRONMENT_IS_WORKER;if(ENVIRONMENT_IS_NODE){if(!Module["print"])Module["print"]=function print(x){process["stdout"].write(x+"\n")};if(!Module["printErr"])Module["printErr"]=function printErr(x){process["stderr"].write(x+"\n")};var nodeFS=require("fs");var nodePath=require("path");Module["read"]=function read(filename,binary){filename=nodePath["normalize"](filename);var ret=nodeFS["readFileSync"
+
+Error: CONNECTION ERROR: Couldn't connect to node http://13.78.237.223:8545.
+    at Object.InvalidConnection (/home/chaintrailadmin/nodeProject/my4chain/node_modules/web3/lib/web3/errors.js:28:16)
+    at HttpProvider.send (/home/chaintrailadmin/nodeProject/my4chain/node_modules/web3/lib/web3/httpprovider.js:75:22)
+    at RequestManager.send (/home/chaintrailadmin/nodeProject/my4chain/node_modules/web3/lib/web3/requestmanager.js:58:32)
+    at Object.send [as uninstallFilter] (/home/chaintrailadmin/nodeProject/my4chain/node_modules/web3/lib/web3/method.js:145:58)
+    at Filter.stopWatching (/home/chaintrailadmin/nodeProject/my4chain/node_modules/web3/lib/web3/filter.js:198:36)
+    at Object.callback (/home/chaintrailadmin/nodeProject/my4chain/node_modules/web3/lib/web3/contract.js:128:36)
+    at /home/chaintrailadmin/nodeProject/my4chain/node_modules/web3/lib/web3/method.js:142:25
+    at /home/chaintrailadmin/nodeProject/my4chain/node_modules/web3/lib/web3/requestmanager.js:89:9
+    at request.onreadystatechange (/home/chaintrailadmin/nodeProject/my4chain/node_modules/web3/lib/web3/httpprovider.js:110:13)
+    at dispatchEvent (/home/chaintrailadmin/nodeProject/my4chain/node_modules/xmlhttprequest/lib/XMLHttpRequest.js:591:25)
+    at setState (/home/chaintrailadmin/nodeProject/my4chain/node_modules/xmlhttprequest/lib/XMLHttpRequest.js:610:14)
+    at IncomingMessage.<anonymous> (/home/chaintrailadmin/nodeProject/my4chain/node_modules/xmlhttprequest/lib/XMLHttpRequest.js:447:13)
+    at emitNone (events.js:91:20)
+    at IncomingMessage.emit (events.js:185:7)
+    at endReadableNT (_stream_readable.js:974:12)
+    at _combinedTickCallback (internal/process/next_tick.js:74:11)
+    at process._tickCallback (internal/process/next_tick.js:98:9)
