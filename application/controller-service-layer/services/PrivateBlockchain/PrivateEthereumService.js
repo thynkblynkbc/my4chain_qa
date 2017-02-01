@@ -77,13 +77,14 @@
                                         } else if (contract.address) {
                                         console.log("address ",contract.address);
                                             Logger.info(new Date());
+
                                             utility.saveToDb(contract, abi, recordObj, bytecode, gas, callback);
                                         } else {
                                           Trans = contract.transactionHash;
                                           Logger.info("A transmitted, waiting for mining...",contract.transactionHash);
 
                                          Logger.info(new Date());
-                                             return callback(null,{contractDet:contract.transactionHash});
+                                            // return callback(null,{contractDet:contract.transactionHash});
 
                                         }
                                     });
