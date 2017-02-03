@@ -53,6 +53,8 @@
             //       Logger.info("estimate ",estimate," milli ",recordObj.expireDateMilli); Logger.info(new Date());
                    let Trans = null;
                    try{
+                     Logger.info("Date of logger");
+                     Logger.info(new Date());
                                 var ss = smartSponsor.new(recordObj.encryptHash,recordObj.owner,
                                 ownerMember
                                 ,ownerMemberAction,recordObj.recipient,//[1,2,3,4,0,6,5,4,3]
@@ -67,7 +69,9 @@
                                     }, (err, contract) => {
                                         if (err) {
                                           try{
-    //                                    Logger.info("err in contract creation",err);
+                                              Logger.info("Error");
+                                              Logger.info(err);
+
 
                                         callback(err, null);
                                       }catch(catchErr){
