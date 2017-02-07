@@ -53,7 +53,7 @@
             //       Logger.info("estimate ",estimate," milli ",recordObj.expireDateMilli); Logger.info(new Date());
                    let Trans = null;
                    try{
-                     Logger.info("Date of logger");
+                     Logger.info("Date of logger",recordObj.startfromMilli," ",recordObj.expireDateMilli);
                      Logger.info(new Date());
                                 var ss = smartSponsor.new(recordObj.encryptHash,recordObj.owner,
                                 ownerMember

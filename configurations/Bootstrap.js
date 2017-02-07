@@ -96,8 +96,9 @@ function startPrivateWeb3Ethereum() {
     //
     //      // set own provider
     //  } else {
-	console.log(configurationHolder.config.blockchainIp);
-    privateWeb3 = new Web3(new Web3.providers.HttpProvider(configurationHolder.config.blockchainIp));
+
+    var con =new Web3.providers.HttpProvider(configurationHolder.config.blockchainIp);
+    privateWeb3 = new Web3(con);
     // }
     if (!privateWeb3.isConnected()) {
         Logger.info("ethereum private network not connected");

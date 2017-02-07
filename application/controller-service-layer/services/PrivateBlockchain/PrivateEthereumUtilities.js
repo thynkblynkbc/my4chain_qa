@@ -8,7 +8,7 @@ class PrivateEthereumUtilities{
       privateWeb3.personal.unlockAccount(owner, password,  function(error, result) {
         console.log("result",result)
           cb(error, result);
-          return
+          return;
       });
   }
   estimateGas(account, bytecode, cb) {
@@ -108,6 +108,7 @@ class PrivateEthereumUtilities{
           arr.txnHash = contract.transactionHash;
            //arr.gasUsed = gas;
           //arr.tranHash = transactionHash;
+        //  callback(null ,arr)
           Logger.info("contractAddress: ", arr.contractAddress);
          return ;
       });
