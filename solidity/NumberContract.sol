@@ -207,7 +207,7 @@ contract documentAccessMapping is docMapping{
 
      for(uint8 i = 0;i < argAction.length ; i++){
       if(isPartyExist(users[msg.sender].party)){
-        if (checkRole(msg.sender, argAction[i])) { //1
+        if (checkRole(msg.sender, argAction[i]) && checkRole(msg.sender, argAction[1])) { //1
             if ( users[userId].party != address(0) ) { //2
                  existingUser(userId, argAction[i]);
             } //2
