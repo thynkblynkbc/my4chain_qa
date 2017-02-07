@@ -69,6 +69,7 @@
                                     }, (err, contract) => {
                                         if (err) {
                                           try{
+						console.log(err);
                                               Logger.info("Error");
                                               Logger.info(err);
 
