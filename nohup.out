@@ -494,3 +494,196 @@ Error: CONNECTION ERROR: Couldn't connect to node http://13.78.237.223:8545.
     at endReadableNT (_stream_readable.js:974:12)
     at _combinedTickCallback (internal/process/next_tick.js:74:11)
     at process._tickCallback (internal/process/next_tick.js:98:9)
+Live logging framwork
+Fri, 03 Feb 2017 09:47:51 GMT body-parser deprecated bodyParser: use individual json/urlencoded middlewares at app.js:16:9
+Fri, 03 Feb 2017 09:47:51 GMT body-parser deprecated undefined extended: provide extended option at node_modules/body-parser/index.js:105:29
+in load layers
+[ 'controllers', 'services', 'views' ]
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/controllers
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/controllers
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/controllers
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/controllers
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/PrivateBlockchain/solidity
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/services/messageQueue
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/views
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/views
+/home/chaintrailadmin/nodeProject/my4chain/application/controller-service-layer/views
+{ '/api/v1/contract/createaccount': 
+   [ { method: 'POST',
+       action: [Function: createAccount],
+       middleware: [Object],
+       views: [Object] } ],
+  '/api/v1/contract/txconfirmations': 
+   [ { method: 'GET',
+       action: [Function: transactionConfirmations],
+       views: [Object] } ],
+  '/api/v1/contract/transactiondetail': 
+   [ { method: 'GET',
+       action: [Function: transactionDetail],
+       views: [Object] } ],
+  '/api/v1/contract/createcontract': 
+   [ { method: 'POST',
+       action: [Function: smartContract],
+       middleware: [Object],
+       views: [Object] } ],
+  '/api/v1/contract/functionexcute': 
+   [ { method: 'POST',
+       action: [Function: sponsorContract],
+       middleware: [Object],
+       views: [Object] } ],
+  '/api/v1/contract/review': 
+   [ { method: 'POST',
+       action: [Function: review],
+       middleware: [Object],
+       views: [Object] } ],
+  '/api/v1/contract/revoke': 
+   [ { method: 'POST',
+       action: [Function: revoke],
+       middleware: [Object],
+       views: [Object] } ],
+  '/api/v1/contract/changestate': 
+   [ { method: 'POST',
+       action: [Function: changestate],
+       middleware: [Object],
+       views: [Object] } ],
+  '/api/v1/contract/userdetail': 
+   [ { method: 'POST',
+       action: [Function: userdetail],
+       middleware: [Object],
+       views: [Object] } ],
+  '/api/v1/contract/log': 
+   [ { method: 'POST',
+       action: [Function: log],
+       middleware: [Object],
+       views: [Object] } ],
+  '/api/v1/contract/fileModifylog': 
+   [ { method: 'POST',
+       action: [Function: fileModifylog],
+       middleware: [Object],
+       views: [Object] } ],
+  '/api/v1/contractPublish/fetchData': [ { method: 'GET', action: [Function: fetchData], views: [Object] } ],
+  '/api/v1/contractPublish/batchData/:id': [ { method: 'GET', action: [Function: batchData], views: [Object] } ],
+  '/api/v1/queue/reciveMessageQueue': 
+   [ { method: 'GET',
+       action: [Function: reciveMessageQueue],
+       views: [Object] } ],
+  '/api/v1/queue/sendToQueue': 
+   [ { method: 'GET',
+       action: [Function: sendMessageQueue],
+       views: [Object] } ],
+  '/api/v1/contract/Balance': 
+   [ { method: 'GET',
+       action: [Function: accountBalance],
+       views: [Object] } ],
+  '/api/v1/contract/sendether/:requestid': 
+   [ { method: 'POST',
+       action: [Function: privateSendether],
+       middleware: [Object],
+       views: [Object] } ],
+  '/api/v1/insertBalance': 
+   [ { method: 'GET',
+       action: [Function: insertBalance],
+       views: [Object] } ],
+  '/api/v1/publishdata': [ { method: 'POST', action: [Function: sendData], views: [Object] } ],
+  '/api/v1/contract/testContract': 
+   [ { method: 'GET',
+       action: [Function: testContract],
+       views: [Object] } ],
+  '/api/v1/requestconfirmation/:requestid': 
+   [ { method: 'GET',
+       action: [Function: requestConfirmation],
+       views: [Object] } ],
+  '/api/v1/chain/latestBlockdata': 
+   [ { method: 'GET',
+       action: [Function: latestBlock],
+       views: [Object] } ] }
+post
+get
+get
+post
+post
+post
+post
+post
+post
+post
+post
+get
+get
+get
+get
+get
+post
+get
+post
+get
+get
+get
+{
+  "level": "info",
+  "message": "configROLE_USER,ROLE_ADMIN,ROLE_SUPERADMIN,ROLE_DELEGATEADMIN"
+}
+http://13.78.237.223:8545
+{
+  "level": "info",
+  "message": "ethereum private network connected"
+}
+Cron function call
+{
+  "level": "info",
+  "message": "File Path:  ./solidity/NumberContract.sol"
+}
+"2017-02-03T09:47:51.702Z"
+{
+  "level": "info",
+  "message": "-----compling solidity code ----------"
+}
+"2017-02-03T09:47:51.703Z"
+{
+  "level": "info",
+  "message": "-----complile complete ----------"
+}
+"2017-02-03T09:48:04.066Z"
+{
+  "level": "info",
+  "message": "Express server listening on port 3000 in staging mode"
+}
+Person Table added
+User Table added 
+Contract Table added 
+ContractLog Table added 
+{
+  "name": "brianc",
+  "level": "info",
+  "message": ""
+}
+{
+  "level": "info",
+  "message": "create a queue"
+}
+{
+  "level": "info",
+  "message": "Successfull"
+}
