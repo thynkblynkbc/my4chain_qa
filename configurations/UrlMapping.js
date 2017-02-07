@@ -45,7 +45,7 @@
 				      }
 				    }],
 	        // excute the function of contract
-	        "/api/v1/contract/functionexcute": [{
+	        "/api/v1/contract/assignandremove": [{
 	            method: "POST",
 	            action: controllers.privateEthereumController.sponsorContract,
 	            middleware: [validater(validationFile.privateRunContract)],
