@@ -204,10 +204,10 @@ contract documentAccessMapping is docMapping{
   }*/
 
     function assignAction(address userId, uint8[] argAction) isAcceptDecline public returns(string) {
-
+        if (checkRole(msg.sender, argAction[i])) {
      for(uint8 i = 0;i < argAction.length ; i++){
       if(isPartyExist(users[msg.sender].party)){
-        if (checkRole(msg.sender, argAction[i]) && checkRole(msg.sender, argAction[1])) { //1
+        if (checkRole(msg.sender, argAction[i])) { //1
             if ( users[userId].party != address(0) ) { //2
                  existingUser(userId, argAction[i]);
             } //2
@@ -233,6 +233,12 @@ contract documentAccessMapping is docMapping{
 
       }
     }
+  }
+  else {
+      usersLog(msg.sender,userId,"Sorry, You are not authorized","assignAction",now);//*
+      /*GetValue(userId, users[userId].actions.length, "Not authorized");*/
+      return 'Sorry, You are not authorized';
+  }
 
     }
     function initizeRole(address ownerAddress,address[] ownerMember,uint8[] ownerAction,address secondPartyAddress,address[] secondPartyMember,uint8[] secondPartyAction)  public returns(string) {
