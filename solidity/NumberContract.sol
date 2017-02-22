@@ -119,7 +119,7 @@ contract documentAccessMapping is docMapping{
     }
 
     function allStates() internal {
-        states["ACK"] = "ACK";
+        /*states["ACK"] = "ACK";
         states["REVIEW"] = "REVIEW";
         states["MODIFY"] = "MODIFY";
         states["ACCEPT"] = "ACCEPT";
@@ -130,7 +130,7 @@ contract documentAccessMapping is docMapping{
         stateInt["MODIFY"] = 3;
         stateInt["ACCEPT"] = 4;
         stateInt["DECLINE"] = 5;
-        stateInt["REVOKE"] = 6;
+        stateInt["REVOKE"] = 6;*/
         /*
         states[1] = 1;
         states[2] = 2;
@@ -204,7 +204,7 @@ contract documentAccessMapping is docMapping{
   }*/
 
     function assignAction(address userId, uint8[] argAction) isAcceptDecline public returns(string) {
-        if (checkRole(msg.sender, argAction[i])) {
+    //    if (checkRole(msg.sender, argAction[i])) {
      for(uint8 i = 0;i < argAction.length ; i++){
       if(isPartyExist(users[msg.sender].party)){
         if (checkRole(msg.sender, argAction[i])) { //1
@@ -233,12 +233,12 @@ contract documentAccessMapping is docMapping{
 
       }
     }
-  }
-  else {
+//  }
+  /*else {
       usersLog(msg.sender,userId,"Sorry, You are not authorized","assignAction",now);//*
-      /*GetValue(userId, users[userId].actions.length, "Not authorized");*/
+
       return 'Sorry, You are not authorized';
-  }
+  }*/
 
     }
     function initizeRole(address ownerAddress,address[] ownerMember,uint8[] ownerAction,address secondPartyAddress,address[] secondPartyMember,uint8[] secondPartyAction)  public returns(string) {
@@ -427,7 +427,7 @@ contract documentAccessMapping is docMapping{
     function decline() isAcceptDecline {
     string memory message;
         if (checkRole(msg.sender, roles[4]) || msg.sender == admin) {   // 4 is CAN_DECLINE
-            contractState = states["DECLINE"];
+            contractState = "DECLINE";
             message = 'Contract in Decline state';
         } else {
             message = 'Sorry, You are not authorized';
@@ -443,7 +443,7 @@ contract documentAccessMapping is docMapping{
           message = 'Contract Sign';
 
           if(isPartySign()){
-              contractState = states["ACCEPT"];
+              contractState = "ACCEPT";
               message = 'Contract in Accept state';
             }
             else

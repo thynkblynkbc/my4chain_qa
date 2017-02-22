@@ -212,22 +212,22 @@ class ContractMethordCall {
 
             case "assignAction":
                 //gasPrice: 11067000000000000
-                  Logger.info("gasActual: ",recordObj.memberAddress);
+                  Logger.info("gasActual2: ",recordObj.memberAddress);
                   Logger.info(new Date());
                   this.covertStringRoleToInt(recordObj.role,(intArray)=>{
                     var resData = {};
-                    Logger.info(new Date());
-                    try{
-                ss.assignAction.estimateGas(recordObj.memberAddress, intArray, {
-                    from: recordObj.accountAddress
-                }, (err, gasActual) => {
-
-                    Logger.info("gasActual: ", gasActual);
-                    Logger.info(new Date());
-                    if (!err) {
+                    Logger.info("to estimate");
+                //    try{
+                // ss.assignAction.estimateGas(recordObj.memberAddress, intArray, {
+                //     from: recordObj.accountAddress
+                // }, (err, gasActual) => {
+                //
+                //     Logger.info("gasActual1: ", gasActual);
+                //     Logger.info(new Date());
+                //     if (!err) {
                         ss.assignAction(recordObj.memberAddress, intArray, {
                             from: recordObj.accountAddress,
-                            gas: gasActual
+                            gas: 1000000
                         }, (err, data) => {
                           if(!err){
                           //console.log("err",err,"data",data)
@@ -244,20 +244,21 @@ class ContractMethordCall {
                             //this.MethodCallBack(err, data, ss, callback, "assignAction");
                         });
 
-              } else {
-                callback(err, err);
-              }
+            //   } else {
+            //     callback(err, err);
+            //   }
+            //
+            // });
 
-            });
-
-          }catch(catchErr){
-            Logger.info(configurationHolder.errorMessage.errorMsgForLogger+catchErr);
-            resData = new Error(catchErr);
-              resData.status = 409;
-
-              callback(resData, null);
-              return;
-          }
+          // }catch(catchErr){
+          //       Logger.info("error ");
+          //   Logger.info(configurationHolder.errorMessage.errorMsgForLogger+catchErr);
+          //   resData = new Error(catchErr);
+          //     resData.status = 409;
+          //
+          //     callback(resData, null);
+          //     return;
+          // }
 
           });
               break;

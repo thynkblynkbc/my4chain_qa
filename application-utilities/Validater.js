@@ -23,6 +23,13 @@ module.exports = {
             recipient:Joi.string().required()
         }
     },
+    sendHashIntransaction : {
+      body: {
+        data: Joi.string().required(),
+        fromAddress: Joi.string().required(),
+        toAddress:Joi.string().required()
+      }
+    },
     privateRunContract: {
         body: {
             contractAddress: Joi.string().required(),

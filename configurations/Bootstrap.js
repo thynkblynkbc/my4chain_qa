@@ -13,30 +13,30 @@ var initApp = function() {
 
     Logger.info("config" + configurationHolder.config.accessLevels["anonymous"]);
     //  startWeb3Ethereum();
-      startPrivateWeb3Ethereum();
-     createContractAbi();
-      createPerson();
+    startPrivateWeb3Ethereum();
+    createContractAbi();
+    createPerson();
 
-     confirmRequest();
-  //   bootApplication();
-  //  confirmRequestCRON.
+    confirmRequest();
+    //   bootApplication();
+    //  confirmRequestCRON.
 
 }
 
-function confirmRequest(){
+function confirmRequest() {
 
     var cron = require('node-cron');
     console.log("Cron function call")
-  //  publishData.callFunction();
-    //   cron.schedule('*/5 * * * * *', function(){
-    //     //   ConfirmationOfRequest.confirmRequestCRON();
-    // publishData.callFunction();
-    // console.log('running every minute to 1 from 5');
-    // console.log(new Date());
-    // });
+        //  publishData.callFunction();
+        //    cron.schedule('*/10 * * * * *', function(){
+        //  ConfirmationOfRequest.confirmRequestCRON();
+        //  //publishData.callFunction();
+        // console.log('running every second to 10');
+        // // console.log(new Date());
+        // });
 
 
-  }
+}
 
 function createContractAbi() {
     fs.readFile('./solidity/NumberContract.sol', 'utf8', function(err, solidityCode) {
@@ -56,7 +56,7 @@ function createContractAbi() {
                 Logger.info("-----complile complete ----------");
                 Logger.info(new Date());
 
-                  bootApplication();
+                bootApplication();
             } catch (e) {
                 if (e) {
                     Logger.info(e);
@@ -90,6 +90,7 @@ function startWeb3Ethereum() {
 
 function startPrivateWeb3Ethereum() {
     var Web3 = require('web3');
+    var privateWeb3Con = {};
     global.privateWeb3 = {};
     //  if (typeof web3 !== 'undefined') {
     //      web3 = new Web3(web3.currentProvider);
@@ -97,16 +98,26 @@ function startPrivateWeb3Ethereum() {
     //      // set own provider
     //  } else {
 
-    var con =new Web3.providers.HttpProvider(configurationHolder.config.blockchainIp);
-    privateWeb3 = new Web3(con);
+    var con = new Web3.providers.HttpProvider(configurationHolder.config.blockchainIp);
+
+    privateWeb3Con = new Web3(con);
     // }
-    if (!privateWeb3.isConnected()) {
+    if (!privateWeb3Con.isConnected()) {
         Logger.info("ethereum private network not connected");
         // show some dialog to ask the user to start a node
 
     } else {
-      //  confirmRequest();
-        Logger.info("ethereum private network connected");
+        //  confirmRequest();
+
+        if (typeof privateWeb3Con !== 'undefined') {
+
+            privateWeb3 = new Web3(privateWeb3Con.currentProvider);
+                Logger.info("ethereum private network connected1",privateWeb3Con.currentProvider);
+        } else {
+            // set the provider you want from Web3.providers
+            privateWeb3 = new Web3(new Web3.providers.HttpProvider(configurationHolder.config.blockchainIp));
+                Logger.info("ethereum private network connected2");
+        }
         // start web3 filters, calls, etc
 
     }

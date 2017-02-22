@@ -47,7 +47,7 @@
 	        // excute the function of contract
 	        "/api/v1/contract/assignandremove": [{
 	            method: "POST",
-	            action: controllers.privateEthereumController.sponsorContract,
+	            action: controllers.privateEthereumController.assignandremove,
 	            middleware: [validater(validationFile.privateRunContract)],
 	            views: {
 	                json: views.jsonView
@@ -83,7 +83,24 @@
 	                json: views.jsonView
 	            }
 	        }],
-
+					// change state of contract ACK , DECLINE ,
+	        "/api/v1/contract/sendHashIntransaction": [{
+	            method: "POST",
+	            action: controllers.privateEthereumController.sendHashIntransaction,
+	            middleware: [validater(validationFile.sendHashIntransaction)],
+	            views: {
+	                json: views.jsonView
+	            }
+	        }],
+					// change state of contract ACK , DECLINE ,
+					"/api/v1/contract/getHashIntransaction": [{
+							method: "GET",
+							action: controllers.privateEthereumController.getHashIntransaction,
+							middleware: [],
+							views: {
+									json: views.jsonView
+							}
+					}],
 	        // get the detail of the contract
 	        "/api/v1/contract/userdetail": [{
 	            method: "POST",

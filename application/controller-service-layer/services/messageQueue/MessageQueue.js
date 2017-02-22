@@ -1,11 +1,13 @@
 'use strict';
 class MessageQueue {
 
+
     constructor() {
         this.azure = require('azure');
         this.nameSpace = "futuron.servicebus.windows.net/blockchaintest";
-        this.accessKey = "Endpoint=sb://himanshumy4chain.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=AubJZWkmCFoUrf3/m1ibdYTEQohfHh1DwtneQcQfh4U=";
+      //  this.accessKey = "Endpoint=sb://himanshumy4chain.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=AubJZWkmCFoUrf3/m1ibdYTEQohfHh1DwtneQcQfh4U=";
       //  this.accessKey = "Endpoint=sb://futuron.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=hfASZmV9Wc5A+i42JqJuW/RIOpUQzqhw8VPxhIdqtbg=";
+      this.accessKey =configurationHolder.config.azureQueue;
        this.azureObject = this.azure.createServiceBusService(this.accessKey);
        this.createAqueue();
     }
@@ -24,7 +26,7 @@ class MessageQueue {
 
     }
     sendToQueue(req,callback) {
-Logger.info("helo");
+Logger.info("inside sendQueue");
       var message = {
             body: "request Data",
             customProperties: {

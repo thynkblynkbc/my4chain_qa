@@ -22,6 +22,19 @@ class PrivateEthereumUtilities{
               return;
           });
       }
+      checkUserAuth(userAddress,password,cb){
+        domain.User.query().where({
+            'accountAddress': userAddress,
+            'ethPassword':password
+        }).select().then(function(data) {
+            if(data.length > 0){
+              cb(true);
+            return;
+          }else{
+            cb(false);return;
+          }
+        });
+      }
   selectForDataBase(contractAddress, cb) {
               domain.Contract.query().where({
                   'contractAddress': contractAddress
@@ -70,10 +83,13 @@ class PrivateEthereumUtilities{
     //         }
     //       }
     //   });
-       let smartSponsor = privateWeb3.eth.contract(solAbi);
+    var web3x =privateWeb3;
+       let smartSponsor = web3x.eth.contract(solAbi);
     let resData = {};
     resData.bytecode="0x"+solBytecode;
-    resData.smartSponsor=smartSponsor; resData.abi=solAbi;
+    resData.smartSponsor=smartSponsor;
+    resData.abi=solAbi;
+    resData.web3x=web3x;
      cb(null,resData);
      return;
 
@@ -106,6 +122,16 @@ class PrivateEthereumUtilities{
           var arr = {};
           arr.contractAddress = contract.address;
           arr.txnHash = contract.transactionHash;
+
+              domain.ContractLog.query().insert({
+                  contractAddress: contract.address,
+                  transactionHash: contract.transactionHash,
+                  callerAddress: recordObj.owner,
+                  action:"contract_create"
+              }).then(function(databaseReturn) {
+
+              });
+
            //arr.gasUsed = gas;
           //arr.tranHash = transactionHash;
         //  callback(null ,arr)
