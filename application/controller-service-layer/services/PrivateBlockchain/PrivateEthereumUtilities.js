@@ -105,6 +105,19 @@ class PrivateEthereumUtilities{
       var crypted = Buffer.concat([cipher.update(buffer), cipher.final()]);
       return crypted;
   }
+  saveToTransactionData(data) {
+      domain.TransactionDataLog.query().insert({
+        sendAddress: data.senderAddress,
+        reciveAddress: data.reciverAddress,
+        transactionHash:data.transactionHash
+      }).then(function(databaseReturn) {
+          //Logger.info("Inserted data: ", databaseReturn);
+          var arr = {};
+
+      //    Logger.info("contractAddress: ", arr.contractAddress);
+         return ;
+      });
+  }
   saveToDb(contract, abi, recordObj, bytecode, gas, callback) {
       domain.Contract.query().insert({
           contractAddress: contract.address,
@@ -139,6 +152,7 @@ class PrivateEthereumUtilities{
          return ;
       });
   }
+
   encrypt(text, from, to, password) {
       var cipher = crypto.createCipher('aes-256-cbc', password);
       var crypted = cipher.update(text, from, to);

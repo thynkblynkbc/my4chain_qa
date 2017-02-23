@@ -83,7 +83,7 @@
 	                json: views.jsonView
 	            }
 	        }],
-					// change state of contract ACK , DECLINE ,
+					// ,
 	        "/api/v1/contract/sendHashIntransaction": [{
 	            method: "POST",
 	            action: controllers.privateEthereumController.sendHashIntransaction,

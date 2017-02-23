@@ -25,7 +25,11 @@
                 }, (tx_error, tx_result) => {
                     if (!tx_error) {
                         resData.transactionResult = tx_result;
-                        //    this.storeRequestConfirmation(requestid,tx_result);
+                        let result={};
+                        result.senderAddress=req.body.fromAddress;
+                        result.reciverAddress=req.body.toAddress;
+                        result.transactionHash=tx_result;
+                            this.saveToTransactionData(result);
                         callback(null, resData);
                     } else {
                         callback(tx_error);
@@ -40,10 +44,19 @@
                 privateWeb3.eth.getTransaction(req.query.tranxHash, function(error, blockByHash) {
                     if (!error) {
                         if (blockByHash != null) {
-
-                            resData = blockByHash;
+                        //  console.log("blockhash----> ",blockByHash);
+                          //  resData = blockByHash;
                             resData.originalData =   privateWeb3.toAscii(blockByHash.input);
+                            resData.blockNumber=blockByHash.blockNumber;
+                            resData.hash =blockByHash.hash;
+                            resData.input=blockByHash.input;
+                            if(!blockByHash.blockNumber){
 
+                              resData.message="Block is not created";
+
+                            }else{
+                              resData.message="Block is created";
+                            }
                             //  resData.block = blockByHash;
                             //resData.latest = bestBlock.number;
                             callback(null, resData);
