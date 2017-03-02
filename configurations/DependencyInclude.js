@@ -90,5 +90,6 @@ configurationHolder.EmailUtil = require('../application-utilities/EmailUtility')
 configurationHolder.errorMessage = require('./ApplicationMessages').appErrorMessages
 configurationHolder.successMessage = require('./ApplicationMessages').appSuccessMessage
 global.Logger = require('../application-utilities/LoggerUtility').logger
+global.errLogger = require('../application-utilities/LoggerUtility').errlogger
 
 module.exports = configurationHolder

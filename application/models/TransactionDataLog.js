@@ -2,9 +2,9 @@ var schemaPromise = knex.schema.createTableIfNotExists('TransactionDataLog', fun
     table.increments('id').primary();
     table.string('data');
     table.string('sendAddress');
-    table.dateTime('reciveAddress');
+    table.string('reciveAddress');
     table.string('transactionHash');
-    table.string('time').defaultTo(knex.fn.now());// who call the contract
+    table.dateTime('time').defaultTo(knex.fn.now());// who call the contract
     table.string('status');//function of contract method
 
 }).then(function(data) {
@@ -22,7 +22,7 @@ function TransactionDataLog() {
 TransactionDataLog.tableName = 'TransactionDataLog';
 TransactionDataLog.jsonSchema = {
   type: 'object',
-  required: ['time','sendAddress','reciveAddress','data'],
+  required: ['sendAddress','reciveAddress','data'],
   properties: {
     id: {type: 'integer'},
     sendAddress: {type: 'string'},

@@ -17,7 +17,7 @@ var initApp = function() {
     createContractAbi();
     createPerson();
 
-    confirmRequest();
+    //confirmRequest();
     //   bootApplication();
     //  confirmRequestCRON.
 

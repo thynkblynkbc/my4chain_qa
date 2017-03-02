@@ -23,11 +23,14 @@ class PrivateEthereumUtilities{
           });
       }
       checkUserAuth(userAddress,password,cb){
+        Logger.info("data --");
+        Logger.info(new Date());
         domain.User.query().where({
             'accountAddress': userAddress,
             'ethPassword':password
         }).select().then(function(data) {
             if(data.length > 0){
+                Logger.info(new Date());
               cb(true);
             return;
           }else{
@@ -85,11 +88,13 @@ class PrivateEthereumUtilities{
     //   });
     var web3x =privateWeb3;
        let smartSponsor = web3x.eth.contract(solAbi);
+      //  web3x.reset();
     let resData = {};
     resData.bytecode="0x"+solBytecode;
     resData.smartSponsor=smartSponsor;
     resData.abi=solAbi;
     resData.web3x=web3x;
+
      cb(null,resData);
      return;
 
@@ -109,7 +114,8 @@ class PrivateEthereumUtilities{
       domain.TransactionDataLog.query().insert({
         sendAddress: data.senderAddress,
         reciveAddress: data.reciverAddress,
-        transactionHash:data.transactionHash
+        transactionHash:data.transactionHash,
+        data:data.data
       }).then(function(databaseReturn) {
           //Logger.info("Inserted data: ", databaseReturn);
           var arr = {};
@@ -118,9 +124,12 @@ class PrivateEthereumUtilities{
          return ;
       });
   }
+
+
+
   saveToDb(contract, abi, recordObj, bytecode, gas, callback) {
       domain.Contract.query().insert({
-          contractAddress: contract.address,
+          contractAddress: "NaN",
           transactionHash: contract.transactionHash,
           abi: JSON.stringify(abi),
           senderAddress: recordObj.owner,
@@ -131,6 +140,17 @@ class PrivateEthereumUtilities{
           endTime:knex.fn.now(recordObj.expireDate*1000),
           fileHash:recordObj.encryptHash
       }).then(function(databaseReturn) {
+          //Logger.info("Inserted data: ", databaseReturn);
+
+
+         return ;
+      });
+  }
+
+  updateToDb(contract, abi, recordObj, bytecode, gas, callback) {
+      domain.Contract.query().patch({contractAddress: contract.address})
+        .where('transactionHash', '=', contract.transactionHash)
+        .then(function(databaseReturn) {
           //Logger.info("Inserted data: ", databaseReturn);
           var arr = {};
           arr.contractAddress = contract.address;

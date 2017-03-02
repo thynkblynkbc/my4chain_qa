@@ -29,7 +29,7 @@ module.exports = function() {
    // function to create smart contract
     var smartContract = function(req, res, callback) {
         Logger.info("inside controller contract");
-        Logger.info(new Date());
+        Logger.info(req.body.startfrom);
         this.services.privateEthereumService.smartContract(req, res, callback);
     }
 
