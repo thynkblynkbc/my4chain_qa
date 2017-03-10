@@ -11,6 +11,8 @@ class PrivateEthereumUtilities{
           return;
       });
   }
+
+  
   estimateGas(account, bytecode, cb) {
   //  console.log("account ",account,bytecode);
           privateWeb3.eth.estimateGas({

@@ -12,7 +12,7 @@ class PrivateEthereumDetail {
         privateWeb3.eth.getBalance(address, function(error, result) {
             if (!error) {
                 var resData = {};
-                resData.Balance = result.toNumber();
+                resData.Balance =privateWeb3.fromWei(result.toNumber(),'ether');
                 callback(null, resData);
             } else {
                 callback(error)
@@ -24,7 +24,7 @@ class PrivateEthereumDetail {
         privateWeb3.eth.getBalance(privateWeb3.eth.coinbase, function(error, result) {
             if (!error) {
                 var resData = {};
-                resData.Balance = result.toNumber();
+                resData.Balance = web3.fromWei(result.toNumber(),'ether');
                 callback(null, resData);
             } else {
                 callback(error)

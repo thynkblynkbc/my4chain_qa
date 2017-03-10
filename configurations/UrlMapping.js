@@ -14,6 +14,16 @@
 	                json: views.jsonView
 	            }
 	        }],
+					// create account of the system
+	        "/api/v1/contract/createimportAccount": [{
+	            method: "POST",
+	            action: controllers.privateEthereumController.createimportAccount,
+	            middleware: [validater(validationFile.createAccount)],
+	            views: {
+	                json: views.jsonView
+	            }
+	        }],
+
  /* ---------------------------------------------------------------------------- */
 		// transaction confirmation and detail
 	        // It tell about confirmation of the contract
@@ -44,6 +54,15 @@
 				          json: views.jsonView
 				      }
 				    }],
+						// create RAW contract
+					  "/api/v1/contract/createrawcontract": [{
+					      method: "POST",
+					      action: controllers.privateEthereumController.smartRawContract,
+					      middleware: [validater(validationFile.privateCreateContract)],
+					      views: {
+					          json: views.jsonView
+					      }
+					    }],
 	        // excute the function of contract
 	        "/api/v1/contract/assignandremove": [{
 	            method: "POST",

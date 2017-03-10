@@ -17,6 +17,16 @@ knex.schema.hasColumn('User', 'accountAddress').then((isColumn) => {
         });
     }
 });
+knex.schema.hasColumn('User', 'privateKey').then((isColumn) => {
+    if (isColumn != true) {
+        knex.schema.table('User', function(table) {
+            table.string('privateKey'); // ethereum account address
+
+        }).then(function(data) {
+            console.log("privateKey Column added");
+        });
+    }
+});
 // User model.
 function User() {
     Model.apply(this, arguments);
@@ -30,7 +40,8 @@ User.jsonSchema = {
     id: {type: 'integer'},
     email: {type: 'string', minLength: 1, maxLength: 255},
     ethPassword:{type:'string',minLength:1,maxLength:10},
-    accountAddress:{type:'string'}
+    accountAddress:{type:'string'},
+    privateKey:{type:'string'}
     //parentId: {type: ['integer', 'null']},
     //age: {type: 'number'},
   }

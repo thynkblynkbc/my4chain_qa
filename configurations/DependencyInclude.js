@@ -13,7 +13,7 @@ global.validater = require('express-validation')
 global.validationFile = require('../application-utilities/Validater')
 global.abiData = null;
 global.data1 = null;
-global.nonce = 2;
+global.counterAccount = 2;
 
 // connect to ipfs daemon API server
 // global.ipfs = ipfsAPI('localhost', '5001', {

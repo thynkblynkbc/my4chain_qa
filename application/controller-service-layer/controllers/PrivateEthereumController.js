@@ -14,7 +14,13 @@ module.exports = function() {
         //	var password=req.body.password;
         // var one=this.services.createAccount.createUserIndatabase(req.body);
         // console.log(one);
-        this.services.privateEthereumService.createAccount(req.body, res, callback);
+        this.services.accounts.createAccount(req.body, res, callback);
+    }
+    var createimportAccount = function(req, res, callback) {
+        //	var password=req.body.password;
+        // var one=this.services.createAccount.createUserIndatabase(req.body);
+        // console.log(one);
+        this.services.accounts.createimportAccount(req.body, res, callback);
     }
    // function to test contract for developer
     var testContract = function(req,res,callback){
@@ -30,8 +36,16 @@ module.exports = function() {
     var smartContract = function(req, res, callback) {
         Logger.info("inside controller contract");
         Logger.info(req.body.startfrom);
+         req.body.Raw = false;
         this.services.privateEthereumService.smartContract(req, res, callback);
     }
+    // function to create smart contract
+     var smartRawContract = function(req, res, callback) {
+         Logger.info("inside controller contract");
+         req.body.Raw = true;
+         Logger.info(req.body.startfrom);
+         this.services.privateEthereumService.smartContract(req, res, callback);
+     }
 
   // assign and remove action from user
     var assignandremove = function(req, res, callback) {
@@ -93,7 +107,7 @@ module.exports = function() {
     }
     var privateSendether = function(req, res, callback) {
         var reqData = req.body;
-        this.services.privateEthereumService.privateSendether(req, res, callback);
+        this.services.accounts.privateSendether(req, res, callback);
     }
 
     var transactionConfirmations = function(req, res, callback) {
@@ -115,12 +129,17 @@ module.exports = function() {
 
     }
     var sendHashIntransaction = function(req,res,callback){
-         this.services.privateEthereumService.sendHashIntransaction(req, res, callback);
+         this.services.simpleHashTransaction.sendHashIntransaction(req, res, callback);
+
+
+    }
+    var sendRawHashIntransaction = function(req,res,callback){
+         this.services.simpleHashTransaction.sendRawHashIntransaction(req, res, callback);
 
 
     }
     var getHashIntransaction = function(req,res,callback){
-      this.services.privateEthereumService.getHashIntransaction(req, res, callback);
+      this.services.simpleHashTransaction.getHashIntransaction(req, res, callback);
 
     }
 
@@ -145,6 +164,7 @@ module.exports = function() {
         coinbaseBalance: coinbaseBalance,
         accountBalance: accountBalance,
         sendHashIntransaction : sendHashIntransaction,
+        sendRawHashIntransaction : sendRawHashIntransaction,
         getHashIntransaction : getHashIntransaction,
         // privateImageHashGenerate: privateImageHashGenerate,
         contractForAssets: contractForAssets,
@@ -166,7 +186,8 @@ module.exports = function() {
         log: log,
         latestBlock: latestBlock,
         requestConfirmation: requestConfirmation,
-        testContract:testContract
+        testContract:testContract,
+        createimportAccount : createimportAccount
 
     }
 };
