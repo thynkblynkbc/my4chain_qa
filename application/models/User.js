@@ -17,6 +17,16 @@ knex.schema.hasColumn('User', 'accountAddress').then((isColumn) => {
         });
     }
 });
+knex.schema.hasColumn('User', 'fileWriteStatus').then((isColumn) => {
+    if (isColumn != true) {
+        knex.schema.table('User', function(table) {
+            table.string('fileWriteStatus').defaultTo('N');; // ethereum account address
+            table.unique('fileWriteStatus');
+        }).then(function(data) {
+            console.log("fileWriteStatus Column added");
+        });
+    }
+});
 knex.schema.hasColumn('User', 'privateKey').then((isColumn) => {
     if (isColumn != true) {
         knex.schema.table('User', function(table) {
@@ -41,7 +51,8 @@ User.jsonSchema = {
     email: {type: 'string', minLength: 1, maxLength: 255},
     ethPassword:{type:'string',minLength:1,maxLength:10},
     accountAddress:{type:'string'},
-    privateKey:{type:'string'}
+    privateKey:{type:'string'},
+    fileWriteStatus:{type:'string'}
     //parentId: {type: ['integer', 'null']},
     //age: {type: 'number'},
   }

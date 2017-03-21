@@ -111,7 +111,7 @@
 
                             callback(resData, null);
                           }
-                        });                                  
+                        });
 
                     } catch (catchErr) {
                         Logger.info(configurationHolder.errorMessage.errorMsgForLogger + catchErr);
@@ -194,10 +194,16 @@
                                         Logger.info("address ", contract.address);
                                         //  errLogger.info(new Date());
                                         web3x.reset();
+                                      //  privateWeb3.reset();
                                         return utility.updateToDb(contract, abi, recordObj, bytecode, gas, callback);
                                     } else {
+
+                                          web3x.reset();
+
                                         Trans = contract.transactionHash;
-                                        Logger.info("A transmitted, waiting for mining...", contract.transactionHash);
+
+                                      //    privateWeb3.reset();
+                                        Logger.info("A transmitted, waiting for mining...",recordObj.expireDateMilli," expire ", contract.transactionHash);
                                         Logger.info(new Date());
                                         callback(null, {
                                             contractDet: contract.transactionHash,
@@ -372,13 +378,13 @@
             let recordObj = req.body;
             let resData = {};
             console.log(new Date());
-            utility.checkUserAuth(recordObj.accountAddress, recordObj.password, (ifexist) => {
-                if (ifexist == false) {
-                    resData = new Error(configurationHolder.errorMessage.actionUnautherized);
-                    resData.status = 401;
-
-                    return callback(resData, null);
-                } else {
+            // utility.checkUserAuth(recordObj.accountAddress, recordObj.password, (ifexist) => {
+            //     if (ifexist == false) {
+            //         resData = new Error(configurationHolder.errorMessage.actionUnautherized);
+            //         resData.status = 401;
+            //
+            //         return callback(resData, null);
+            //     } else {
                     console.log("Inside spnosor the contract function", recordObj);
                     console.log(new Date());
                     utility.selectForDataBase(recordObj.contractAddress, (selectData, bytecode, salt) => {
@@ -408,8 +414,8 @@
 
                     });
 
-                }
-            });
+            //     }
+            // });
 
         }
         userdetail(req, res, callback) {

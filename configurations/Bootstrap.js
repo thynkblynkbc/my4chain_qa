@@ -7,7 +7,9 @@
 'use strict';
 var Person = require('../application/models/PersonDetail');
 var ConfirmationOfRequest = require('../application-utilities/cron/ConfirmationOfRequest');
+var getContractAddress = require('../application-utilities/cron/GetContractAddress');
 var publishData = require('../application-utilities/cron/PromisePublishContractData');
+var createUnlockAccount = require('../application-utilities/cron/CreateUnlockAccount');
 //  publishData=Promise.promisify(publishData);
 var initApp = function() {
 
@@ -16,8 +18,8 @@ var initApp = function() {
     startPrivateWeb3Ethereum();
     createContractAbi();
     createPerson();
+    createUnlockAccount.excuteFunction(); 
 
-    //confirmRequest();
     //   bootApplication();
     //  confirmRequestCRON.
 
@@ -28,12 +30,13 @@ function confirmRequest() {
     var cron = require('node-cron');
     console.log("Cron function call")
         //  publishData.callFunction();
-        //    cron.schedule('*/10 * * * * *', function(){
+            cron.schedule('*/40 * * * * *', function(){
         //  ConfirmationOfRequest.confirmRequestCRON();
         //  //publishData.callFunction();
         // console.log('running every second to 10');
         // // console.log(new Date());
-        // });
+        getContractAddress.contractAddress();
+         });
 
 
 }
@@ -56,6 +59,7 @@ function createContractAbi() {
                 global.solBytecode = compiled.contracts[":documentAccessMapping"].bytecode;
                 Logger.info("-----complile complete ----------");
                 Logger.info(new Date());
+
 
                 bootApplication();
             } catch (e) {
@@ -119,6 +123,7 @@ function startPrivateWeb3Ethereum() {
             privateWeb3 = new Web3(new Web3.providers.HttpProvider(configurationHolder.config.blockchainIp));
                 Logger.info("ethereum private network connected2");
         }
+        confirmRequest();
         // start web3 filters, calls, etc
 
     }

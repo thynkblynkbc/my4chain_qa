@@ -170,10 +170,7 @@ class PublishContractData {
       return new Promise((resolve, reject) => {
         let resData ={};
         Logger.info("contractAddress-->",updateAddress,contractAddress[0])
-  //       .query()
-  // .patch({lastName: 'Dinosaur'})
-  // .where('age', '>', 60)
-  // .then(function (numUpdated) {
+
         domain.Contract.query()
          .patch({'publishedAddress': updateAddress,'Published':'y'})
         .where('contractAddress','in', contractAddress).then((databaseReturn) => {

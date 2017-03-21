@@ -6,7 +6,7 @@ class PublishContractData {
     collectData(cb) {
         let resData = {};
         domain.Contract.query().
-        where("Published", "=", "n").limit(4).then((databaseReturn) => {
+        where("Published", "=", "n").andWhere("contractAddress", "!=", "NaN").limit(4).then((databaseReturn) => {
             if (!databaseReturn) {
                 Logger.info("error in data");
                 resData.message = "No data found";

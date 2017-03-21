@@ -9,3 +9,4 @@ upload
 .npm
 npm-debug.log*
 *.sh
+unlock.js
