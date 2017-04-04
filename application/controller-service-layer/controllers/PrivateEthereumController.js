@@ -184,6 +184,7 @@ module.exports = function() {
         changestate: changestate,
         userdetail: userdetail,
         log: log,
+        smartRawContract:smartRawContract,
         latestBlock: latestBlock,
         requestConfirmation: requestConfirmation,
         testContract:testContract,

@@ -12,7 +12,7 @@ class PrivateEthereumUtilities{
       });
   }
 
-  
+
   estimateGas(account, bytecode, cb) {
   //  console.log("account ",account,bytecode);
           privateWeb3.eth.estimateGas({
@@ -130,6 +130,7 @@ class PrivateEthereumUtilities{
 
 
   saveToDb(contract, abi, recordObj, bytecode, gas, callback) {
+  //  console.log("ddddddddd ",moment.utc(recordObj.startfrom).format("yyyy-mm-dd hh-mm-ss"),knex.fn.now(),recordObj.startfrom)
       domain.Contract.query().insert({
           contractAddress: "NaN",
           transactionHash: contract.transactionHash,
@@ -138,8 +139,8 @@ class PrivateEthereumUtilities{
           bytecode: bytecode,
           salt: recordObj.salt,
           receipentAddress: recordObj.recipient,
-          startTime:knex.fn.now(recordObj.startfrom*1000),
-          endTime:knex.fn.now(recordObj.expireDate*1000),
+          startTime: knex.raw("'"+moment.utc(recordObj.startDate).format("YYYY-MM-DD hh:mm:ss.s")+"'"),
+          endTime:knex.raw("'"+moment.utc(recordObj.expireDate).format("YYYY-MM-DD hh:mm:ss.s")+"'"),
           fileHash:recordObj.encryptHash
       }).then(function(databaseReturn) {
           //Logger.info("Inserted data: ", databaseReturn);

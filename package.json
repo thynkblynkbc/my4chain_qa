@@ -59,6 +59,8 @@
     "chai-http": "^3.0.0",
     "coinbase": "^2.0.6",
     "flow-bin": "^0.36.0",
+    "grunt": "^1.0.1",
+    "grunt-contrib-jshint": "^1.1.0",
     "mocha": "^3.2.0"
   }
 }

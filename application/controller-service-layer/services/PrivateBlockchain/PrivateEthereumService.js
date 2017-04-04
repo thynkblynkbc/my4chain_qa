@@ -352,7 +352,7 @@
                         abi = utiData.abi;
                     Logger.info("Unlocking account1 -----------");
                     Logger.info(new Date());
-                    let startMilli = new Date(recordObj.startfrom).getTime() + "";
+                    let startMilli = new Date(recordObj.startDate).getTime() + "";
                     let endMilli = new Date(recordObj.expireDate).getTime() + "";
                     recordObj.startfromMilli = startMilli.slice(0, -3);
                     recordObj.expireDateMilli = endMilli.slice(0, -3);
