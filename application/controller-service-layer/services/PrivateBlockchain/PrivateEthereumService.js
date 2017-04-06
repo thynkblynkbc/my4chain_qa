@@ -139,6 +139,13 @@
                     recordObj.encryptHash = utility.encrypt(recordObj.fileHash, 'utf8', 'hex', recordObj.salt);
                     recordObj.decryptHash = utility.decrypt(recordObj.encryptHash, 'hex', 'utf8', recordObj.salt);
                     //  Logger.info("recordObj: ",recordObj);
+                    utility.unlockAccount(recordObj.owner, recordObj.password, 30, (error, result) => {
+                        if (error) {
+                            callback(error, result);
+                            return;
+                        } else {
+
+
                     this.interpetate(recordObj, (ownerMember, ownerMemberAction, recipientMember, recipientMemberAction) => {
                         //            var contractData = smartSponsor.new.getData(recordObj.encryptHash,recordObj.owner,
                         // ownerMember
@@ -223,6 +230,10 @@
                         }
 
                     });
+
+                  }
+              });
+
                 } catch (err) {
                     resData = new Error(configurationHolder.errorMessage.errorInApi);
                     resData.status = 409;
@@ -392,13 +403,13 @@
                         let smartSponsor = privateWeb3.eth.contract(selectData);
                         var ss = smartSponsor.at(recordObj.contractAddress);
                         Logger.info(new Date());
-                        //    Logger.info("Unlock Account ----------------");
-                        // utility.unlockAccount(recordObj.accountAddress, recordObj.password,60, (error, result) => {
-                        //   console.log("err",error,"res",result);
-                        //     if (!result) {
-                        //         callback(error, result);
-                        //         return;
-                        //     } else {
+                           Logger.info("Unlock Account ----------------");
+                        utility.unlockAccount(recordObj.accountAddress, recordObj.password,60, (error, result) => {
+                          console.log("err",error,"res",result);
+                            if (!result) {
+                                callback(error, result);
+                                return;
+                            } else {
                         // utility.estimateGas(recordObj.parentAddress, bytecode, (error, gas) => {
                         //     if (error) {
                         //         callback(error, gas);
@@ -409,8 +420,8 @@
 
                         //  }
                         //});
-                        //     }
-                        // });
+                            }
+                        });
 
                     });
 

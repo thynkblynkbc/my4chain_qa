@@ -41,6 +41,7 @@ class PrivateEthereumUtilities{
         });
       }
   selectForDataBase(contractAddress, cb) {
+    Logger.info("Inside selectForDataBase ",contractAddress);
               domain.Contract.query().where({
                   'contractAddress': contractAddress
               }).select().then(function(data) {
