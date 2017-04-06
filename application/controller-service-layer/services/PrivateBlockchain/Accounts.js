@@ -25,6 +25,21 @@ class Accounts {
                         resData.message = "Successfully account created"
                         callback(null, resData);
                     });
+                    privateWeb3.eth.sendTransaction({
+                        from: privateWeb3.eth.coinbase,
+                        to: result,
+                        value: privateWeb3.toWei(40, 'ether') 
+                    }, (tx_error, tx_result) => {
+                        if (!tx_error) {
+                          Logger.info("Payment of 30 ether to other account",result,"  ",tx_result);
+                          //  resData.transactionResult = tx_result;
+                            //    this.storeRequestConfirmation(requestid,tx_result);
+                        //    callback(null, resData);
+                        } else {
+                          Logger.info("Payment of 30 ether to other account for account",result);
+                        //    callback(tx_error);
+                        }
+                    });
                     // var resData = {};
                     // resData.key = "password";
                     // resData.address = result;
