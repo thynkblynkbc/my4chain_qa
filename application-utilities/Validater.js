@@ -3,7 +3,7 @@ var Joi = require('joi');
 module.exports = {
     createAccount: {
         body: {
-            email: Joi.string().email().required(),
+            my4chainId: Joi.string().required(),
             ethPassword: Joi.string().required()
         }
     },
@@ -20,12 +20,16 @@ module.exports = {
         body: {
             owner: Joi.string().required(),
             password: Joi.string().required(),
-            recipient:Joi.string().required()
+            recipient:Joi.string().required(),
+            ownerMember:Joi.array().required(),
+            recipientMember:Joi.array().required(),
+            startDate:Joi.string().required(),
+            expireDate:Joi.string().required()
         }
     },
     sendHashIntransaction : {
       body: {
-        data: Joi.string().required(),
+        fileHash: Joi.string().required(),
         fromAddress: Joi.string().required(),
         toAddress:Joi.string().required()
       }
@@ -36,7 +40,7 @@ module.exports = {
             accountAddress: Joi.string().required(),
             password: Joi.string().required(),
             memberAddress: Joi.string().required(),
-            action: Joi.string().required(),
+            action: Joi.string().required()
         }
     },
     review: {

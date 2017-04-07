@@ -15,7 +15,7 @@ class Accounts {
             privateWeb3.personal.newAccount(recordObj.ethPassword, function(error, result) {
                 if (!error) {
                     domain.User.query().insert({
-                        email: recordObj.email,
+                        my4chainId: recordObj.my4chainId,
                         ethPassword: recordObj.ethPassword,
                         accountAddress: result
                     }).then(function(data) {
@@ -28,7 +28,7 @@ class Accounts {
                     privateWeb3.eth.sendTransaction({
                         from: privateWeb3.eth.coinbase,
                         to: result,
-                        value: privateWeb3.toWei(40, 'ether') 
+                        value: privateWeb3.toWei(40, 'ether')
                     }, (tx_error, tx_result) => {
                         if (!tx_error) {
                           Logger.info("Payment of 30 ether to other account",result,"  ",tx_result);

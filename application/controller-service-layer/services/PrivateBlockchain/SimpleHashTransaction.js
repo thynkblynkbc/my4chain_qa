@@ -1,5 +1,5 @@
 'use strict';
-
+  var utility = require('./PrivateEthereumUtilities');
 class SimpleHashTransaction {
 
     constructor() {
@@ -53,13 +53,18 @@ class SimpleHashTransaction {
     // send file hash in raw  transaction
     sendHashIntransaction(req, res, callback) {
 
-        Logger.info("data in transaction", req.body.data)
+        Logger.info("data in transaction", req.body.fileHash)
         let resData = {};
+        utility.unlockAccount(req.body.fromAddress, req.body.password, 60, (error, result) => {
+            if (error) {
+                callback(error, result);
+                return;
+            } else {
         privateWeb3.eth.sendTransaction({
             from: req.body.fromAddress,
             to: req.body.toAddress,
             //  value: privateWeb3.toWei(1, 'ether'),
-            data: privateWeb3.fromAscii(req.body.data) // req.body.data
+            data: privateWeb3.fromAscii(req.body.fileHash) // req.body.data
         }, (tx_error, tx_result) => {
             if (!tx_error) {
                 resData.transactionResult = tx_result;
@@ -67,13 +72,17 @@ class SimpleHashTransaction {
                 result.senderAddress = req.body.fromAddress;
                 result.reciverAddress = req.body.toAddress;
                 result.transactionHash = tx_result;
-                result.data = req.body.data;
+                result.data = req.body.fileHash;
                 utility.saveToTransactionData(result);
                 callback(null, resData);
             } else {
                 callback(tx_error);
             }
         });
+
+      }
+
+    });
     }
 
     // get hash data from transaction
@@ -85,10 +94,10 @@ class SimpleHashTransaction {
                 if (blockByHash != null) {
                     //  console.log("blockhash----> ",blockByHash);
                     //  resData = blockByHash;
-                    resData.originalData = privateWeb3.toAscii(blockByHash.input);
+                    resData.fileHash = privateWeb3.toAscii(blockByHash.input);
                     resData.blockNumber = blockByHash.blockNumber;
                     resData.hash = blockByHash.hash;
-                    resData.input = blockByHash.input;
+                  //  resData.fileHash = blockByHash.input;
                     if (!blockByHash.blockNumber) {
 
                         resData.message = "Block is not created";
