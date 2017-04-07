@@ -54,9 +54,10 @@ function createContractAbi() {
             // var compiled = solc.compile(solidityCode, 1).contracts.DieselPrice;
             try {
                 var compiled = solc.compile(solidityCode, 1);
-      //      console.log(compiled.contracts)
-                global.solAbi = JSON.parse(compiled.contracts[":documentAccessMapping"].interface);
-                global.solBytecode = compiled.contracts[":documentAccessMapping"].bytecode;
+	
+//         console.log(compiled.contracts["documentAccessMapping"])
+                global.solAbi = JSON.parse(compiled.contracts["documentAccessMapping"].interface);
+                global.solBytecode = compiled.contracts["documentAccessMapping"].bytecode;
                 Logger.info("-----complile complete ----------");
                 Logger.info(new Date());
 
