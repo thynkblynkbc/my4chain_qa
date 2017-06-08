@@ -18,7 +18,8 @@ var initApp = function() {
     startPrivateWeb3Ethereum();
     createContractAbi();
     createPerson();
-    createUnlockAccount.excuteFunction();
+
+    //createUnlockAccount.excuteFunction();
 
     //   bootApplication();
     //  confirmRequestCRON.
@@ -119,6 +120,19 @@ function startPrivateWeb3Ethereum() {
 
             privateWeb3 = new Web3(privateWeb3Con.currentProvider);
                 Logger.info("ethereum private network connected1",privateWeb3Con.currentProvider);
+
+                privateWeb3.personal.unlockAccount(privateWeb3.eth.coinbase, "123456", 0, function(error, result)
+                {
+                   if(!error)
+                   {
+                      Logger.info('Coinbase Account unlocking success, will reamin unlocked till geth running ',result);
+                   }
+                    else
+                    {
+                      Logger.info(' Account unlocking failed',error);
+                    }
+                })
+
         } else {
             // set the provider you want from Web3.providers
             privateWeb3 = new Web3(new Web3.providers.HttpProvider(configurationHolder.config.blockchainIp));
