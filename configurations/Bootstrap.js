@@ -4,6 +4,7 @@
  */
 
 //call all the function which are required to perform the require initialization before server will start
+
 'use strict';
 var Person = require('../application/models/PersonDetail');
 var ConfirmationOfRequest = require('../application-utilities/cron/ConfirmationOfRequest');
@@ -91,9 +92,9 @@ function startWeb3Ethereum() {
     } else {
         Logger.info("ethereum public testnet connected");
         // start web3 filters, calls, etc
-
     }
 }
+
 
 function startPrivateWeb3Ethereum() {
     var Web3 = require('web3');

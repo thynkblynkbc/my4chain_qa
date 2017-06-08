@@ -9,13 +9,13 @@ util.inherits(ExpressLayers, Layers);
 
 /**
  * Sets up a route for a layered express app.
- * 
+ *
  * Accepts a server along with a path and handler to map.
  *
  * @param server  The Express app object.
  * @param path    The path on which to listen.
  * @param handler The handler object containing the HTTP method, action to perform,
- * 				  an optional array of middleware a map of views keyed by the 
+ * 				  an optional array of middleware a map of views keyed by the
  * 				  content-type they will respond with.
  */
 ExpressLayers.prototype.setupRoute = function(server,router,path, handler) {
@@ -27,7 +27,7 @@ ExpressLayers.prototype.setupRoute = function(server,router,path, handler) {
 			middleware.push(middlewareObject);
 		}
 	});
-	
+
     if (typeof router[method] === "function") {
 		console.log(method)
         router[method].call(server, path, middleware, function(req, res, next) {

@@ -25,17 +25,17 @@ class Accounts {
                         callback(null, resData);
                     });
 
-                    // privateWeb3.personal.unlockAccount(privateWeb3.eth.coinbase, "123456", 0, function(error, result)
-                    // {
-                    //    if(!error)
-                    //    {
-                    //       Logger.info('Coinbase Account unlocking success, will reamin unlocked till geth running ',result);
-                    //    }
-                    //     else
-                    //     {
-                    //       Logger.info(' Account unlocking failed',error);
-                    //     }
-                    // })
+                    privateWeb3.personal.unlockAccount(result, recordObj.ethPassword, 0, function(error, result1)
+                    {
+                       if(!error)
+                       {
+                          Logger.info('New account ',result,' unlocking success, will reamin unlocked till geth running ',result1);
+                       }
+                        else
+                        {
+                          Logger.info(' New account unlocking failed',error);
+                        }
+                    })
 
                     privateWeb3.eth.sendTransaction({
                         from: privateWeb3.eth.coinbase,
@@ -135,8 +135,6 @@ class Accounts {
         var data = reqData.data;
         var duration = 30;
         var resData = {};
-        Logger.info("gas needed");
-        Logger.info("Amount sent-->", privateWeb3.toWei(1, 'ether'));
 
         privateWeb3.eth.sendTransaction({
             from: fromAddress,
