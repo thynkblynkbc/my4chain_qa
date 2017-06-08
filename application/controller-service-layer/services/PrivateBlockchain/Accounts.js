@@ -19,27 +19,42 @@ class Accounts {
                         ethPassword: recordObj.ethPassword,
                         accountAddress: result
                     }).then(function(data) {
-                        console.log("Inserted data: ", data);
                         var databaseReturn = data;
                         resData.address = result;
                         resData.message = "Successfully account created"
                         callback(null, resData);
                     });
+
+                    // privateWeb3.personal.unlockAccount(privateWeb3.eth.coinbase, "123456", 0, function(error, result)
+                    // {
+                    //    if(!error)
+                    //    {
+                    //       Logger.info('Coinbase Account unlocking success, will reamin unlocked till geth running ',result);
+                    //    }
+                    //     else
+                    //     {
+                    //       Logger.info(' Account unlocking failed',error);
+                    //     }
+                    // })
+
                     privateWeb3.eth.sendTransaction({
                         from: privateWeb3.eth.coinbase,
                         to: result,
-                        value: privateWeb3.toWei(40, 'ether')
+                        value: privateWeb3.toWei(500, 'ether')
                     }, (tx_error, tx_result) => {
                         if (!tx_error) {
-                          Logger.info("Payment of 30 ether to other account",result,"  ",tx_result);
+                          Logger.info("Payment of 500 ether to account success ",tx_result);
                           //  resData.transactionResult = tx_result;
-                            //    this.storeRequestConfirmation(requestid,tx_result);
-                        //    callback(null, resData);
+                          //    this.storeRequestConfirmation(requestid,tx_result);
+                          //    callback(null, resData);
                         } else {
-                          Logger.info("Payment of 30 ether to other account for account",result);
+                          Logger.info("Payment of 500 ether to account failed ",tx_error);
                         //    callback(tx_error);
                         }
                     });
+
+
+
                     // var resData = {};
                     // resData.key = "password";
                     // resData.address = result;
