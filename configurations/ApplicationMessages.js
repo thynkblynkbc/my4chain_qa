@@ -5,8 +5,8 @@ var appErrorMessages = {
     errorMsgForLogger:"Exception in project: ",
     actionUnautherized:"Action is unauthorized"
 }
-var appSuccessMessage = {
 
+var appSuccessMessage = {
 
 }
 
