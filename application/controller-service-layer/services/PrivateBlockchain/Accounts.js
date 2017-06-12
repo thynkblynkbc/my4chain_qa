@@ -8,66 +8,76 @@ class Accounts {
 
     // to create a new account in blockchain
     createAccount(recordObj, res, callback) {
-            var resData = {};
-            //	Logger.info("privateWeb3.personal",privateWeb3.personal.newAccount);
-            Logger.info("In CreateAccount  controller");
-
-            privateWeb3.personal.newAccount(recordObj.ethPassword, function(error, result) {
-                if (!error) {
-                    domain.User.query().insert({
-                        my4chainId: recordObj.my4chainId,
-                        ethPassword: recordObj.ethPassword,
-                        accountAddress: result
-                    }).then(function(data) {
-                        var databaseReturn = data;
-                        resData.address = result;
-                        resData.message = "Successfully account created"
-                        callback(null, resData);
-                    });
-
-                    privateWeb3.personal.unlockAccount(result, recordObj.ethPassword, 0, function(error, result1)
-                    {
-                       if(!error)
-                       {
-                          Logger.info('New account ',result,' unlocking success, will reamin unlocked till geth running ',result1);
-                       }
-                        else
-                        {
-                          Logger.info(' New account unlocking failed',error);
-                        }
-                    })
-
-                    privateWeb3.eth.sendTransaction({
-                        from: privateWeb3.eth.coinbase,
-                        to: result,
-                        value: privateWeb3.toWei(500, 'ether')
-                    }, (tx_error, tx_result) => {
-                        if (!tx_error) {
-                          Logger.info("Payment of 500 ether to account success ",tx_result);
-                          //  resData.transactionResult = tx_result;
-                          //    this.storeRequestConfirmation(requestid,tx_result);
-                          //    callback(null, resData);
-                        } else {
-                          Logger.info("Payment of 500 ether to account failed ",tx_error);
-                        //    callback(tx_error);
-                        }
-                    });
+        var resData = {};
+        //	Logger.info("privateWeb3.personal",privateWeb3.personal.newAccount);
+        Logger.info("In CreateAccount  controller");
 
 
+        domain.User.query().where({
+            'my4chainId': recordObj.my4chainId
+        }).select().then(function(userData) {
 
-                    // var resData = {};
-                    // resData.key = "password";
-                    // resData.address = result;
-                    // callback(null, resData);
-                } else {
-                    console.log("error", error);
-                    resData = new Error(configurationHolder.errorMessage.blockchainIssue);
-                    resData.status = 500;
-                    callback(resData, null);
-                }
-            });
-        }
-        // to create a new account in blockchain
+            if (userData.length > 0) {
+                resData.message = "My4chainId already exists ";
+                callback(resData, null);
+            } else {
+                privateWeb3.personal.newAccount(recordObj.ethPassword, function(error, result) {
+                    if (!error) {
+                        domain.User.query().insert({
+                            my4chainId: recordObj.my4chainId,
+                            ethPassword: recordObj.ethPassword,
+                            accountAddress: result
+                        }).then(function(data) {
+                            var databaseReturn = data;
+                            resData.address = result;
+                            resData.message = "Successfully account created"
+                            callback(null, resData);
+                        });
+
+                        privateWeb3.personal.unlockAccount(result, recordObj.ethPassword, 0, function(error, result1) {
+                            if (!error) {
+                                Logger.info('New account ', result, ' unlocking success, will reamin unlocked till geth running ', result1);
+                            } else {
+                                Logger.info(' New account unlocking failed', error);
+                            }
+                        })
+
+                        privateWeb3.eth.sendTransaction({
+                            from: privateWeb3.eth.coinbase,
+                            to: result,
+                            value: privateWeb3.toWei(500, 'ether')
+                        }, (tx_error, tx_result) => {
+                            if (!tx_error) {
+                                Logger.info("Payment of 500 ether to account success ", tx_result);
+                                //  resData.transactionResult = tx_result;
+                                //    this.storeRequestConfirmation(requestid,tx_result);
+                                //    callback(null, resData);
+                            } else {
+                                Logger.info("Payment of 500 ether to account failed ", tx_error);
+                                //    callback(tx_error);
+                            }
+                        });
+                        
+                        // var resData = {};
+                        // resData.key = "password";
+                        // resData.address = result;
+                        // callback(null, resData);
+                    } else {
+                        console.log("error", error);
+                        resData = new Error(configurationHolder.errorMessage.blockchainIssue);
+                        resData.status = 500;
+                        callback(resData, null);
+                    }
+                });
+            }
+
+        })
+
+
+
+
+    }
+    // to create a new account in blockchain
     createimportAccount(recordObj, res, callback) {
         var resData = {};
         var http = require('http');
@@ -96,7 +106,7 @@ class Accounts {
                 res.setEncoding('utf8');
                 res.on('data', function(body) {
                     console.log('Body: ' + body);
-                    let response =JSON.parse(body);
+                    let response = JSON.parse(body);
                     domain.User.query().insert({
                         email: recordObj.email,
                         ethPassword: recordObj.ethPassword,
@@ -124,7 +134,7 @@ class Accounts {
     }
 
 
-        //  send ether to other account
+    //  send ether to other account
     privateSendether(req, res, callback) {
         var reqData = req.body;
         var requestid = req.params.requestid;
