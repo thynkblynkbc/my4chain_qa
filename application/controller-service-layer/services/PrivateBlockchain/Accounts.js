@@ -18,7 +18,7 @@ class Accounts {
         }).select().then(function(userData) {
 
             if (userData.length > 0) {
-                resData.message = "My4chainId already exists ";
+                resData.message = "My4chainId already exists";
                 callback(resData, null);
             } else {
                 privateWeb3.personal.newAccount(recordObj.ethPassword, function(error, result) {
@@ -57,7 +57,7 @@ class Accounts {
                                 //    callback(tx_error);
                             }
                         });
-                        
+
                         // var resData = {};
                         // resData.key = "password";
                         // resData.address = result;

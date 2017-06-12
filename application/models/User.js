@@ -1,6 +1,6 @@
 var schemaPromise = knex.schema.createTableIfNotExists('User', function(table) {
     table.increments('id').primary();
-   table.string('my4chainId');
+    table.string('my4chainId');
     table.string('ethPassword');
 
 
