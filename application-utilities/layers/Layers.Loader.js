@@ -27,7 +27,7 @@ function loadLayers(server,router, rootPath, options) {
 
 /**
  * Returns a list of layer names.
- * 
+ *
  * Finds the directories in the root path supplied
  * and returns their names as the layers this application
  * makes use of.
@@ -36,7 +36,7 @@ function getLayers(rootPath) {
 	//console.log(rootPath);
     var files = getDirectoryFileListSync(rootPath),
         directories = [];
-    console.log(files);
+  //  console.log(files);
     files.forEach(function(fileName) {
         var fullPathToFile = rootPath + "/" + fileName;
         if (isDirectory(fullPathToFile)) {
@@ -56,7 +56,7 @@ function loadFiles(server, path, layer, options) {
     var files = getDirectoryFileListSync(path);
 
 	files.forEach(function(fileName) {
-		console.log(path);
+	//	console.log(path);
        var fullPathToFile = path + "/" + fileName;
        if (isDirectory(fullPathToFile)) {
            loadFiles(server, fullPathToFile, layer, options);
@@ -65,7 +65,7 @@ function loadFiles(server, path, layer, options) {
                 item = require(path + "/" + name);
 
             if (typeof item === "function") {
-               item = item(server); 
+               item = item(server);
             }
 
             server[layer][getInstanceName(name)] = item;
@@ -88,17 +88,17 @@ function getDirectoryFileListSync(directory) {
 /**
  * Synchronously checks to see whether a directory exists or not.
  */
-function dirExistsSync (directory) { 
+function dirExistsSync (directory) {
     try {
         fs.statSync(directory);
         return true;
     } catch (err) {
         return false;
-    } 
+    }
 }
 
 /**
- * Synchronously checks whether the file at the path specified is a 
+ * Synchronously checks whether the file at the path specified is a
  * directory or not.
  */
 function isDirectory(file) {

@@ -1,10 +1,8 @@
 'use strict';
-  var utility = require('./PrivateEthereumUtilities');
+var utility = require('./PrivateEthereumUtilities');
 class SimpleHashTransaction {
 
-    constructor() {
-
-    }
+    constructor() {}
 
     // send file hash in transaction
     sendRawHashIntransaction(req, res, callback) {
@@ -13,7 +11,7 @@ class SimpleHashTransaction {
 
         var Tx = require('ethereumjs-tx')
         var crypto = require('crypto')
-            //    var privateKey = crypto.randomBytes(32)
+        //    var privateKey = crypto.randomBytes(32)
         var privateKey = privateKey = Buffer.from('e331b6d69882b4cb4ea581d88e0b604039a3de5967688d3dcffdd2270c0fd109', 'hex')
 
         var gasPrice = privateWeb3.eth.gasPrice;
@@ -32,7 +30,6 @@ class SimpleHashTransaction {
             chainId: privateWeb3.toHex(6)
         }
 
-
         Logger.info("rawTx in transaction", rawTx)
         var tx = new Tx(rawTx)
         console.log(tx);
@@ -47,43 +44,104 @@ class SimpleHashTransaction {
             console.log("hiii", err, hash); // "0x7f9fade1c0d57a7af66ab4ead79fade1c0d57a7af66ab4ead7c2c2eb7b11a91385"
             callback(err, hash);
         });
-
     }
 
     // send file hash in raw  transaction
     sendHashIntransaction(req, res, callback) {
-
-        Logger.info("data in transaction", req.body.fileHash)
         let resData = {};
-        utility.unlockAccount(req.body.fromAddress, req.body.password, 60, (error, result) => {
+
+        var message = {
+                fileHash: req.body.fileHash,
+                fromAddress: req.body.fromAddress,
+                password: req.body.password,
+                toAddress: req.body.toAddress
+        }
+
+        console.log(' transaction request format before sending to transaction-request-queue '+JSON.stringify(message));
+        azureQueue.sendTopicMessage('transaction-request-queue', JSON.stringify(message), (error) => {
             if (error) {
-                callback(error, result);
-                return;
+                Logger.info('error in sending transaction to transaction-request-queue');
+                callback(error, null);
             } else {
-        privateWeb3.eth.sendTransaction({
-            from: req.body.fromAddress,
-            to: req.body.toAddress,
-            //  value: privateWeb3.toWei(1, 'ether'),
-            data: privateWeb3.fromAscii(req.body.fileHash) // req.body.data
-        }, (tx_error, tx_result) => {
-            if (!tx_error) {
-                resData.transactionResult = tx_result;
-                let result = {};
-                result.senderAddress = req.body.fromAddress;
-                result.reciverAddress = req.body.toAddress;
-                result.transactionHash = tx_result;
-                result.data = req.body.fileHash;
-                utility.saveToTransactionData(result);
+                Logger.info('transaction sent to transaction-request-queue');
+                resData.message = 'transaction sent to queue';
                 callback(null, resData);
-            } else {
-                callback(tx_error);
             }
-        });
+        })
 
-      }
 
-    });
+
+        // privateWeb3.eth.getBalance(req.body.fromAddress, function(error, etherBal) {
+        //     if (!error) {
+        //         var Balance = privateWeb3.fromWei(etherBal.toNumber(), 'ether');
+        //         Logger.info('balance in fromAccount : ', Balance);
+        //         if (Balance > 500) {
+        //             Logger.info('Sufficient balance ');
+        //             Logger.info("data in transaction", req.body.fileHash)
+        //             utility.unlockAccount(req.body.fromAddress, req.body.password, 60, (error, result) => {
+        //                 if (error) {
+        //                     callback(error, result);
+        //                 } else {
+        //                     privateWeb3.eth.sendTransaction({
+        //                         from: req.body.fromAddress,
+        //                         to: req.body.toAddress,
+        //                         //  value: privateWeb3.toWei(1, 'ether'),
+        //                         data: privateWeb3.fromAscii(req.body.fileHash) // req.body.data
+        //                     }, (tx_error, tx_result) => {
+        //                         if (!tx_error) {
+        //                             resData.transactionResult = tx_result;
+        //                             let result = {};
+        //                             result.senderAddress = req.body.fromAddress;
+        //                             result.reciverAddress = req.body.toAddress;
+        //                             result.transactionHash = tx_result;
+        //                             result.data = req.body.fileHash;
+        //                             utility.saveToTransactionData(result);
+        //                             callback(null, resData);
+        //                         } else {
+        //                             callback(tx_error,null);
+        //                         }
+        //                     });
+        //                 }
+        //             });
+        //         } else {
+        //             Logger.info('Insufficient balance ');
+        //             console.log(' req body ', JSON.stringify(req.body, null, 2));
+        //             var message = {
+        //                     fileHash: req.body.fileHash,
+        //                     fromAddress: req.body.fromAddress,
+        //                     password: req.body.password,
+        //                     toAddress: req.body.toAddress
+        //             }
+        //             azureQueue.sendTopicMessage('MyTopic1', JSON.stringify(message), (error) => {
+        //                 if (error) {
+        //                     Logger.info('error in sending message ');
+        //                     callback(error, null);
+        //                 } else {
+        //                     Logger.info('message sent');
+        //                     resData.message = 'transaction sent to queue';
+        //                     callback(null, resData);
+        //                 }
+        //             })
+        //         }
+        //     }
+        //     else {
+        //         Logger.info('error in get balance fromAccount', error);
+        //         callback(error,null);
+        //     }
+        // });
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
     // get hash data from transaction
     getHashIntransaction(req, res, callback) {
@@ -97,7 +155,7 @@ class SimpleHashTransaction {
                     resData.fileHash = privateWeb3.toAscii(blockByHash.input);
                     resData.blockNumber = blockByHash.blockNumber;
                     resData.hash = blockByHash.hash;
-                  //  resData.fileHash = blockByHash.input;
+                    //  resData.fileHash = blockByHash.input;
                     if (!blockByHash.blockNumber) {
 
                         resData.message = "Block is not created";
@@ -112,8 +170,8 @@ class SimpleHashTransaction {
                 } else {
                     //  resData.totalConfirmations = 0;
                     resData.message = "Block hash not genrated"
-                        //resData = new Error(error);
-                        //resData.status = 500;
+                    //resData = new Error(error);
+                    //resData.status = 500;
                     callback(null, resData);
                     //callback(resData,null);
 

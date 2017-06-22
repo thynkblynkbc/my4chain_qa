@@ -120,10 +120,7 @@ class PrivateEthereumUtilities{
         transactionHash:data.transactionHash,
         data:data.data
       }).then(function(databaseReturn) {
-          //Logger.info("Inserted data: ", databaseReturn);
-          var arr = {};
-
-      //    Logger.info("contractAddress: ", arr.contractAddress);
+          Logger.info("Transaction saved to DB", databaseReturn);
          return ;
       });
   }

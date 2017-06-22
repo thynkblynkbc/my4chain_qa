@@ -29,7 +29,7 @@ ExpressLayers.prototype.setupRoute = function(server,router,path, handler) {
 	});
 
     if (typeof router[method] === "function") {
-		console.log(method)
+		//console.log(method)
         router[method].call(server, path, middleware, function(req, res, next) {
             for (var view in handler.views) {
                 if (req.accepts(view)) {

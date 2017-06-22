@@ -93,4 +93,18 @@ configurationHolder.successMessage = require('./ApplicationMessages').appSuccess
 global.Logger = require('../application-utilities/LoggerUtility').logger
 global.errLogger = require('../application-utilities/LoggerUtility').errlogger
 
+global.azureQueue = require('../application-utilities/MessageQueue');
+global.createUsers = require('../application-utilities/CreateUsers');
+global.broadcastTransactions = require('../application-utilities/BroadcastTransactions');
+
+//azureQueue.createTopic();
+azureQueue.createTopicAndSubs('account-create','users');
+azureQueue.createTopicAndSubs('account-result','result');
+
+azureQueue.createTopicAndSubs('transaction-request-queue','transactions');
+azureQueue.createTopicAndSubs('transaction-retry-queue','retrytransactions');
+azureQueue.createTopicAndSubs('transaction-result-queue','transactionsresult');
+
+//global.processTxs = require('../application-utilities/processTransactions');
+
 module.exports = configurationHolder

@@ -7,7 +7,7 @@ var fs = require('fs'),
     };
 
 /**
- * Layers. 
+ * Layers.
  *
  * A helper to create a layered application in node.js
  *
@@ -24,10 +24,10 @@ Layers = function(server,router,rootPath, wiring, options) {
 };
 
 /**
- * This function must be defined in a framework-specific 
- * implementation of Layers to setup a route for that 
+ * This function must be defined in a framework-specific
+ * implementation of Layers to setup a route for that
  * framework.
- * 
+ *
  * See Layers.Express#setupRoute if you intend of implementing this function
  * for a framework other than Express.
  *
@@ -40,13 +40,13 @@ Layers.prototype.setupRoute = function(path, handler) {
 
 /**
  * Adds routes to an app and wires up the layers for each action.
- * 
+ *
  * @param server The Server to add the routes to.
  * @param wiring The Wiring object.
  *
  * The wiring object is a map of arrays of route objects.
  * i.e.
- * 
+ *
  * {
  *   "/": [{
  *   		method: "get",
@@ -75,13 +75,13 @@ Layers.prototype.setupRoute = function(path, handler) {
  *   ]
  * }
  *
- * Each path can have multiple handlers. If for any reason the handler 
+ * Each path can have multiple handlers. If for any reason the handler
  * cannot respond to the request then the next is tried until all of the
  * handlers are extinguished at which point a 404 will be thrown.
  */
 function setupWiring(server,router, wiring) {
 	var self = this;
-	console.log(wiring);
+//	console.log(wiring);
     for (var path in wiring) {
         var handlers = wiring[path];
         if (handlers instanceof Array) {
