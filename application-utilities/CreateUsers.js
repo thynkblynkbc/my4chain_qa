@@ -32,7 +32,7 @@ function getserverNode() {
         case '10.0.0.4':
             return '1';
             break;
-        case '22':
+        case '10.0.0.5':
             return '2';
             break;
         case '33':
