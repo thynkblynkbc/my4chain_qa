@@ -14,11 +14,11 @@ setInterval(function() {
 }, 10)
 
 
-setInterval(function() {
-    counter++;
-    //  Logger.info(' counter :: ',counter);
-    getUsersResultFromqueue();
-}, 10)
+// setInterval(function() {
+//     counter++;
+//     //  Logger.info(' counter :: ',counter);
+//     getUsersResultFromqueue();
+// }, 10)
 
 var userCount = 0;
 function getUsersResultFromqueue() {

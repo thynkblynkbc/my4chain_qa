@@ -6,53 +6,49 @@ var utility = require('../application/controller-service-layer/services/PrivateB
 setInterval(function() {
     //  Logger.info(' counter :: ',counter);
     broadcastTransactions();
-}, 1000)
+}, 100)
 
-setInterval(function() {
-    //  Logger.info(' counter :: ',counter);
-    getTransactionResults();
-}, 2000)
+// setInterval(function() {
+//     //  Logger.info(' counter :: ',counter);
+//     getTransactionResults();
+// }, 2000)
 
 
 setInterval(function() {
     //  Logger.info(' counter :: ',counter);
     broadcastRetryTransactions();
-}, 10000)
+}, 1000)
 
 
 var transactionCount = 0;
+
 function getTransactionResults() {
 
-azureQueue.receiveSubscriptionMessage('transaction-result-queue','transactionsresult',(error, receivedMessage) =>
-{
-  if(!error)
-  {
+    azureQueue.receiveSubscriptionMessage('transaction-result-queue', 'transactionsresult', (error, receivedMessage) => {
+        if (!error) {
 
-    //console.log(' receveived body ',receivedMessage.body);
-    var transactionsResult = JSON.parse(receivedMessage.body);
-    transactionsResult = JSON.stringify(transactionsResult);
-    transactionCount++;
-    fs.appendFile("transactionsResult", transactionCount+'. '+transactionsResult+'\n', function(err) {
-        if (err) {
-            Logger.info(' error in writing to file ');
-            return console.log(err);
+            //console.log(' receveived body ',receivedMessage.body);
+            var transactionsResult = JSON.parse(receivedMessage.body);
+            transactionsResult = JSON.stringify(transactionsResult);
+            transactionCount++;
+            fs.appendFile("transactionsResult", transactionCount + '. ' + transactionsResult + '\n', function(err) {
+                if (err) {
+                    Logger.info(' error in writing to file ');
+                    return console.log(err);
+                } else {
+                    console.log("transactionsResult written to file ");
+                    azureQueue.deleteMessage(receivedMessage, function(deleteError) {
+                        if (!deleteError) {
+                            // Message deleted
+                            //  console.log('message has been deleted from user result subscription');
+                        }
+                    })
+                }
+            });
+        } else {
+            Logger.info('Error in receving message from transaction-result-queue', error);
         }
-        else
-        {
-          console.log("transactionsResult written to file ");
-          azureQueue.deleteMessage(receivedMessage, function(deleteError) {
-              if (!deleteError) {
-                  // Message deleted
-                //  console.log('message has been deleted from user result subscription');
-              }
-          })
-        }
-    });
-  } else {
-    Logger.info('Error in receving message from transaction-result-queue', error);
-  }
-}
-)
+    })
 }
 
 
@@ -102,7 +98,7 @@ function broadcastRetryTransactions() {
                                                 azureQueue.deleteMessage(receivedMessage, function(deleteError) {
                                                     if (!deleteError) {
                                                         // Message deleted
-                                                      //  console.log('message has been deleted from user result subscription');
+                                                        //  console.log('message has been deleted from user result subscription');
                                                     }
                                                 })
                                             }
@@ -115,19 +111,19 @@ function broadcastRetryTransactions() {
                         });
                     } else {
 
-                      privateWeb3.eth.sendTransaction({
-                          from: privateWeb3.eth.coinbase,
-                          to: req.body.fromAddress,
-                          value: privateWeb3.toWei(2, 'ether')
-                      }, (tx_error, tx_result) => {
-                          if (!tx_error) {
-                              Logger.info("Payment of 2 ether to account success ", tx_result);
-                          } else {
-                              Logger.info("Payment of 2 ether to account failed ", tx_error);
-                          }
-                      });
+                        privateWeb3.eth.sendTransaction({
+                            from: privateWeb3.eth.coinbase,
+                            to: req.body.fromAddress,
+                            value: privateWeb3.toWei(2, 'ether')
+                        }, (tx_error, tx_result) => {
+                            if (!tx_error) {
+                                Logger.info("Payment of 2 ether to account success ", tx_result);
+                            } else {
+                                Logger.info("Payment of 2 ether to account failed ", tx_error);
+                            }
+                        });
 
-                       azureQueue.sendTopicMessage('transaction-retry-queue', JSON.stringify(req.body), (error) => {
+                        azureQueue.sendTopicMessage('transaction-retry-queue', JSON.stringify(req.body), (error) => {
                             if (error) {
                                 Logger.info('error in sending transaction to transaction-retry-queue');
                             } else {
@@ -199,7 +195,7 @@ function broadcastTransactions() {
                                                 azureQueue.deleteMessage(receivedMessage, function(deleteError) {
                                                     if (!deleteError) {
                                                         // Message deleted
-                                                      //  console.log('message has been deleted from user result subscription');
+                                                        //  console.log('message has been deleted from user result subscription');
                                                     }
                                                 })
                                             }
@@ -212,20 +208,20 @@ function broadcastTransactions() {
                         });
                     } else {
 
-                      privateWeb3.eth.sendTransaction({
-                          from: privateWeb3.eth.coinbase,
-                          to: req.body.fromAddress,
-                          value: privateWeb3.toWei(2, 'ether')
-                      }, (tx_error, tx_result) => {
-                          if (!tx_error) {
-                              Logger.info("Payment of 2 ether to account success ", tx_result);
-                          } else {
-                              Logger.info("Payment of 2 ether to account failed ", tx_error);
-                          }
-                      });
+                        privateWeb3.eth.sendTransaction({
+                            from: privateWeb3.eth.coinbase,
+                            to: req.body.fromAddress,
+                            value: privateWeb3.toWei(2, 'ether')
+                        }, (tx_error, tx_result) => {
+                            if (!tx_error) {
+                                Logger.info("Payment of 2 ether to account success ", tx_result);
+                            } else {
+                                Logger.info("Payment of 2 ether to account failed ", tx_error);
+                            }
+                        });
 
 
-                       azureQueue.sendTopicMessage('transaction-retry-queue', JSON.stringify(req.body), (error) => {
+                        azureQueue.sendTopicMessage('transaction-retry-queue', JSON.stringify(req.body), (error) => {
                             if (error) {
                                 Logger.info('error in sending transaction to transaction-retry-queue');
                             } else {
@@ -233,7 +229,7 @@ function broadcastTransactions() {
                                 azureQueue.deleteMessage(receivedMessage, function(deleteError) {
                                     if (!deleteError) {
                                         // Message deleted
-                                      //  console.log('message has been deleted from user result subscription');
+                                        //  console.log('message has been deleted from user result subscription');
                                     }
                                 })
                             }
