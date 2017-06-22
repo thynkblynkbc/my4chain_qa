@@ -2,6 +2,7 @@ var schemaPromise = knex.schema.createTableIfNotExists('User', function(table) {
     table.increments('id').primary();
     table.string('my4chainId');
     table.string('ethPassword');
+    table.string('serverNode');
 
 
 }).then(function(data) {
@@ -48,6 +49,16 @@ knex.schema.hasColumn('User', 'privateKey').then((isColumn) => {
         });
     }
 });
+knex.schema.hasColumn('User', 'serverNode').then((isColumn) => {
+    if (isColumn != true) {
+        knex.schema.table('User', function(table) {
+            table.string('serverNode'); // ethereum account address
+
+        }).then(function(data) {
+            console.log("serverNode Column added");
+        });
+    }
+});
 // User model.
 function User() {
     Model.apply(this, arguments);
@@ -56,14 +67,15 @@ function User() {
 User.tableName = 'User';
 User.jsonSchema = {
   type: 'object',
-  required: ['my4chainId','ethPassword','accountAddress'],
+  required: ['my4chainId','ethPassword','accountAddress','serverNode'],
   properties: {
     id: {type: 'integer'},
     my4chainId: {type: 'string', minLength: 1, maxLength: 255},
     ethPassword:{type:'string',minLength:1,maxLength:10},
     accountAddress:{type:'string'},
     privateKey:{type:'string'},
-    fileWriteStatus:{type:'string'}
+    fileWriteStatus:{type:'string'},
+    serverNode:{type:'string'},
     //parentId: {type: ['integer', 'null']},
     //age: {type: 'number'},
   }
