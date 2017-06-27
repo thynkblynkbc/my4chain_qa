@@ -133,7 +133,7 @@ function broadcastTransactions() {
                         Logger.info('Sufficient balance in fromAddress at starting');
                         utility.unlockAccount(req.body.fromAddress, req.body.password, 60, (error, result) => {
                             if (error) {
-                                Logger.info('Error in unlocking account');
+                                Logger.info('Error in unlocking account',error);
                             } else {
                                 privateWeb3.eth.sendTransaction({
                                     from: req.body.fromAddress,
