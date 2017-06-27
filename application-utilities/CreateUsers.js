@@ -120,6 +120,7 @@ function createUsersFromqueue() {
                         })
                     });
 
+
                     privateWeb3.personal.unlockAccount(result, recordObj1.ethPassword, 0, function(error, result1) {
                         if (!error) {
                             Logger.info('New account ', result, ' unlocking success, will reamin unlocked till geth running ', result1);
