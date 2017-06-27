@@ -57,14 +57,13 @@ class SimpleHashTransaction {
                 toAddress: req.body.toAddress
         }
 
-        console.log(' transaction request format before sending to transaction-request-queue '+JSON.stringify(message));
         azureQueue.sendTopicMessage('transaction-request-queue', JSON.stringify(message), (error) => {
             if (error) {
-                Logger.info('error in sending transaction to transaction-request-queue');
+                Logger.info('Error in sending transaction to transaction-request-queue');
                 callback(error, null);
             } else {
-                Logger.info('transaction sent to transaction-request-queue');
-                resData.message = 'transaction sent to queue';
+                Logger.info('Transaction sent to transaction-request-queue');
+                resData.message = 'Transaction sent to queue';
                 callback(null, resData);
             }
         })

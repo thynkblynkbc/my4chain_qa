@@ -95,7 +95,8 @@ global.errLogger = require('../application-utilities/LoggerUtility').errlogger
 
 global.azureQueue = require('../application-utilities/MessageQueue');
 global.createUsers = require('../application-utilities/CreateUsers');
-global.broadcastTransactions = require('../application-utilities/BroadcastTransactions');
+global.broadcastTransactions = require('../application-utilities/BroadcastTransactions.js');
+//global.MessageProducer = require('../application-utilities/MessageProducer.js');
 
 //azureQueue.createTopic();
 azureQueue.createTopicAndSubs('account-create','users');

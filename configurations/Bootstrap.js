@@ -27,6 +27,7 @@ var initApp = function() {
 
 }
 
+
 function confirmRequest() {
 
     var cron = require('node-cron');
@@ -39,8 +40,6 @@ function confirmRequest() {
         // // console.log(new Date());
         getContractAddress.contractAddress();
          });
-
-
 }
 
 function createContractAbi() {
@@ -156,9 +155,14 @@ function createPerson() {
     //  .catch(next);
 }
 
+
 function bootApplication() {
     app.listen(configurationHolder.config.port, function() {
         Logger.info("Express server listening on port %d in %s mode", configurationHolder.config.port, app.settings.env);
+
+        var MessageProducer = require('./../application-utilities/MessageProducer.js');
+        MessageProducer.init();
+
     });
 }
 

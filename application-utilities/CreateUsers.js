@@ -3,10 +3,11 @@ var fs = require('fs');
 var os = require('os');
 var ifaces = os.networkInterfaces();
 
-//azureQueue.deleteTopic('account-create');
-//azureQueue.deleteTopic('account-result');
-//azureQueue.deleteTopic('account-result');
+// azureQueue.deleteTopic('transaction-request-queue');
+// azureQueue.deleteTopic('transaction-retry-queue');
+// azureQueue.deleteTopic('transaction-result-queue');
 //azureQueue.listTopics();
+
 
 var counter = 0;
 setInterval(function() {
@@ -46,15 +47,13 @@ function getserverNode() {
     }
 }
 
-
-
 var userCount = 0;
 
 function getUsersResultFromqueue() {
 
     azureQueue.receiveSubscriptionMessage('account-result', 'result', (error, receivedMessage) => {
         if (error) {
-            //    Logger.info('Error in receiving message from result', error);
+            //    Logger.info('Error in receiving message from account-result', error);
         } else {
             //  Logger.info('Message received from users result queue ', receivedMessage);
             var resultObj = JSON.parse(receivedMessage.body);
@@ -62,7 +61,7 @@ function getUsersResultFromqueue() {
 
             //  console.log(' result obj '+JSON.stringify(resultObj,null,2));
             userCount++;
-            fs.appendFile("CreateAccountResult", userCount + '. ' + resultObj + '\n', function(err) {
+            fs.appendFile("CreateAccountResult", userCount + '. ' + resultObj +'  timestamp - '+new Date()+'\n', function(err) {
                 if (err) {
                     Logger.info(' error in writing to file ');
                     return console.log(err);
@@ -86,7 +85,7 @@ function createUsersFromqueue() {
         if (error) {
             //    Logger.info('Error in receiving message from TopicCreateAccount to create users ', error);
         } else {
-            //    Logger.info(' Message received from queue to create user account ', receivedMessage);
+                Logger.info(' Message received from queue to create user account ', receivedMessage);
             var recordObj1 = JSON.parse(receivedMessage.body);
 
             //    Logger.info(' recordObj1 -- ',recordObj1);

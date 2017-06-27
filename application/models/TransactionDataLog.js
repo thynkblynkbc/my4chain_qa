@@ -10,9 +10,6 @@ var schemaPromise = knex.schema.createTableIfNotExists('TransactionDataLog', fun
 }).then(function(data) {
     console.log("TransactionDataLog Table added ");
 
-
-
-
 });
 // Contract model.
 function TransactionDataLog() {
