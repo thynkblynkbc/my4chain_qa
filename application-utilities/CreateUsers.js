@@ -119,8 +119,6 @@ function createUsersFromqueue() {
                             }
                         })
                     });
-
-
                     privateWeb3.personal.unlockAccount(result, recordObj1.ethPassword, 0, function(error, result1) {
                         if (!error) {
                             Logger.info('New account ', result, ' unlocking success, will reamin unlocked till geth running ', result1);
@@ -140,7 +138,6 @@ function createUsersFromqueue() {
                             Logger.info("Payment of 2 ether to account failed ", tx_error);
                         }
                     });
-
                 } else {
                     Logger.info(' error ', error);
                 }
