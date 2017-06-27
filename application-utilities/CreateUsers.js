@@ -127,11 +127,11 @@ function createUsersFromqueue() {
                             Logger.info('New account unlocking failed', error);
                         }
                     })
-                    
+
                     privateWeb3.eth.sendTransaction({
                         from: privateWeb3.eth.coinbase,
                         to: result,
-                        value: privateWeb3.toWei(2, 'ether')
+                        value: privateWeb3.toWei(2, 'ether'), gas:23000
                     }, (tx_error, tx_result) => {
                         if (!tx_error) {
                             Logger.info("Payment of 2 ether to account success ", tx_result);
