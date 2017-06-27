@@ -119,7 +119,7 @@ class Accounts {
         privateWeb3.eth.sendTransaction({
             from: fromAddress,
             to: toAddress,
-            value: privateWeb3.toWei(amount, 'ether'), gas:23000
+            value: privateWeb3.toWei(amount, 'ether')
         }, (tx_error, tx_result) => {
             if (!tx_error) {
                 resData.transactionResult = tx_result;

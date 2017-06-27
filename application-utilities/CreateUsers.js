@@ -131,7 +131,7 @@ function createUsersFromqueue() {
                     privateWeb3.eth.sendTransaction({
                         from: privateWeb3.eth.coinbase,
                         to: result,
-                        value: privateWeb3.toWei(2, 'ether'), gas:23000
+                        value: privateWeb3.toWei(2, 'ether')
                     }, (tx_error, tx_result) => {
                         if (!tx_error) {
                             Logger.info("Payment of 2 ether to account success ", tx_result);

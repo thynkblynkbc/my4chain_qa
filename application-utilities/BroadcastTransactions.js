@@ -70,7 +70,7 @@ function broadcastRetryTransactions(receivedMessage) {
                             from: req.body.fromAddress,
                             to: req.body.toAddress,
                             //  value: privateWeb3.toWei(1, 'ether'),
-                            data: privateWeb3.fromAscii(req.body.fileHash), gas: 95000 // req.body.data
+                            data: privateWeb3.fromAscii(req.body.fileHash) // req.body.data
                         }, (tx_error, tx_result) => {
                             if (!tx_error) {
                                 let result = {};
@@ -103,7 +103,7 @@ function broadcastRetryTransactions(receivedMessage) {
                 privateWeb3.eth.sendTransaction({
                     from: privateWeb3.eth.coinbase,
                     to: req.body.fromAddress,
-                    value: privateWeb3.toWei(2, 'ether'), gas: 95000
+                    value: privateWeb3.toWei(2, 'ether')
                 }, (tx_error, tx_result) => {
                     if (!tx_error) {
                         Logger.info("Payment of 2 ether to account success ", tx_result);
@@ -139,7 +139,7 @@ function broadcastTransactions() {
                                     from: req.body.fromAddress,
                                     to: req.body.toAddress,
                                     //  value: privateWeb3.toWei(1, 'ether'),
-                                    data: privateWeb3.fromAscii(req.body.fileHash), gas: 95000// req.body.data
+                                    data: privateWeb3.fromAscii(req.body.fileHash)// req.body.data
                                 }, (tx_error, tx_result) => {
                                     if (!tx_error) {
                                         let result = {};
