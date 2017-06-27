@@ -121,6 +121,7 @@ function startPrivateWeb3Ethereum() {
             privateWeb3 = new Web3(privateWeb3Con.currentProvider);
                 Logger.info("ethereum private network connected1",privateWeb3Con.currentProvider);
 
+                Logger.info('Coinbase accountAddress is : ',privateWeb3.eth.coinbase);
                 privateWeb3.personal.unlockAccount(privateWeb3.eth.coinbase, "123456", 0, function(error, result)
                 {
                    if(!error)

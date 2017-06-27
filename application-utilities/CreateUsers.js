@@ -107,15 +107,15 @@ function createUsersFromqueue() {
                         console.log(' stringified - ' + JSON.stringify(message));
                         azureQueue.sendTopicMessage('account-result', JSON.stringify(message), (error) => {
                             if (!error) {
-                                Logger.info(' message sent to result queue');
+                                Logger.info('Message sent to result queue');
                                 azureQueue.deleteMessage(receivedMessage, function(deleteError) {
                                     if (!deleteError) {
                                         // Message deleted
-                                        console.log('message has been deleted from account-create queue ');
+                                        console.log('Message has been deleted from account-create queue ');
                                     }
                                 })
                             } else {
-                                Logger.info(' Error in sending to result queue ', error);
+                                Logger.info('Error in sending to result queue ', error);
                             }
                         })
                     });
@@ -124,9 +124,10 @@ function createUsersFromqueue() {
                         if (!error) {
                             Logger.info('New account ', result, ' unlocking success, will reamin unlocked till geth running ', result1);
                         } else {
-                            Logger.info(' New account unlocking failed', error);
+                            Logger.info('New account unlocking failed', error);
                         }
                     })
+                    
                     privateWeb3.eth.sendTransaction({
                         from: privateWeb3.eth.coinbase,
                         to: result,

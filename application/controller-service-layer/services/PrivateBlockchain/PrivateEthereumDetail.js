@@ -6,9 +6,6 @@ class PrivateEthereumDetail {
     // get your account balance
     accountBalance(address, res, callback) {
         // dummyAddress="d275c1fe34f30713bdd2c7fa35475b4aa52e21ed";
-
-        Logger.info("address=------>", address);
-
         privateWeb3.eth.getBalance(address, function(error, result) {
             if (!error) {
                 var resData = {};
