@@ -64,7 +64,7 @@ function broadcastRetryTransactions(receivedMessage) {
                 Logger.info('Balance is sufficient now');
                 utility.unlockAccount(req.body.fromAddress, req.body.password, 60, (error, result) => {
                     if (error) {
-                      
+
                         Logger.info('Error in unlocking account',error);
                     } else {
                         privateWeb3.eth.sendTransaction({
@@ -126,6 +126,8 @@ function broadcastTransactions() {
     azureQueue.receiveSubscriptionMessage('transaction-request-queue', 'transactions', (error, receivedMessage) => {
         if (!error) {
             Logger.info('Message received from transaction-request-queue',receivedMessage);
+
+
             var req = {};
             req.body = JSON.parse(receivedMessage.body);
             // check whether fromAddress has sufficient balance or not
@@ -207,6 +209,9 @@ function broadcastTransactions() {
                     }
                 }
             })
+
+
+
         } else {
               //Logger.info('Error in receiving transaction from transaction-request-queue', error);
         }

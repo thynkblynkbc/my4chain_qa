@@ -31,19 +31,19 @@ var serverNode = getserverNode();
 function getserverNode() {
     switch (serverip) {
         case '10.0.0.4':
-            return '1';
+            return 'tx0';
             break;
         case '10.0.0.5':
-            return '2';
+            return 'tx1';
             break;
-        case '33':
-            return '3';
+        case '10.0.1.4':
+            return 'mn0';
             break;
-        case '44':
-            return '4';
+        case '10.0.2.4':
+            return 'mn1';
             break;
         default:
-            return 'None';
+            return 'local';
     }
 }
 
