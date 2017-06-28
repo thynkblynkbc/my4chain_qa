@@ -64,7 +64,7 @@ function broadcastRetryTransactions(receivedMessage) {
                 Logger.info('Balance is sufficient now');
                 utility.unlockAccount(req.body.fromAddress, req.body.password, 60, (error, result) => {
                     if (error) {
-                        Logger.info('Error in unlocking account');
+                        Logger.info('Error in unlocking account',error);
                     } else {
                         privateWeb3.eth.sendTransaction({
                             from: req.body.fromAddress,
