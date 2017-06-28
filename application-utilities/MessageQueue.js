@@ -71,10 +71,13 @@ module.exports = function() {
     }
 
     var receiveSubscriptionMessage = function(topic, subscription, callback) {
+
+      //  Logger.info(' receveivedSubscriptionMessage called ');
         serviceBusService.receiveSubscriptionMessage(topic, subscription,{
             isPeekLock: true
         }, function(error, receivedMessage) {
             if (error) {
+              //  Logger.info('Error in receiving message from queue ',error)
                 callback(error, null);
             } else {
                 callback(null, receivedMessage);

@@ -54,7 +54,8 @@ class SimpleHashTransaction {
                 fileHash: req.body.fileHash,
                 fromAddress: req.body.fromAddress,
                 password: req.body.password,
-                toAddress: req.body.toAddress
+                toAddress: req.body.toAddress,
+                transactionId: req.body.transactionId
         }
 
         azureQueue.sendTopicMessage('transaction-request-queue', JSON.stringify(message), (error) => {

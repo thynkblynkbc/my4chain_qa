@@ -28,7 +28,7 @@ var transactionCount = 0;
 function getTransactionResults() {
     azureQueue.receiveSubscriptionMessage('transaction-result-queue', 'transactionsresult', (error, receivedMessage) => {
         if (!error) {
-            //console.log(' receveived body ',receivedMessage.body);
+            console.log(' receveived body ',receivedMessage.body);
             var transactionsResult = JSON.parse(receivedMessage.body);
             transactionsResult = JSON.stringify(transactionsResult);
             transactionCount++;
@@ -78,13 +78,16 @@ function broadcastRetryTransactions(receivedMessage) {
                                 result.reciverAddress = req.body.toAddress;
                                 result.transactionHash = tx_result;
                                 result.data = req.body.fileHash;
+                                result.transactionId = req.body.transactionId;
                                 utility.saveToTransactionData(result);
                                 var message = {
                                     fileHash: req.body.fileHash,
                                     fromAddress: req.body.fromAddress,
                                     toAddress: req.body.toAddress,
-                                    transactionHash: tx_result
+                                    transactionHash: tx_result,
+                                    transactionId: req.body.transactionId
                                 }
+
                                 azureQueue.sendTopicMessage('transaction-result-queue', JSON.stringify(message), (error) => {
                                     if (error) {
                                         Logger.info('Error in sending transaction to transaction-result-queue');
@@ -121,7 +124,7 @@ function broadcastTransactions() {
 
     azureQueue.receiveSubscriptionMessage('transaction-request-queue', 'transactions', (error, receivedMessage) => {
         if (!error) {
-            Logger.info('Message received from transaction-request-queue');
+            Logger.info('Message received from transaction-request-queue',receivedMessage);
             var req = {};
             req.body = JSON.parse(receivedMessage.body);
             // check whether fromAddress has sufficient balance or not
@@ -147,13 +150,17 @@ function broadcastTransactions() {
                                         result.reciverAddress = req.body.toAddress;
                                         result.transactionHash = tx_result;
                                         result.data = req.body.fileHash;
+                                        result.transactionId = req.body.transactionId;
                                         utility.saveToTransactionData(result);
+
                                         var message = {
                                             fileHash: req.body.fileHash,
                                             fromAddress: req.body.fromAddress,
                                             toAddress: req.body.toAddress,
-                                            transactionHash: tx_result
+                                            transactionHash: tx_result,
+                                            transactionId: req.body.transactionId
                                         }
+
                                         azureQueue.sendTopicMessage('transaction-result-queue', JSON.stringify(message), (error) => {
                                             if (error) {
                                                 Logger.info('Error in sending transaction to transaction-result-queue');
