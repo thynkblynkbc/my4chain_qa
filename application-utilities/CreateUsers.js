@@ -31,16 +31,16 @@ var serverNode = getserverNode();
 function getserverNode() {
     switch (serverip) {
         case '10.0.0.4':
-            return 'tx0';
+            return 'blkchain_server1';
             break;
         case '10.0.0.5':
-            return 'tx1';
+            return 'blkchain_server2';
             break;
         case '10.0.1.4':
-            return 'mn0';
+            return 'blkchain_server3';
             break;
         case '10.0.2.4':
-            return 'mn1';
+            return 'blkchain_server4';
             break;
         default:
             return 'local';
