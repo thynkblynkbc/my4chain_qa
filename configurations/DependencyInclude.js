@@ -8,7 +8,7 @@ global.errorHandler = require('errorhandler')
 global.bodyParser = require('body-parser')
 global.cron = require('node-cron');
 global.moment = require('moment');
-    //   global.ipfs = require('ipfs');
+//   global.ipfs = require('ipfs');
 var ipfsAPI = require('ipfs-api')
 global.validater = require('express-validation')
 global.validationFile = require('../application-utilities/Validater')
@@ -45,7 +45,7 @@ global.knex = knexReq({
     client: 'pg',
     useNullAsDefault: true,
     connection: {
-        host: '127.0.0.1',
+        host: '10.0.0.4',
         port: "5432",
         user: 'oodles',
         password: 'oodles',
