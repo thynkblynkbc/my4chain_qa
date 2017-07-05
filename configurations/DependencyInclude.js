@@ -21,6 +21,7 @@ global.counterAccount = 2;
 //     protocol: 'http'
 // })
 //global.Promise = require('node-promise').Promise
+
 global.async = require('async')
 global.crypto = require('crypto')
 global.uuid = require('node-uuid');
@@ -105,6 +106,8 @@ azureQueue.createTopicAndSubs('account-result','result');
 azureQueue.createTopicAndSubs('transaction-request-queue','transactions');
 azureQueue.createTopicAndSubs('transaction-retry-queue','retrytransactions');
 azureQueue.createTopicAndSubs('transaction-result-queue','transactionsresult');
+
+azureQueue.createTopicAndSubs('transaction-request-test-queue','transactions-test');
 
 //global.processTxs = require('../application-utilities/processTransactions');
 

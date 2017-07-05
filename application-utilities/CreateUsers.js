@@ -26,7 +26,7 @@ setInterval(function() {
 var serverip = ifaces.eth0[0].address;
 
 var serverNode = getserverNode();
-
+    global.currentServerNode = serverNode;
 
 function getserverNode() {
     switch (serverip) {

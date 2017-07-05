@@ -111,6 +111,14 @@
 	                json: views.jsonView
 	            }
 	        }],
+					"/api/v1/contract/broadcastTransactions": [{
+	            method: "POST",
+	            action: controllers.privateEthereumController.broadcastTransactions,
+	            middleware: [],
+	            views: {
+	                json: views.jsonView
+	            }
+	        }],
 					// change state of contract ACK , DECLINE ,
 					"/api/v1/contract/getHashIntransaction": [{
 							method: "GET",

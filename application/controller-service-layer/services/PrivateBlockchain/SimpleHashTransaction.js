@@ -1,5 +1,7 @@
 'use strict';
 var utility = require('./PrivateEthereumUtilities');
+var broadcast = require('../../../../application-utilities/BroadcastTransactions.js');
+
 class SimpleHashTransaction {
 
     constructor() {}
@@ -46,6 +48,17 @@ class SimpleHashTransaction {
         });
     }
 
+    broadcastTransactions(req, res, callback)
+    {
+      //broadcastTransactions.broadcastTransactions(req);
+      //Logger.info(' recevein req -- ');
+      var resData = {};
+      resData.message = 'sent'
+      Logger.info('in broadcastTransactions function');
+      broadcast(req)
+      callback(null,resData);
+    }
+
     // send file hash in raw  transaction
     sendHashIntransaction(req, res, callback) {
         let resData = {};
@@ -58,7 +71,8 @@ class SimpleHashTransaction {
                 transactionId: req.body.transactionId
         }
 
-        azureQueue.sendTopicMessage('transaction-request-queue', JSON.stringify(message), (error) => {
+        //azureQueue.sendTopicMessage('transaction-request-queue', JSON.stringify(message), (error) => {
+          azureQueue.sendTopicMessage('transaction-request-queue', JSON.stringify(message), (error) => {
             if (error) {
                 Logger.info('Error in sending transaction to transaction-request-queue');
                 callback(error, null);
@@ -129,18 +143,7 @@ class SimpleHashTransaction {
         //         callback(error,null);
         //     }
         // });
-
-
-
-
     }
-
-
-
-
-
-
-
 
 
     // get hash data from transaction

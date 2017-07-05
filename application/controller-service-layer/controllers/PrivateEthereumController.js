@@ -128,27 +128,30 @@ module.exports = function() {
         this.services.privateEthereumService.contractForAssets(tranxHash, res, callback);
 
     }
+
     var sendHashIntransaction = function(req,res,callback){
          this.services.simpleHashTransaction.sendHashIntransaction(req, res, callback);
-
-
     }
+
+    var broadcastTransactions = function(req,res,callback){
+        Logger.info('in broadcastTransactions controller ');
+         this.services.simpleHashTransaction.broadcastTransactions(req, res, callback);
+    }
+
     var sendRawHashIntransaction = function(req,res,callback){
          this.services.simpleHashTransaction.sendRawHashIntransaction(req, res, callback);
-
-
     }
+
     var getHashIntransaction = function(req,res,callback){
       this.services.simpleHashTransaction.getHashIntransaction(req, res, callback);
-
     }
 
     var saveFileAndGenerateHash = function(req, res, callback) {
         var myaccount = req.body.myAddress;
         var toAccount = req.body.toAddress;
         this.services.privateEthereumService.saveFileAndGenerateHash(toAccount, myaccount, req, res, callback);
-
     }
+
     var coinbaseBalance = function(req, res, callback) {
 
         this.services.privateEthereumDetail.coinbaseBalance(res, callback);
@@ -188,7 +191,8 @@ module.exports = function() {
         latestBlock: latestBlock,
         requestConfirmation: requestConfirmation,
         testContract:testContract,
-        createimportAccount : createimportAccount
+        createimportAccount : createimportAccount,
+        broadcastTransactions : broadcastTransactions
 
     }
 };
