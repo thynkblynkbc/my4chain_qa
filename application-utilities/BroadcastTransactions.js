@@ -100,7 +100,7 @@ function broadcastTransactionsRequests(receivedRequest) {
                 });
 
                 MessageProducer.sendMessage(JSON.stringify(req.body), 10000, 1235);
-                azureQueue.deleteMessage(receivedMessage, function(deleteError) {
+                azureQueue.deleteMessage(receivedRequest.body, function(deleteError) {
                     if (!deleteError) {
                         // Message deleted
                         console.log('Message has been deleted from transaction-request-queue');
