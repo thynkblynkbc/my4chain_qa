@@ -8,7 +8,7 @@ var MessageProducer = require('./MessageProducer.js');
 stompClient.connect(function(sessionId) {
     console.log('Connected to stompClient with sessionId : ', sessionId);
     stompClient.subscribe('/queue/transaction-retry-queue', function(body, headers) {
-        Logger.info(' Message receveived from transaction-retry-queue at ' + new Date() + body, headers);
+      //  Logger.info(' Message receveived from transaction-retry-queue at ' + new Date() + body, headers);
         broadcastRetryTransactions(body);
     })
 });
@@ -26,16 +26,12 @@ setInterval(function() {
 var transactionCount = 0;
 
 function broadcastTransactionsRequests(receivedRequest) {
-
-    Logger.info('Trnasaction Request received from other server', receivedRequest.body);
     var req = {};
     req.body = JSON.parse(receivedRequest.body.body);
-
     // check whether fromAddress has sufficient balance or not
     privateWeb3.eth.getBalance(req.body.fromAddress, function(error, etherBal) {
         if (!error) {
             var Balance = privateWeb3.fromWei(etherBal.toNumber(), 'ether');
-            Logger.info('balance in fromAccount : ', Balance);
             if (Balance > 5) { // if fromAddress has sufficient balance
                 Logger.info('Sufficient balance in fromAddress at starting');
                 utility.unlockAccount(req.body.fromAddress, req.body.password, 60, (error, result) => {
@@ -73,7 +69,7 @@ function broadcastTransactionsRequests(receivedRequest) {
                                         azureQueue.deleteMessage(receivedRequest.body, function(deleteError) {
                                             if (!deleteError) {
                                                 // Message deleted
-                                                  console.log('message has been deleted from user result subscription');
+                                                //  console.log('message has been deleted from user result subscription');
                                             }
                                         })
                                     }
@@ -93,9 +89,9 @@ function broadcastTransactionsRequests(receivedRequest) {
                     value: privateWeb3.toWei(2, 'ether')
                 }, (tx_error, tx_result) => {
                     if (!tx_error) {
-                        Logger.info("Payment of 2 ether to account success ", tx_result);
+                      //  Logger.info("Payment of 2 ether to account success ", tx_result);
                     } else {
-                        Logger.info("Payment of 2 ether to account failed ", tx_error);
+                      //  Logger.info("Payment of 2 ether to account failed ", tx_error);
                     }
                 });
 
@@ -103,7 +99,7 @@ function broadcastTransactionsRequests(receivedRequest) {
                 azureQueue.deleteMessage(receivedRequest.body, function(deleteError) {
                     if (!deleteError) {
                         // Message deleted
-                        console.log('Message has been deleted from transaction-request-queue');
+                    //    console.log('Message has been deleted from transaction-request-queue');
                     }
                 })
                 // transaction sent to retry ActiveMQ
@@ -115,7 +111,7 @@ function broadcastTransactionsRequests(receivedRequest) {
 function getTransactionResults() {
     azureQueue.receiveSubscriptionMessage('transaction-result-queue', 'transactionsresult', (error, receivedMessage) => {
         if (!error) {
-            console.log(' receveived body ', receivedMessage.body);
+          //  console.log(' receveived body ', receivedMessage.body);
             var transactionsResult = JSON.parse(receivedMessage.body);
             transactionsResult = JSON.stringify(transactionsResult);
             transactionCount++;
@@ -145,7 +141,7 @@ function broadcastRetryTransactions(receivedMessage) {
     privateWeb3.eth.getBalance(req.body.fromAddress, function(error, etherBal) {
         if (!error) {
             var Balance = privateWeb3.fromWei(etherBal.toNumber(), 'ether');
-            Logger.info('Balance in fromAddress : ', Balance, ' ether');
+          //  Logger.info('Balance in fromAddress : ', Balance, ' ether');
             if (Balance > 5) {
                 Logger.info('Balance is sufficient now');
                 utility.unlockAccount(req.body.fromAddress, req.body.password, 60, (error, result) => {
@@ -196,9 +192,9 @@ function broadcastRetryTransactions(receivedMessage) {
                     value: privateWeb3.toWei(2, 'ether')
                 }, (tx_error, tx_result) => {
                     if (!tx_error) {
-                        Logger.info("Payment of 2 ether to account success ", tx_result);
+                      //  Logger.info("Payment of 2 ether to account success ", tx_result);
                     } else {
-                        Logger.info("Payment of 2 ether to account failed ", tx_error);
+                    //    Logger.info("Payment of 2 ether to account failed ", tx_error);
                     }
                 });
                 MessageProducer.sendMessage(JSON.stringify(req.body), 10000, 1235);
@@ -211,7 +207,7 @@ function broadcastTransactions() {
     //azureQueue.receiveSubscriptionMessage('transaction-request-test-queue', 'transactions-test', (error, receivedMessage) => {
       azureQueue.receiveSubscriptionMessage('transaction-request-queue', 'transactions', (error, receivedMessage) => {
         if (!error) {
-            Logger.info('Message received from transaction-request-queue', receivedMessage);
+          //  Logger.info('Message received from transaction-request-queue', receivedMessage);
             var req = {};
             req.body = JSON.parse(receivedMessage.body);
             domain.User.query().where({
@@ -229,7 +225,7 @@ function broadcastTransactions() {
                         privateWeb3.eth.getBalance(req.body.fromAddress, function(error, etherBal) {
                             if (!error) {
                                 var Balance = privateWeb3.fromWei(etherBal.toNumber(), 'ether');
-                                Logger.info('balance in fromAccount : ', Balance);
+                            //    Logger.info('balance in fromAccount : ', Balance);
                                 if (Balance > 5) { // if fromAddress has sufficient balance
                                     Logger.info('Sufficient balance in fromAddress at starting');
                                     utility.unlockAccount(req.body.fromAddress, req.body.password, 60, (error, result) => {
@@ -287,9 +283,9 @@ function broadcastTransactions() {
                                         value: privateWeb3.toWei(2, 'ether')
                                     }, (tx_error, tx_result) => {
                                         if (!tx_error) {
-                                            Logger.info("Payment of 2 ether to account success ", tx_result);
+                                        //    Logger.info("Payment of 2 ether to account success ", tx_result);
                                         } else {
-                                            Logger.info("Payment of 2 ether to account failed ", tx_error);
+                                        //    Logger.info("Payment of 2 ether to account failed ", tx_error);
                                         }
                                     });
 
@@ -348,11 +344,11 @@ function broadcastTransactions() {
                                 console.log('body ', chunk);
                             });
                             res.on('end', () => {
-                                console.log('No more data in response.');
+                              //  console.log('No more data in response.');
                             });
                         });
                         req.on('error', (e) => {
-                            console.error('problem with request:', e);
+                          //  console.error('problem with request:', e);
                         });
                         // write data to request body
                         req.write(postData);
