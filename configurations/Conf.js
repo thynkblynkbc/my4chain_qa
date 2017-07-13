@@ -37,9 +37,9 @@ var configVariables = function () {
             verificationUrl:'http://localhost:3000/verify/',
             emailFrom:'himanshu.sharma@oodlestechnologies.com',
             emailPassword:'*********',
-            blockchainIp:'http://13.78.237.223:8545',
+            blockchainIp:'http://127.0.0.1:8001',
             azureQueue:"Endpoint=sb://futuron.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=NbUFbZHq2XJECM2aGU3rYMn8IJFJ8M6BME2v0DHcxSg=",
-            blockchainPort:'8545'
+            blockchainPort:'8000'
         }
         config.roles = roles
         config.accessLevels = accessLevels
