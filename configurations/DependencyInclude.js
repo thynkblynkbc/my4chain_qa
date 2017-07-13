@@ -41,11 +41,19 @@ global.fs = require('fs');
 global.solc = require('solc');
 var knexReq = require('knex');
 // Initialize knex connection.
+var host;
+if(process.env.NODE_ENV == 'development')
+{
+  host = '127.0.0.1'
+} else if (process.env.NODE_ENV == 'production'){
+  host = '10.0.0.4'
+}
+
 global.knex = knexReq({
     client: 'pg',
     useNullAsDefault: true,
     connection: {
-        host: '10.0.0.4',
+        host: host,
         port: "5432",
         user: 'oodles',
         password: 'oodles',
