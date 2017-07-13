@@ -173,9 +173,8 @@ class PrivateEthereumDetail {
                         callback(resData, null);
                     }
                 } else {
-                    resData = new Error(configurationHolder.errorMessage.blockchainIssue);
+                    resData.message = 'No data with this transactionHash';
                     resData.status = 500;
-
                     callback(resData, null);
                 }
             } else {
