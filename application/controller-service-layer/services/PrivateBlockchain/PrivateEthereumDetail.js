@@ -149,6 +149,7 @@ class PrivateEthereumDetail {
         var resData = {};
         privateWeb3.eth.getTransaction(tranxHash, (error, result) => {
                 if (!error) {
+                   Logger.info('tx detail : ',result);
                     resData.transactionDetail = result;
                     callback(null, resData);
                 } else {
