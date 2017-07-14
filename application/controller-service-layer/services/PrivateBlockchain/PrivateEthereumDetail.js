@@ -153,8 +153,9 @@ class PrivateEthereumDetail {
                 } else {
                     resData.message = 'No data with this transactionHash';
                     callback(resData, null);
-                });
-        }
+                }
+              }
+              );
     }
 
     module.exports = new PrivateEthereumDetail();
