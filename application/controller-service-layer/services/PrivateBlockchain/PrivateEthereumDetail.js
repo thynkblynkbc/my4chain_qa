@@ -85,6 +85,7 @@ class PrivateEthereumDetail {
             }
         });
     }
+
     checkConfirmation(tranxHash, cb) {
         var resData = {};
         privateWeb3.eth.getBlock('latest', function(err, bestBlock) {
@@ -155,7 +156,9 @@ class PrivateEthereumDetail {
                     callback(resData, null);
                 }
               }
-              );
+              )
     }
+
+  }
 
     module.exports = new PrivateEthereumDetail();
