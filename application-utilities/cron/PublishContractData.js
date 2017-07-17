@@ -12,7 +12,7 @@ class PublishContractData {
                 resData.message = "No data found";
                 cb(resData, null);
             } else {
-              Logger.info("Data is found",resData);
+            //  Logger.info("Data is found",resData);
                 resData.message = "data found";
                 cb(null, resData);
             }

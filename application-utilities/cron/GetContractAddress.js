@@ -10,7 +10,7 @@ class GetContractAddress {
                 resData.message = "No data found";
 
             } else {
-               Logger.info("Data is found", databaseReturn.length);
+          //     Logger.info("Data is found", databaseReturn.length);
                 this.checkForAddress(JSON.parse(JSON.stringify(databaseReturn)));
 
                 resData.message = "data found";
