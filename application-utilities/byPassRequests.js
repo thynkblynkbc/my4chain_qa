@@ -4,6 +4,7 @@ var querystring = require('querystring');
 
 function byPassRequest(serverNode, path, body) {
       var hostname = gethost()
+      Logger.info(' body -- ',body);
       var stringifiedBody = querystring.stringify(body);
       Logger.info('I am in byPassRequest method');
 

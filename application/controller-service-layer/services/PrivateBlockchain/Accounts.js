@@ -97,11 +97,15 @@ class Accounts {
         var password = reqData.password;
         var amount = reqData.amount;
         var resData = {};
+Logger.info('I am in sendEhter method');
 
+
+  privateWeb3.personal.unlockAccount(req.body.fromAddress, password, 0, function(error, result1) {
         domain.User.query().where({
                 'accountAddress': req.body.fromAddress
             }).select('serverNode')
             .then((userData) => {
+              Logger.info('User data from db - ',userData);
               var walletServerNode = userData[0].serverNode;
         if (walletServerNode == currentServerNode) {
             privateWeb3.eth.sendTransaction({
@@ -117,11 +121,15 @@ class Accounts {
                 }
             });
         } else {
-            var path = '/api/v1/contract/broadcastTransactions';
+            Logger.info('I am in else block of sendEther');
+            var path = '/api/v1/contract/sendether/123';
             var postData = req.body;
             byPassRequest(walletServerNode, path, postData);
         }
       })
+    })
+
+
 
 
     }
