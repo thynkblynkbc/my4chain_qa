@@ -1,10 +1,8 @@
 'use strict';
+var byPassRequest = require('./../../../application-utilities/byPassRequest.js');
 
 class Accounts {
-
-    constructor() {
-
-    }
+    constructor() {}
 
     // to create a new account in blockchain
     createAccount(recordObj, res, callback) {
@@ -18,21 +16,12 @@ class Accounts {
                 resData.message = "My4chainId already exists";
                 callback(resData, null);
             } else {
-
-                // var message = {
-                //     body: 'createUserData',
-                //     customProperties: {
-                //         my4chainid : recordObj.my4chainId,
-                //         ethpassword : recordObj.ethPassword
-                //     }
-                // }
-
                 var message = {
-                  my4chainId : recordObj.my4chainId,
-                  ethPassword : recordObj.ethPassword
+                    my4chainId: recordObj.my4chainId,
+                    ethPassword: recordObj.ethPassword
                 }
 
-                console.log('create account request format before sending to account-create '+JSON.stringify(message));
+                console.log('create account request format before sending to account-create ' + JSON.stringify(message));
                 azureQueue.sendTopicMessage('account-create', JSON.stringify(message), (error) => {
                     if (!error) {
                         resData.message = "Message sent to queue";
@@ -46,7 +35,6 @@ class Accounts {
         })
     }
 
-
     // to create a new account in blockchain
     createimportAccount(recordObj, res, callback) {
         var resData = {};
@@ -57,10 +45,7 @@ class Accounts {
         var privateKey;
         require('crypto').randomBytes(32, function(err, buffer) {
             privateKey = buffer.toString('hex');
-
-            //  var privateKey = crypto.randomBytes(32)
             var headers = {
-
                 'Content-Type': 'application/json'
             }
 
@@ -102,9 +87,8 @@ class Accounts {
             req.end();
         });
     }
-
-
     //  send ether to other account
+
     privateSendether(req, res, callback) {
         var reqData = req.body;
         var requestid = req.params.requestid;
@@ -112,29 +96,39 @@ class Accounts {
         var toAddress = reqData.toAddress;
         var password = reqData.password;
         var amount = reqData.amount;
-        var data = reqData.data;
-        var duration = 30;
         var resData = {};
 
-        privateWeb3.eth.sendTransaction({
-            from: fromAddress,
-            to: toAddress,
-            value: privateWeb3.toWei(amount, 'ether')
-        }, (tx_error, tx_result) => {
-            if (!tx_error) {
-                resData.transactionResult = tx_result;
-                //    this.storeRequestConfirmation(requestid,tx_result);
-                callback(null, resData);
-            } else {
-                callback(tx_error);
-            }
-        });
+        domain.User.query().where({
+                'accountAddress': req.body.fromAddress
+            }).select('serverNode')
+            .then((userData) => {
+              var walletServerNode = userData[0].serverNode;
+        if (walletServerNode == currentServerNode) {
+            privateWeb3.eth.sendTransaction({
+                from: fromAddress,
+                to: toAddress,
+                value: privateWeb3.toWei(amount, 'ether')
+            }, (tx_error, tx_result) => {
+                if (!tx_error) {
+                    resData.transactionResult = tx_result;
+                    callback(null, resData);
+                } else {
+                    callback(tx_error);
+                }
+            });
+        } else {
+            var path = '/api/v1/contract/broadcastTransactions';
+            var postData = req.body;
+            byPassRequest(walletServerNode, path, postData);
+        }
+      })
 
-        //     } else {
-        //         callback(error);
-        //     }
-        // });
+
     }
+
+
+
+
 
 }
 module.exports = new Accounts();
