@@ -50,7 +50,7 @@ req.on('error', (e) => {
   //  console.error('problem with request:', e);
 });
 // write data to request body
-req.write(postData);
+req.write(stringifiedBody);
 req.end()
 }
 
