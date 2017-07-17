@@ -1,5 +1,5 @@
 'use strict';
-var byPassRequest = require('./../../../application-utilities/byPassRequest.js');
+var byPassRequest = require('./../../../../application-utilities/byPassRequests.js');
 
 class Accounts {
     constructor() {}
