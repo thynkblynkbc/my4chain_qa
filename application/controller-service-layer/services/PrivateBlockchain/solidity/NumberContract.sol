@@ -196,12 +196,6 @@ contract documentAccessMapping is docMapping{
 
       return false;
     }
-    /*function GetData()  public returns(string) {
-     data.value = ["himanshu","sharma","lion"];
-     bool v =TestLib.getHash(data ,3 );
-      return data.finalStrAction;
-
-  }*/
 
     function assignAction(address userId, uint8[] argAction) isAcceptDecline public returns(string) {
 

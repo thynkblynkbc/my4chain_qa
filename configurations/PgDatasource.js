@@ -1,5 +1,5 @@
 /**
- @author: himanshu sharma
+ @author: deepchand prajapati
  configuration is define to make connection with the database for the different environment.
 */
 

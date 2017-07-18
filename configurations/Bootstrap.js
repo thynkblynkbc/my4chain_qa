@@ -1,5 +1,4 @@
 /*
- * @author Himanshu sharma
  * This program includes all the function which are required to  initialize before the application start
  */
 
