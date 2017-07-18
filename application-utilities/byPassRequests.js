@@ -2,7 +2,7 @@ var http = require('http');
 var querystring = require('querystring');
 //const postData = querystring.stringify(body);
 
-function byPassRequest(serverNode, path, body,callback) {
+function byPassRequest(serverNode, path, body) {
       var hostname = gethost()
       Logger.info(' body -- ',body);
       var resData = {};
@@ -43,7 +43,7 @@ function byPassRequest(serverNode, path, body,callback) {
     res.setEncoding('utf8');
     res.on('data', (chunk) => {
         console.log('body ', chunk);
-        callback(chunk);
+      //  callback(chunk);
     });
     res.on('end', () => {
       //  console.log('No more data in response.');
