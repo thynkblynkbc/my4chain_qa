@@ -2,9 +2,10 @@ var http = require('http');
 var querystring = require('querystring');
 //const postData = querystring.stringify(body);
 
-function byPassRequest(serverNode, path, body) {
+function byPassRequest(serverNode, path, body,callback) {
       var hostname = gethost()
       Logger.info(' body -- ',body);
+      var resData = {};
       var stringifiedBody = querystring.stringify(body);
       Logger.info('I am in byPassRequest method');
 
@@ -42,6 +43,7 @@ function byPassRequest(serverNode, path, body) {
     res.setEncoding('utf8');
     res.on('data', (chunk) => {
         console.log('body ', chunk);
+        callback(chunk);
     });
     res.on('end', () => {
       //  console.log('No more data in response.');

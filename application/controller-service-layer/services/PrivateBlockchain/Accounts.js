@@ -124,7 +124,15 @@ Logger.info('I am in sendEhter method');
             Logger.info('I am in else block of sendEther');
             var path = '/api/v1/contract/sendether/123';
             var postData = req.body;
-            byPassRequest(walletServerNode, path, postData);
+            byPassRequest(walletServerNode, path, postData, (response) => {
+              if(!response.error)
+              {
+                resData.transactionResult = response.object.transactionResult;
+                callback(null, resData);
+              } else {
+                callback(response.object.message);
+              }
+            });
         }
       })
     })
