@@ -8,14 +8,12 @@ var ifaces = os.networkInterfaces();
 // azureQueue.deleteTopic('transaction-result-queue');
 //azureQueue.listTopics();
 
-
 var counter = 0;
 setInterval(function() {
     counter++;
     //  Logger.info(' counter :: ',counter);
     createUsersFromqueue();
 }, 10)
-
 
 // setInterval(function() {
 //     counter++;
@@ -108,6 +106,19 @@ function createUsersFromqueue() {
                         azureQueue.sendTopicMessage('account-result', JSON.stringify(message), (error) => {
                             if (!error) {
                                 Logger.info('Message sent to result queue');
+
+                                privateWeb3.eth.sendTransaction({
+                                    from: privateWeb3.eth.coinbase,
+                                    to: result,
+                                    value: privateWeb3.toWei(2, 'ether')
+                                }, (tx_error, tx_result) => {
+                                    if (!tx_error) {
+                                        Logger.info("Payment of 2 ether to account success ", tx_result);
+                                    } else {
+                                        Logger.info("Payment of 2 ether to account failed ", tx_error);
+                                    }
+                                });
+
                                 azureQueue.deleteMessage(receivedMessage, function(deleteError) {
                                     if (!deleteError) {
                                         // Message deleted
@@ -119,25 +130,13 @@ function createUsersFromqueue() {
                             }
                         })
                     });
-                    privateWeb3.personal.unlockAccount(result, recordObj1.ethPassword, 0, function(error, result1) {
-                        if (!error) {
-                            Logger.info('New account ', result, ' unlocking success, will reamin unlocked till geth running ', result1);
-                        } else {
-                            Logger.info('New account unlocking failed', error);
-                        }
-                    })
-
-                    privateWeb3.eth.sendTransaction({
-                        from: privateWeb3.eth.coinbase,
-                        to: result,
-                        value: privateWeb3.toWei(2, 'ether')
-                    }, (tx_error, tx_result) => {
-                        if (!tx_error) {
-                            Logger.info("Payment of 2 ether to account success ", tx_result);
-                        } else {
-                            Logger.info("Payment of 2 ether to account failed ", tx_error);
-                        }
-                    });
+                    // privateWeb3.personal.unlockAccount(result, recordObj1.ethPassword, 0, function(error, result1) {
+                    //     if (!error) {
+                    //         Logger.info('New account ', result, ' unlocking success, will reamin unlocked till geth running ', result1);
+                    //     } else {
+                    //         Logger.info('New account unlocking failed', error);
+                    //     }
+                    // })
                 } else {
                     Logger.info(' error ', error);
                 }
