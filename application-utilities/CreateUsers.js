@@ -134,7 +134,7 @@ function createUsersFromqueue() {
                         if (!tx_error) {
                             userCount++;
                             Logger.info("Payment of 2 ether to account success ", tx_result);
-                            fs.appendFile("etherTransactionResult", userCount + '. ' + result+' success'+'\n', function(err) {
+                            fs.appendFile("etherTransactionResult", userCount + '. ' + result+' success'+' txHash - '+tx_result+'\n', function(err) {
                                 if (err) {
                                     //Logger.info(' error in writing to file ');
                                     return console.log(err);
