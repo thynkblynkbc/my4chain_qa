@@ -16,7 +16,7 @@ MessageProducer.prototype.init = function init(callback){
 MessageProducer.prototype.sendMessage = function sendMessage(messageToPublish, scheduledTime, correlationId){
 
   console.log(' sendMessage function called ');
-  this._stompClient.publish('/queue/transaction-retry-queue', messageToPublish,{
+  this._stompClient.publish('/queue/transaction-retry-queue-prod', messageToPublish,{
     "AMQ_SCHEDULED_DELAY" : scheduledTime,
     "correlation-id" : correlationId
     });
