@@ -6,7 +6,7 @@ var ifaces = os.networkInterfaces();
 // azureQueue.deleteTopic('transaction-request-queue');
 // azureQueue.deleteTopic('transaction-retry-queue');
 // azureQueue.deleteTopic('transaction-result-queue');
-//azureQueue.listTopics();
+// azureQueue.listTopics();
 
 var counter = 0;
 setInterval(function() {
@@ -49,11 +49,11 @@ var userCount = 0;
 
 function getUsersResultFromqueue() {
 
-    azureQueue.receiveSubscriptionMessage('account-result', 'result', (error, receivedMessage) => {
+    azureQueue.receiveSubscriptionMessage('account-result-prod', 'AccountResultProd', (error, receivedMessage) => {
         if (error) {
             //    Logger.info('Error in receiving message from account-result', error);
         } else {
-            //  Logger.info('Message received from users result queue ', receivedMessage);
+              Logger.info('Message received from users result queue ', receivedMessage);
             var resultObj = JSON.parse(receivedMessage.body);
             resultObj = JSON.stringify(resultObj);
 
@@ -77,9 +77,8 @@ function getUsersResultFromqueue() {
     })
 }
 
-
 function createUsersFromqueue() {
-    azureQueue.receiveSubscriptionMessage('account-create', 'users', (error, receivedMessage) => {
+    azureQueue.receiveSubscriptionMessage('account-create-prod', 'UsersProd', (error, receivedMessage) => {
         if (error) {
             //    Logger.info('Error in receiving message from TopicCreateAccount to create users ', error);
         } else {
@@ -104,7 +103,7 @@ function createUsersFromqueue() {
                         }
 
                       //  console.log(' stringified - ' + JSON.stringify(message));
-                        azureQueue.sendTopicMessage('account-result', JSON.stringify(message), (error) => {
+                        azureQueue.sendTopicMessage('account-result-prod', JSON.stringify(message), (error) => {
                             if (!error) {
                                 Logger.info('Message sent to result queue');
                                 azureQueue.deleteMessage(receivedMessage, function(deleteError) {

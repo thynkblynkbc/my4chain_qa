@@ -108,14 +108,20 @@ global.broadcastTransactions = require('../application-utilities/BroadcastTransa
 //global.MessageProducer = require('../application-utilities/MessageProducer.js');
 
 //azureQueue.createTopic();
-azureQueue.createTopicAndSubs('account-create','users');
-azureQueue.createTopicAndSubs('account-result','result');
 
-azureQueue.createTopicAndSubs('transaction-request-queue','transactions');
-azureQueue.createTopicAndSubs('transaction-retry-queue','retrytransactions');
-azureQueue.createTopicAndSubs('transaction-result-queue','transactionsresult');
+azureQueue.createTopicAndSubs('account-create-prod','UsersProd');
+azureQueue.createTopicAndSubs('account-result-prod','AccountResultProd');
+azureQueue.createTopicAndSubs('transaction-request-queue-prod','TransactionsProd');
+azureQueue.createTopicAndSubs('transaction-retry-queue-prod','RetrytransactionsProd');
+azureQueue.createTopicAndSubs('transaction-result-queue-prod','TransactionsResultProd');
 
-azureQueue.createTopicAndSubs('transaction-request-test-queue','transactions-test');
+
+//azureQueue.deleteTopic('account-create-prod');
+//azureQueue.deleteTopic('account-result-prod');
+//azureQueue.deleteTopic('transaction-request-queue-prod');
+//azureQueue.deleteTopic('transaction-retry-queue-prod');
+//azureQueue.deleteTopic('transaction-result-queue-prod');
+//azureQueue.deleteTopic('transaction-request-test-queue');
 
 //global.processTxs = require('../application-utilities/processTransactions');
 

@@ -7,7 +7,7 @@ var MessageProducer = require('./MessageProducer.js');
 
 stompClient.connect(function(sessionId) {
     console.log('Connected to stompClient with sessionId : ', sessionId);
-    stompClient.subscribe('/queue/transaction-retry-queue', function(body, headers) {
+    stompClient.subscribe('/queue/transaction-retry-queue-prod', function(body, headers) {
       //  Logger.info(' Message receveived from transaction-retry-queue at ' + new Date() + body, headers);
         broadcastRetryTransactions(body);
     })
@@ -61,7 +61,7 @@ function broadcastTransactionsRequests(receivedRequest) {
                                     transactionId: req.body.transactionId
                                 }
 
-                                azureQueue.sendTopicMessage('transaction-result-queue', JSON.stringify(message), (error) => {
+                                azureQueue.sendTopicMessage('transaction-result-queue-prod', JSON.stringify(message), (error) => {
                                     if (error) {
                                         Logger.info('Error in sending transaction to transaction-result-queue');
                                     } else {
@@ -109,7 +109,7 @@ function broadcastTransactionsRequests(receivedRequest) {
 }
 
 function getTransactionResults() {
-    azureQueue.receiveSubscriptionMessage('transaction-result-queue', 'transactionsresult', (error, receivedMessage) => {
+    azureQueue.receiveSubscriptionMessage('transaction-result-queue-prod', 'TransactionsResultProd', (error, receivedMessage) => {
         if (!error) {
           //  console.log(' receveived body ', receivedMessage.body);
             var transactionsResult = JSON.parse(receivedMessage.body);
@@ -171,7 +171,7 @@ function broadcastRetryTransactions(receivedMessage) {
                                     transactionId: req.body.transactionId
                                 }
 
-                                azureQueue.sendTopicMessage('transaction-result-queue', JSON.stringify(message), (error) => {
+                                azureQueue.sendTopicMessage('transaction-result-queue-prod', JSON.stringify(message), (error) => {
                                     if (error) {
                                         Logger.info('Error in sending transaction to transaction-result-queue');
                                     } else {
@@ -205,7 +205,7 @@ function broadcastRetryTransactions(receivedMessage) {
 
 function broadcastTransactions() {
     //azureQueue.receiveSubscriptionMessage('transaction-request-test-queue', 'transactions-test', (error, receivedMessage) => {
-      azureQueue.receiveSubscriptionMessage('transaction-request-queue', 'transactions', (error, receivedMessage) => {
+      azureQueue.receiveSubscriptionMessage('transaction-request-queue-prod', 'TransactionsProd', (error, receivedMessage) => {
         if (!error) {
           //  Logger.info('Message received from transaction-request-queue', receivedMessage);
             var req = {};
@@ -255,7 +255,7 @@ function broadcastTransactions() {
                                                         transactionId: req.body.transactionId
                                                     }
 
-                                                    azureQueue.sendTopicMessage('transaction-result-queue', JSON.stringify(message), (error) => {
+                                                    azureQueue.sendTopicMessage('transaction-result-queue-prod', JSON.stringify(message), (error) => {
                                                         if (error) {
                                                             Logger.info('Error in sending transaction to transaction-result-queue');
                                                         } else {
