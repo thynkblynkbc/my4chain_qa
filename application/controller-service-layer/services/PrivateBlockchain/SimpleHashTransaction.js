@@ -72,7 +72,7 @@ class SimpleHashTransaction {
         }
 
         //azureQueue.sendTopicMessage('transaction-request-queue', JSON.stringify(message), (error) => {
-          azureQueue.sendTopicMessage('transaction-request-queue', JSON.stringify(message), (error) => {
+          azureQueue.sendTopicMessage('transaction-request-queue-prod', JSON.stringify(message), (error) => {
             if (error) {
                 Logger.info('Error in sending transaction to transaction-request-queue');
                 callback(error, null);

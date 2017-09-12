@@ -22,7 +22,7 @@ class Accounts {
                 }
 
                 console.log('create account request format before sending to account-create ' + JSON.stringify(message));
-                azureQueue.sendTopicMessage('account-create', JSON.stringify(message), (error) => {
+                azureQueue.sendTopicMessage('account-create-prod', JSON.stringify(message), (error) => {
                     if (!error) {
                         resData.message = "Message sent to queue";
                         callback(null, resData);
