@@ -6,7 +6,7 @@
 
 'use strict';
 var Person = require('../application/models/PersonDetail');
-var ConfirmationOfRequest = require('../application-utilities/cron/ConfirmationOfRequest');
+//var ConfirmationOfRequest = require('../application-utilities/cron/ConfirmationOfRequest');
 var getContractAddress = require('../application-utilities/cron/GetContractAddress');
 var publishData = require('../application-utilities/cron/PromisePublishContractData');
 var createUnlockAccount = require('../application-utilities/cron/CreateUnlockAccount');
