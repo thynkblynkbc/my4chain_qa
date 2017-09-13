@@ -10,10 +10,10 @@ var getDbConnection = function () {
       var db = process.env.DATABASE_URL || 'postgres://oodles:oodles@10.0.0.4:5432/my4chain';
       return checkMongooseConnection(db)
      case 'staging':
-        var db = process.env.DATABASE_URL || 'postgres://oodles:oodles@localhost:5432/my4chain';
+        var db = process.env.DATABASE_URL || 'postgres://oodles:oodles@10.0.0.4:5432/my4chain';
         return checkMongooseConnection(db)
     case 'development':
-      var db = process.env.DATABASE_URL || 'postgres://oodles:oodles@localhost:5432/my4chain';
+      var db = process.env.DATABASE_URL || 'postgres://oodles:oodles@10.0.0.4:5432/my4chain';
        return checkMongooseConnection(db)
     case 'test':
     var db = process.env.DATABASE_URL || 'postgres://oodles:oodles@localhost:5432/my4chain';
