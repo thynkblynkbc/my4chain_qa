@@ -109,11 +109,32 @@ global.broadcastTransactions = require('../application-utilities/BroadcastTransa
 
 //azureQueue.createTopic();
 
-azureQueue.createTopicAndSubs('account-create-prod','UsersProd');
-azureQueue.createTopicAndSubs('account-result-prod','AccountResultProd');
-azureQueue.createTopicAndSubs('transaction-request-queue-prod','TransactionsProd');
-azureQueue.createTopicAndSubs('transaction-retry-queue-prod','RetrytransactionsProd');
-azureQueue.createTopicAndSubs('transaction-result-queue-prod','TransactionsResultProd');
+function createServicebus()
+{
+  if(process.env.NODE_ENV == 'production') {
+    azureQueue.createTopicAndSubs('account-create-prod','UsersProd');
+    azureQueue.createTopicAndSubs('account-result-prod','AccountResultProd');
+    azureQueue.createTopicAndSubs('transaction-request-queue-prod','TransactionsProd');
+    azureQueue.createTopicAndSubs('transaction-retry-queue-prod','RetrytransactionsProd');
+    azureQueue.createTopicAndSubs('transaction-result-queue-prod','TransactionsResultProd');
+  } else if (process.env.NODE_ENV == 'development')
+  {
+    azureQueue.createTopicAndSubs('account-create-dev','UsersDev');
+    azureQueue.createTopicAndSubs('account-result-dev','AccountResultDev');
+    azureQueue.createTopicAndSubs('transaction-request-queue-dev','TransactionsDev');
+    azureQueue.createTopicAndSubs('transaction-retry-queue-dev','RetrytransactionsDev');
+    azureQueue.createTopicAndSubs('transaction-result-queue-dev','TransactionsResultDev');
+  } else if(process.env.NODE_ENV == 'qa')
+  {
+    azureQueue.createTopicAndSubs('account-create-qa','UsersQA');
+    azureQueue.createTopicAndSubs('account-result-qa','AccountResultQA');
+    azureQueue.createTopicAndSubs('transaction-request-queue-qa','TransactionsQA');
+    azureQueue.createTopicAndSubs('transaction-retry-queue-qa','RetrytransactionsQA');
+    azureQueue.createTopicAndSubs('transaction-result-queue-qa','TransactionsResultQA');
+  }
+  }
+
+createServicebus();
 
 
 //azureQueue.deleteTopic('account-create-prod');

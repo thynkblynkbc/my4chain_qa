@@ -7,10 +7,24 @@ var MessageProducer = require('./MessageProducer.js');
 
 stompClient.connect(function(sessionId) {
     console.log('Connected to stompClient with sessionId : ', sessionId);
-    stompClient.subscribe('/queue/transaction-retry-queue-prod', function(body, headers) {
-      //  Logger.info(' Message receveived from transaction-retry-queue at ' + new Date() + body, headers);
-        broadcastRetryTransactions(body);
-    })
+
+    if (process.env.NODE_ENV == 'production') {
+        stompClient.subscribe('/queue/transaction-retry-queue-prod', function(body, headers) {
+            //  Logger.info(' Message receveived from transaction-retry-queue at ' + new Date() + body, headers);
+            broadcastRetryTransactions(body);
+        })
+    } else if (process.env.NODE_ENV == 'development') {
+        stompClient.subscribe('/queue/transaction-retry-queue-dev', function(body, headers) {
+            //  Logger.info(' Message receveived from transaction-retry-queue at ' + new Date() + body, headers);
+            broadcastRetryTransactions(body);
+        })
+    } else if (process.env.NODE_ENV == 'qa') {
+        stompClient.subscribe('/queue/transaction-retry-queue-qa', function(body, headers) {
+            //  Logger.info(' Message receveived from transaction-retry-queue at ' + new Date() + body, headers);
+            broadcastRetryTransactions(body);
+        })
+    }
+
 });
 
 setInterval(function() {
@@ -18,10 +32,10 @@ setInterval(function() {
     broadcastTransactions();
 }, 1000)
 
-// setInterval(function() {
-//     //  Logger.info(' counter :: ',counter);
-//     getTransactionResults();
-// }, 200)
+setInterval(function() {
+    //  Logger.info(' counter :: ',counter);
+    getTransactionResults();
+}, 200)
 
 var transactionCount = 0;
 
@@ -60,8 +74,17 @@ function broadcastTransactionsRequests(receivedRequest) {
                                     transactionHash: tx_result,
                                     transactionId: req.body.transactionId
                                 }
+                                var topicName;
 
-                                azureQueue.sendTopicMessage('transaction-result-queue-prod', JSON.stringify(message), (error) => {
+                                if (process.env.NODE_ENV == 'development') {
+                                    topicName = 'transaction-result-queue-dev';
+                                } else if (process.env.NODE_ENV == 'production') {
+                                    topicName = 'transaction-result-queue-prod';
+                                } else if (process.env.NODE_ENV == 'qa') {
+                                    topicName = 'transaction-result-queue-qa';
+                                }
+
+                                azureQueue.sendTopicMessage(topicName, JSON.stringify(message), (error) => {
                                     if (error) {
                                         Logger.info('Error in sending transaction to transaction-result-queue');
                                     } else {
@@ -74,6 +97,7 @@ function broadcastTransactionsRequests(receivedRequest) {
                                         })
                                     }
                                 })
+
                             } else {
                                 Logger.info(' Error in saving transaction into DB');
                             }
@@ -89,9 +113,9 @@ function broadcastTransactionsRequests(receivedRequest) {
                     value: privateWeb3.toWei(2, 'ether')
                 }, (tx_error, tx_result) => {
                     if (!tx_error) {
-                      //  Logger.info("Payment of 2 ether to account success ", tx_result);
+                        //  Logger.info("Payment of 2 ether to account success ", tx_result);
                     } else {
-                      //  Logger.info("Payment of 2 ether to account failed ", tx_error);
+                        //  Logger.info("Payment of 2 ether to account failed ", tx_error);
                     }
                 });
 
@@ -99,7 +123,7 @@ function broadcastTransactionsRequests(receivedRequest) {
                 azureQueue.deleteMessage(receivedRequest.body, function(deleteError) {
                     if (!deleteError) {
                         // Message deleted
-                    //    console.log('Message has been deleted from transaction-request-queue');
+                        //    console.log('Message has been deleted from transaction-request-queue');
                     }
                 })
                 // transaction sent to retry ActiveMQ
@@ -109,9 +133,23 @@ function broadcastTransactionsRequests(receivedRequest) {
 }
 
 function getTransactionResults() {
-    azureQueue.receiveSubscriptionMessage('transaction-result-queue-prod', 'TransactionsResultProd', (error, receivedMessage) => {
+
+    var resultTopicName;
+    var txResultSubs;
+    if (process.env.NODE_ENV == 'development') {
+        resultTopicName = 'transaction-result-queue-dev';
+        txResultSubs = 'TransactionsResultDev';
+    } else if (process.env.NODE_ENV == 'production') {
+        resultTopicName = 'transaction-result-queue-prod';
+        txResultSubs = 'TransactionsResultProd';
+    } else if (process.env.NODE_ENV == 'qa') {
+        resultTopicName = 'transaction-result-queue-qa';
+        txResultSubs = 'TransactionsResultQA';
+    }
+
+    azureQueue.receiveSubscriptionMessage(resultTopicName, txResultSubs, (error, receivedMessage) => {
         if (!error) {
-          //  console.log(' receveived body ', receivedMessage.body);
+            console.log(' receveived body ', receivedMessage.body);
             var transactionsResult = JSON.parse(receivedMessage.body);
             transactionsResult = JSON.stringify(transactionsResult);
             transactionCount++;
@@ -130,7 +168,7 @@ function getTransactionResults() {
                 }
             });
         } else {
-            //  Logger.info('Error in receving message from transaction-result-queue', error);
+          //  Logger.info('Error in receving message from transaction-result-queue', error);
         }
     })
 }
@@ -141,7 +179,7 @@ function broadcastRetryTransactions(receivedMessage) {
     privateWeb3.eth.getBalance(req.body.fromAddress, function(error, etherBal) {
         if (!error) {
             var Balance = privateWeb3.fromWei(etherBal.toNumber(), 'ether');
-          //  Logger.info('Balance in fromAddress : ', Balance, ' ether');
+            //  Logger.info('Balance in fromAddress : ', Balance, ' ether');
             if (Balance > 5) {
                 Logger.info('Balance is sufficient now');
                 utility.unlockAccount(req.body.fromAddress, req.body.password, 60, (error, result) => {
@@ -171,7 +209,15 @@ function broadcastRetryTransactions(receivedMessage) {
                                     transactionId: req.body.transactionId
                                 }
 
-                                azureQueue.sendTopicMessage('transaction-result-queue-prod', JSON.stringify(message), (error) => {
+                                var txResultTopic;
+                                if (process.env.NODE_ENV == 'development') {
+                                    txResultTopic = 'transaction-result-queue-dev';
+                                } else if (process.env.NODE_ENV == 'production') {
+                                    txResultTopic = 'transaction-result-queue-prod';
+                                } else if (process.env.NODE_ENV == 'qa') {
+                                    txResultTopic = 'transaction-result-queue-qa';
+                                }
+                                azureQueue.sendTopicMessage(txResultTopic, JSON.stringify(message), (error) => {
                                     if (error) {
                                         Logger.info('Error in sending transaction to transaction-result-queue');
                                     } else {
@@ -192,9 +238,9 @@ function broadcastRetryTransactions(receivedMessage) {
                     value: privateWeb3.toWei(2, 'ether')
                 }, (tx_error, tx_result) => {
                     if (!tx_error) {
-                      //  Logger.info("Payment of 2 ether to account success ", tx_result);
+                        //  Logger.info("Payment of 2 ether to account success ", tx_result);
                     } else {
-                    //    Logger.info("Payment of 2 ether to account failed ", tx_error);
+                        //    Logger.info("Payment of 2 ether to account failed ", tx_error);
                     }
                 });
                 MessageProducer.sendMessage(JSON.stringify(req.body), 10000, 1235);
@@ -205,9 +251,23 @@ function broadcastRetryTransactions(receivedMessage) {
 
 function broadcastTransactions() {
     //azureQueue.receiveSubscriptionMessage('transaction-request-test-queue', 'transactions-test', (error, receivedMessage) => {
-      azureQueue.receiveSubscriptionMessage('transaction-request-queue-prod', 'TransactionsProd', (error, receivedMessage) => {
+
+    var txRequestTopic;
+    var txRequestSubs;
+    if (process.env.NODE_ENV == 'development') {
+        txRequestTopic = 'transaction-request-queue-dev';
+        txRequestSubs = 'TransactionsDev';
+    } else if (process.env.NODE_ENV == 'production') {
+        txRequestTopic = 'transaction-request-queue-prod';
+        txRequestSubs = 'TransactionsProd';
+    } else if (process.env.NODE_ENV == 'qa') {
+        txRequestTopic = 'transaction-request-queue-qa';
+        txRequestSubs = 'TransactionsQA';
+    }
+
+    azureQueue.receiveSubscriptionMessage(txRequestTopic, txRequestSubs, (error, receivedMessage) => {
         if (!error) {
-          //  Logger.info('Message received from transaction-request-queue', receivedMessage);
+            //  Logger.info('Message received from transaction-request-queue', receivedMessage);
             var req = {};
             req.body = JSON.parse(receivedMessage.body);
             domain.User.query().where({
@@ -225,7 +285,7 @@ function broadcastTransactions() {
                         privateWeb3.eth.getBalance(req.body.fromAddress, function(error, etherBal) {
                             if (!error) {
                                 var Balance = privateWeb3.fromWei(etherBal.toNumber(), 'ether');
-                            //    Logger.info('balance in fromAccount : ', Balance);
+                                //    Logger.info('balance in fromAccount : ', Balance);
                                 if (Balance > 5) { // if fromAddress has sufficient balance
                                     Logger.info('Sufficient balance in fromAddress at starting');
                                     utility.unlockAccount(req.body.fromAddress, req.body.password, 60, (error, result) => {
@@ -255,7 +315,15 @@ function broadcastTransactions() {
                                                         transactionId: req.body.transactionId
                                                     }
 
-                                                    azureQueue.sendTopicMessage('transaction-result-queue-prod', JSON.stringify(message), (error) => {
+                                                    var txResultTopic1;
+                                                    if (process.env.NODE_ENV == 'development') {
+                                                        txResultTopic1 = 'transaction-result-queue-dev';
+                                                    } else if (process.env.NODE_ENV == 'production') {
+                                                        txResultTopic1 = 'transaction-result-queue-prod';
+                                                    } else if (process.env.NODE_ENV == 'qa') {
+                                                        txResultTopic1 = 'transaction-result-queue-qa';
+                                                    }
+                                                    azureQueue.sendTopicMessage(txResultTopic1, JSON.stringify(message), (error) => {
                                                         if (error) {
                                                             Logger.info('Error in sending transaction to transaction-result-queue');
                                                         } else {
@@ -283,9 +351,9 @@ function broadcastTransactions() {
                                         value: privateWeb3.toWei(2, 'ether')
                                     }, (tx_error, tx_result) => {
                                         if (!tx_error) {
-                                        //    Logger.info("Payment of 2 ether to account success ", tx_result);
+                                            //    Logger.info("Payment of 2 ether to account success ", tx_result);
                                         } else {
-                                        //    Logger.info("Payment of 2 ether to account failed ", tx_error);
+                                            //    Logger.info("Payment of 2 ether to account failed ", tx_error);
                                         }
                                     });
 
@@ -344,22 +412,17 @@ function broadcastTransactions() {
                                 console.log('body ', chunk);
                             });
                             res.on('end', () => {
-                              //  console.log('No more data in response.');
+                                //  console.log('No more data in response.');
                             });
                         });
                         req.on('error', (e) => {
-                          //  console.error('problem with request:', e);
+                            //  console.error('problem with request:', e);
                         });
                         // write data to request body
                         req.write(postData);
                         req.end()
                     }
-
                 })
-
-
-
-
 
         } else {
             //Logger.info('Error in receiving transaction from transaction-request-queue', error);

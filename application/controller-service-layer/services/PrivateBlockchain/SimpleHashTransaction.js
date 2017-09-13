@@ -72,7 +72,16 @@ class SimpleHashTransaction {
         }
 
         //azureQueue.sendTopicMessage('transaction-request-queue', JSON.stringify(message), (error) => {
-          azureQueue.sendTopicMessage('transaction-request-queue-prod', JSON.stringify(message), (error) => {
+        var txRequestTopic;
+        if (process.env.NODE_ENV == 'development') {
+            txRequestTopic = 'transaction-request-queue-dev';
+        } else if (process.env.NODE_ENV == 'production') {
+            txRequestTopic = 'transaction-request-queue-prod';
+        } else if (process.env.NODE_ENV == 'qa') {
+            txRequestTopic = 'transaction-request-queue-qa';
+        }
+
+          azureQueue.sendTopicMessage(txRequestTopic, JSON.stringify(message), (error) => {
             if (error) {
                 Logger.info('Error in sending transaction to transaction-request-queue');
                 callback(error, null);
@@ -82,7 +91,6 @@ class SimpleHashTransaction {
                 callback(null, resData);
             }
         })
-
 
 
         // privateWeb3.eth.getBalance(req.body.fromAddress, function(error, etherBal) {

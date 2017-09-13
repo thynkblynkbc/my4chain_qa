@@ -21,6 +21,20 @@ setInterval(function() {
 //     getUsersResultFromqueue();
 // }, 10)
 
+
+  var accountResultTopic;
+  var accountResultSub;
+  if (process.env.NODE_ENV == 'development') {
+      accountResultTopic = 'account-result-dev';
+      accountResultSub = 'AccountResultDev';
+  } else if (process.env.NODE_ENV == 'production') {
+      accountResultTopic = 'account-result-prod';
+      accountResultSub = 'AccountResultProd';
+  } else if (process.env.NODE_ENV == 'qa') {
+      accountResultTopic = 'account-result-qa';
+      accountResultSub = 'AccountResultQA';
+  }
+
 var serverip = ifaces.eth0[0].address;
 
 var serverNode = getserverNode();
@@ -49,7 +63,7 @@ var userCount = 0;
 
 function getUsersResultFromqueue() {
 
-    azureQueue.receiveSubscriptionMessage('account-result-prod', 'AccountResultProd', (error, receivedMessage) => {
+    azureQueue.receiveSubscriptionMessage(accountResultTopic, accountResultSub, (error, receivedMessage) => {
         if (error) {
             //    Logger.info('Error in receiving message from account-result', error);
         } else {
@@ -78,7 +92,20 @@ function getUsersResultFromqueue() {
 }
 
 function createUsersFromqueue() {
-    azureQueue.receiveSubscriptionMessage('account-create-prod', 'UsersProd', (error, receivedMessage) => {
+  var accountCreateTopic;
+  var accountCreateSub;
+  if (process.env.NODE_ENV == 'development') {
+      accountCreateTopic = 'account-create-dev';
+      accountCreateSub = 'UsersDev';
+  } else if (process.env.NODE_ENV == 'production') {
+      accountCreateTopic = 'account-create-prod';
+      accountCreateSub = 'UsersProd';
+  } else if (process.env.NODE_ENV == 'qa') {
+      accountCreateTopic = 'account-create-qa';
+      accountCreateSub = 'UsersQA';
+  }
+
+    azureQueue.receiveSubscriptionMessage( accountCreateTopic, accountCreateSub, (error, receivedMessage) => {
         if (error) {
             //    Logger.info('Error in receiving message from TopicCreateAccount to create users ', error);
         } else {
@@ -103,7 +130,7 @@ function createUsersFromqueue() {
                         }
 
                       //  console.log(' stringified - ' + JSON.stringify(message));
-                        azureQueue.sendTopicMessage('account-result-prod', JSON.stringify(message), (error) => {
+                        azureQueue.sendTopicMessage(accountResultTopic, JSON.stringify(message), (error) => {
                             if (!error) {
                                 Logger.info('Message sent to result queue');
                                 azureQueue.deleteMessage(receivedMessage, function(deleteError) {

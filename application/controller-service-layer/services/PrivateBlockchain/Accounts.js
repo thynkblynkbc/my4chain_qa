@@ -21,8 +21,17 @@ class Accounts {
                     ethPassword: recordObj.ethPassword
                 }
 
+                var accountCreateTopic;
+                if (process.env.NODE_ENV == 'development') {
+                    accountCreateTopic = 'account-create-dev';
+                } else if (process.env.NODE_ENV == 'production') {
+                    accountCreateTopic = 'account-create-prod';
+                } else if (process.env.NODE_ENV == 'qa') {
+                    accountCreateTopic = 'account-create-qa';
+                }
+
                 console.log('create account request format before sending to account-create ' + JSON.stringify(message));
-                azureQueue.sendTopicMessage('account-create-prod', JSON.stringify(message), (error) => {
+                azureQueue.sendTopicMessage(accountCreateTopic, JSON.stringify(message), (error) => {
                     if (!error) {
                         resData.message = "Message sent to queue";
                         callback(null, resData);

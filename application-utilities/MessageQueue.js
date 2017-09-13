@@ -104,5 +104,4 @@ module.exports = function() {
         receiveSubscriptionMessage: receiveSubscriptionMessage,
         deleteMessage: deleteMessage
     }
-}()
-;
+}();
