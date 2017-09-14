@@ -109,7 +109,7 @@ function createUsersFromqueue() {
         if (error) {
             //    Logger.info('Error in receiving message from TopicCreateAccount to create users ', error);
         } else {
-                Logger.info(' Message received from topic - '+accountCreateTopic+' sub - '+accountCreateSub'to create user account ', receivedMessage);
+                Logger.info(' Message received from topic - '+accountCreateTopic+' sub - '+accountCreateSub+'to create user account ', receivedMessage);
             var recordObj1 = JSON.parse(receivedMessage.body);
             //    Logger.info(' recordObj1 -- ',recordObj1);
             privateWeb3.personal.newAccount(recordObj1.ethPassword, function(error, result) {
