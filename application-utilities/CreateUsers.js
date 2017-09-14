@@ -105,15 +105,13 @@ function createUsersFromqueue() {
       accountCreateSub = 'UsersQA';
   }
 
-    azureQueue.receiveSubscriptionMessage( accountCreateTopic, accountCreateSub, (error, receivedMessage) => {
+    azureQueue.receiveSubscriptionMessage(accountCreateTopic, accountCreateSub, (error, receivedMessage) => {
         if (error) {
             //    Logger.info('Error in receiving message from TopicCreateAccount to create users ', error);
         } else {
                 Logger.info(' Message received from queue to create user account ', receivedMessage);
             var recordObj1 = JSON.parse(receivedMessage.body);
-
             //    Logger.info(' recordObj1 -- ',recordObj1);
-
             privateWeb3.personal.newAccount(recordObj1.ethPassword, function(error, result) {
                 if (!error) {
 
@@ -132,7 +130,7 @@ function createUsersFromqueue() {
                       //  console.log(' stringified - ' + JSON.stringify(message));
                         azureQueue.sendTopicMessage(accountResultTopic, JSON.stringify(message), (error) => {
                             if (!error) {
-                                Logger.info('Message sent to result queue');
+                                Logger.info('Message sent to result'+accountResultTopic+' queue');
                                 azureQueue.deleteMessage(receivedMessage, function(deleteError) {
                                     if (!deleteError) {
                                         // Message deleted
@@ -140,7 +138,7 @@ function createUsersFromqueue() {
                                     }
                                 })
                             } else {
-                                Logger.info('Error in sending to result queue ', error);
+                                Logger.info('Error in sending to'+accountResultTopic+' queue ', error);
                             }
                         })
                     });

@@ -1,5 +1,5 @@
 'use strict';
-var MessageQueue = require("../../application/controller-service-layer/services/messageQueue/MessageQueue");
+//var MessageQueue = require("../../application/controller-service-layer/services/messageQueue/MessageQueue");
 class ConfirmRequest {
     confirmRequestCRON() {
 

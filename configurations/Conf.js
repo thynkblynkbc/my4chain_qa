@@ -29,8 +29,23 @@ var configVariables = function() {
             config.accessLevels = accessLevels
             return config;
 
-        case 'staging':
-            var config = {
+        case 'local':
+                var config = {
+                    port: 3000,
+                    host: 'http://localhost:3000/',
+                    verificationUrl: 'http://localhost:3000/verify/',
+                    emailFrom: 'deepchand.prajapati@oodlestechnologies.com',
+                    emailPassword: '*********',
+                    blockchainIp: 'http://127.0.0.1:8001',
+                    azureQueue: "Endpoint=sb://futuron.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=NbUFbZHq2XJECM2aGU3rYMn8IJFJ8M6BME2v0DHcxSg=",
+                    blockchainPort: '8001'
+                }
+                config.roles = roles
+                config.accessLevels = accessLevels
+                return config;
+
+          case 'staging':
+             var config = {
                 port: 3000,
                 host: 'http://localhost:3000/',
                 verificationUrl: 'http://localhost:3000/verify/',

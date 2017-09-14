@@ -1,5 +1,4 @@
 var azure = require('azure');
-//var nameSpace = "futuron.servicebus.windows.net/blockchaintest";
 var accessKey = "Endpoint=sb://chaintrailbc.servicebus.windows.net/;SharedAccessKeyName=SendListen;SharedAccessKey=PY6wDnyOLKgRNxOiwXBtTw/9uk8LR0BcCx4BXJvg2bs=";
 //var accessKey = "Endpoint=sb://chaintrailbc.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=yparn5aR8P7T5WMMBT6n69K3MGRg0nDDr+Ndc96vilY=";
 var serviceBusService = azure.createServiceBusService(accessKey);
