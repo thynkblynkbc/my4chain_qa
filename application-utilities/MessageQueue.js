@@ -6,23 +6,22 @@ var serviceBusService = azure.createServiceBusService(accessKey);
 module.exports = function() {
 
     var createTopicAndSubs = function(topic, subscription) {
-      Logger.info('I am in create topic function');
+        Logger.info('I am in create topic function');
         serviceBusService.createTopicIfNotExists(topic, function(error) {
             if (!error) {
                 // Queue exists
-                Logger.info(topic+" Topic created ");
+                Logger.info(topic + " Topic created ");
 
-              serviceBusService.createSubscription(topic, subscription, function(error) {
-                            if (!error) {
-                                // subscription created
-                                Logger.info( subscription+' subscription created under '+topic);
-                            } else
-                            {
-                              Logger.info(' error in creating '+subscription+' subscription under '+topic+' topic',error);
-                            }
-                        });
+                serviceBusService.createSubscription(topic, subscription, function(error) {
+                    if (!error) {
+                        // subscription created
+                        Logger.info(subscription + ' subscription created under ' + topic);
+                    } else {
+                        Logger.info(' error in creating ' + subscription + ' subscription under ' + topic + ' topic', error);
+                    }
+                });
             } else {
-                Logger.info("Error in creating topic "+topic, error);
+                Logger.info("Error in creating topic " + topic, error);
             }
         });
 
@@ -49,7 +48,7 @@ module.exports = function() {
         })
     }
 
-    var deleteTopic = function (topicName) {
+    var deleteTopic = function(topicName) {
         serviceBusService.deleteTopic(topicName, function(error) {
             if (error) {
                 console.log('error in deleting ', topicName, error);
@@ -59,7 +58,7 @@ module.exports = function() {
         });
     }
 
-    var listSubscriptions = function () {
+    var listSubscriptions = function() {
         serviceBusService.listSubscriptions(function(error, result, response) {
             if (error) {
                 console.log(' error in getting list of subscriptions ', error);
@@ -72,12 +71,12 @@ module.exports = function() {
 
     var receiveSubscriptionMessage = function(topic, subscription, callback) {
 
-      //  Logger.info(' receveivedSubscriptionMessage called ');
-        serviceBusService.receiveSubscriptionMessage(topic, subscription,{
+        //  Logger.info(' receveivedSubscriptionMessage called ');
+        serviceBusService.receiveSubscriptionMessage(topic, subscription, {
             isPeekLock: true
         }, function(error, receivedMessage) {
             if (error) {
-              //  Logger.info('Error in receiving message from queue ',error)
+                //  Logger.info('Error in receiving message from queue ',error)
                 callback(error, null);
             } else {
                 callback(null, receivedMessage);
