@@ -1,6 +1,9 @@
 var azure = require('azure');
 
-var accessKey = "Endpoint=sb://chaintrailbc.servicebus.windows.net/;SharedAccessKeyName=SendListen;SharedAccessKey=PY6wDnyOLKgRNxOiwXBtTw/9uk8LR0BcCx4BXJvg2bs=";
+
+//var accessKey = "Endpoint=sb://chaintrailbc.servicebus.windows.net/;SharedAccessKeyName=SendListen;SharedAccessKey=PY6wDnyOLKgRNxOiwXBtTw/9uk8LR0BcCx4BXJvg2bs=";
+
+var accessKey = "Endpoint=sb://qa-env-service-bus.servicebus.windows.net/;SharedAccessKeyName=Send_Listen;SharedAccessKey=NEb9ClQH//g5cd+WerfOE21DFFZ6+PIdh3EByfnxxJg=";
 
 
 //var accessKey = "Endpoint=sb://development-env-service-bus.servicebus.windows.net/;SharedAccessKeyName=SendListen;SharedAccessKey=zQtvLbohzDxtV32XE/1tisX+F6McJNu4RMW18BT8Y9U=";
