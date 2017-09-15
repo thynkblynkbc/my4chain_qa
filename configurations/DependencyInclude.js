@@ -44,7 +44,8 @@ var knexReq = require('knex');
 var host;
 if(process.env.NODE_ENV == 'development')
 {
-  host = '10.0.0.4'
+  //host = '10.0.0.4'
+  host = '10.0.0.5'
 } else if (process.env.NODE_ENV == 'production'){
   host = '10.0.0.4'
 } else if (process.env.NODE_ENV == 'qa'){
