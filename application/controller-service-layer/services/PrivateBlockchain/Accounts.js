@@ -28,11 +28,15 @@ class Accounts {
                     accountCreateTopic = 'account-create-prod';
                 } else if (process.env.NODE_ENV == 'qa') {
                     accountCreateTopic = 'account-create-qa';
+                } else if (process.env.NODE_ENV == 'local') {
+                    accountCreateTopic = 'account-create-dev';
                 }
 
                 console.log('create account request format before sending to account-create ' + JSON.stringify(message));
                 azureQueue.sendTopicMessage(accountCreateTopic, JSON.stringify(message), (error) => {
+              //  azureQueue.sendTopicMessage('transaction-result-topic-dev', JSON.stringify(message), (error) => {
                     if (!error) {
+                        Logger.info('Message sent to '+accountCreateTopic+' topic');
                         resData.message = "Message sent to queue";
                         callback(null, resData);
                     } else {

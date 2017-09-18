@@ -19,6 +19,8 @@ if (process.env.NODE_ENV == 'development') {
     txRetryQueue = 'transaction-retry-queue-prod';
 } else if (process.env.NODE_ENV == 'qa') {
     txRetryQueue = 'transaction-retry-queue-qa';
+} else if (process.env.NODE_ENV == 'local') {
+    txRetryQueue = 'transaction-retry-queue-dev';
 }
 
 MessageProducer.prototype.sendMessage = function sendMessage(messageToPublish, scheduledTime, correlationId){
@@ -41,7 +43,12 @@ if (process.env.NODE_ENV == 'development') {
       "AMQ_SCHEDULED_DELAY" : scheduledTime,
       "correlation-id" : correlationId
       });
-  }
+  } else if (process.env.NODE_ENV == 'local') {
+    this._stompClient.publish('/queue/transaction-retry-queue-dev', messageToPublish,{
+      "AMQ_SCHEDULED_DELAY" : scheduledTime,
+      "correlation-id" : correlationId
+      });
+    }
 
   }
 

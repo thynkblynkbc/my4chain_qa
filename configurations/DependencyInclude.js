@@ -44,14 +44,15 @@ var knexReq = require('knex');
 var host;
 if(process.env.NODE_ENV == 'development')
 {
-  //host = '10.0.0.4'
-  host = '10.0.0.5'
+  host = '10.0.0.4'
 } else if (process.env.NODE_ENV == 'production'){
   host = '10.0.0.4'
 } else if (process.env.NODE_ENV == 'qa'){
    host = '10.0.0.4'
 } else if (process.env.NODE_ENV == 'local'){
    host = 'localhost'
+} else {
+  Logger.info('No match of given NODE_ENV');
 }
 
 global.knex = knexReq({
@@ -126,6 +127,7 @@ function createServicebus()
   {
     azureQueue.createTopicAndSubs('account-create-dev','UsersDev');
     azureQueue.createTopicAndSubs('account-result-dev','AccountResultDev');
+    azureQueue.createTopicAndSubs('account-result-dev1','AccountResultDev1');
     azureQueue.createTopicAndSubs('transaction-request-queue-dev','TransactionsDev');
     azureQueue.createTopicAndSubs('transaction-retry-queue-dev','RetrytransactionsDev');
     azureQueue.createTopicAndSubs('transaction-result-queue-dev','TransactionsResultDev');
@@ -136,6 +138,14 @@ function createServicebus()
     azureQueue.createTopicAndSubs('transaction-request-queue-qa','TransactionsQA');
     azureQueue.createTopicAndSubs('transaction-retry-queue-qa','RetrytransactionsQA');
     azureQueue.createTopicAndSubs('transaction-result-queue-qa','TransactionsResultQA');
+  } else if (process.env.NODE_ENV == 'local')
+  {
+    azureQueue.createTopicAndSubs('account-result-dev1','AccountResultDev1');
+    azureQueue.createTopicAndSubs('account-create-dev','UsersDev');
+    azureQueue.createTopicAndSubs('account-result-dev','AccountResultDev');
+    azureQueue.createTopicAndSubs('transaction-request-queue-dev','TransactionsDev');
+    azureQueue.createTopicAndSubs('transaction-retry-queue-dev','RetrytransactionsDev');
+    azureQueue.createTopicAndSubs('transaction-result-queue-dev','TransactionsResultDev');
   }
   }
 
@@ -148,7 +158,7 @@ createServicebus();
 //azureQueue.deleteTopic('transaction-retry-queue-prod');
 //azureQueue.deleteTopic('transaction-result-queue-prod');
 //azureQueue.deleteTopic('transaction-request-test-queue');
-
+azureQueue.createTopicAndSubs('account-result-test','AccountResultTest');
 //global.processTxs = require('../application-utilities/processTransactions');
 
 module.exports = configurationHolder

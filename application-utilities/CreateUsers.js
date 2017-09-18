@@ -11,15 +11,12 @@ var ifaces = os.networkInterfaces();
 var counter = 0;
 setInterval(function() {
     counter++;
-    //  Logger.info(' counter :: ',counter);
     createUsersFromqueue();
-}, 10)
+}, 100)
 
-// setInterval(function() {
-//     counter++;
-//     //  Logger.info(' counter :: ',counter);
-//     getUsersResultFromqueue();
-// }, 10)
+setInterval(function() {
+  //  getUsersResultFromqueue();
+}, 100)
 
 
   var accountResultTopic;
@@ -33,6 +30,9 @@ setInterval(function() {
   } else if (process.env.NODE_ENV == 'qa') {
       accountResultTopic = 'account-result-qa';
       accountResultSub = 'AccountResultQA';
+  } else if (process.env.NODE_ENV == 'local') {
+      accountResultTopic = 'account-result-dev';
+      accountResultSub = 'AccountResultDev';
   }
 
 var serverip = ifaces.eth0[0].address;
@@ -103,6 +103,9 @@ function createUsersFromqueue() {
   } else if (process.env.NODE_ENV == 'qa') {
       accountCreateTopic = 'account-create-qa';
       accountCreateSub = 'UsersQA';
+  } else if (process.env.NODE_ENV == 'local') {
+      accountCreateTopic = 'account-create-dev';
+      accountCreateSub = 'UsersDev';
   }
 
     azureQueue.receiveSubscriptionMessage(accountCreateTopic, accountCreateSub, (error, receivedMessage) => {
@@ -128,7 +131,9 @@ function createUsersFromqueue() {
                         }
 
                       //  console.log(' stringified - ' + JSON.stringify(message));
-                        azureQueue.sendTopicMessage(accountResultTopic, JSON.stringify(message), (error) => {
+                        //azureQueue.sendTopicMessage(accountResultTopic, JSON.stringify(message), (error) => {
+                          //azureQueue.sendTopicMessage('transaction-result-topic-dev', JSON.stringify(message), (error) => {
+                          azureQueue.sendTopicMessage('account-result-dev1', JSON.stringify(message), (error) => {
                             if (!error) {
                                 Logger.info('Message sent to result'+accountResultTopic+' queue');
                                 azureQueue.deleteMessage(receivedMessage, function(deleteError) {
@@ -142,13 +147,6 @@ function createUsersFromqueue() {
                             }
                         })
                     });
-                    // privateWeb3.personal.unlockAccount(result, recordObj1.ethPassword, 0, function(error, result1) {
-                    //     if (!error) {
-                    //         Logger.info('New account ', result, ' unlocking success, will reamin unlocked till geth running ', result1);
-                    //     } else {
-                    //         Logger.info('New account unlocking failed', error);
-                    //     }
-                    // })
 
                     privateWeb3.eth.sendTransaction({
                         from: privateWeb3.eth.coinbase,
@@ -179,7 +177,6 @@ function createUsersFromqueue() {
                             });
                         }
                     });
-
 
                 } else {
                     Logger.info(' error ', error);
