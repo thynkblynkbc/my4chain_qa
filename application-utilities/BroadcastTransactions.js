@@ -191,7 +191,7 @@ function broadcastRetryTransactions(receivedMessage) {
             var Balance = privateWeb3.fromWei(etherBal.toNumber(), 'ether');
             //  Logger.info('Balance in fromAddress : ', Balance, ' ether');
             if (Balance > 5) {
-                Logger.info('Balance is sufficient now');
+                Logger.info('Balance '+Balance+' Ether is sufficient now');
                 utility.unlockAccount(req.body.fromAddress, req.body.password, 60, (error, result) => {
                     if (error) {
 
