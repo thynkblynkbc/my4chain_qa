@@ -37,10 +37,10 @@ setInterval(function() {
     broadcastTransactions();
 }, 1000)
 
-setInterval(function() {
-    //  Logger.info(' counter :: ',counter);
-    getTransactionResults();
-}, 200)
+// setInterval(function() {
+//     //  Logger.info(' counter :: ',counter);
+//     getTransactionResults();
+// }, 1000)
 
 var transactionCount = 0;
 
