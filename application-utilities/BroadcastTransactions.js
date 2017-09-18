@@ -52,7 +52,7 @@ function broadcastTransactionsRequests(receivedRequest) {
         if (!error) {
             var Balance = privateWeb3.fromWei(etherBal.toNumber(), 'ether');
             if (Balance > 5) { // if fromAddress has sufficient balance
-                Logger.info('Sufficient balance in fromAddress at starting');
+                Logger.info('Sufficient balance ( '+Balance+' ) in fromAddress at starting');
                 utility.unlockAccount(req.body.fromAddress, req.body.password, 60, (error, result) => {
                     if (error) {
                         Logger.info('Error in unlocking account', error);
