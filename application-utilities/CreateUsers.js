@@ -12,11 +12,11 @@ var counter = 0;
 setInterval(function() {
     counter++;
     createUsersFromqueue();
-}, 100)
+}, 1000)
 
 setInterval(function() {
   //  getUsersResultFromqueue();
-}, 100)
+}, 1000)
 
 
   var accountResultTopic;
