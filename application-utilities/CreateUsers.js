@@ -133,7 +133,7 @@ function createUsersFromqueue() {
                       //  console.log(' stringified - ' + JSON.stringify(message));
                         //azureQueue.sendTopicMessage(accountResultTopic, JSON.stringify(message), (error) => {
                           //azureQueue.sendTopicMessage('transaction-result-topic-dev', JSON.stringify(message), (error) => {
-                          azureQueue.sendTopicMessage('account-result-dev1', JSON.stringify(message), (error) => {
+                          azureQueue.sendTopicMessage('account-result-dev2', JSON.stringify(message), (error) => {
                             if (!error) {
                                 Logger.info('Message sent to result'+accountResultTopic+' queue');
                                 azureQueue.deleteMessage(receivedMessage, function(deleteError) {
