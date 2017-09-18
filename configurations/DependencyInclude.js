@@ -127,7 +127,7 @@ function createServicebus()
   {
     azureQueue.createTopicAndSubs('account-create-dev','UsersDev');
     azureQueue.createTopicAndSubs('account-result-dev','AccountResultDev');
-    azureQueue.createTopicAndSubs('account-result-dev2','AccountResultDev2');
+    azureQueue.createTopicAndSubs('account-result-dev1','AccountResultDev1');
     azureQueue.createTopicAndSubs('transaction-request-queue-dev','TransactionsDev');
     azureQueue.createTopicAndSubs('transaction-retry-queue-dev','RetrytransactionsDev');
     azureQueue.createTopicAndSubs('transaction-result-queue-dev','TransactionsResultDev');
