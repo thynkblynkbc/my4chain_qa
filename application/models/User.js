@@ -71,7 +71,7 @@ User.jsonSchema = {
   properties: {
     id: {type: 'integer'},
     my4chainId: {type: 'string', minLength: 1, maxLength: 255},
-    ethPassword:{type:'string',minLength:1,maxLength:10},
+    ethPassword:{type:'string',minLength:1,maxLength:255},
     accountAddress:{type:'string'},
     privateKey:{type:'string'},
     fileWriteStatus:{type:'string'},
