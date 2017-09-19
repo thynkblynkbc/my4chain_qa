@@ -65,7 +65,7 @@ global.knex = knexReq({
         port: "5432",
         user: 'oodles',
         password: 'oodles',
-        database: 'my4chainQa'
+        database: 'my4chainqa'
     }
 });
 } else
