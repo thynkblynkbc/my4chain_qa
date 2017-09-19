@@ -30,13 +30,13 @@ var configVariables = function() {
 
       case 'qa':
                 var config = {
-                    port: 3000,
-                    host: 'http://localhost:3000/',
-                    verificationUrl: 'http://localhost:3000/verify/',
+                    port: 3002,
+                    host: 'http://localhost:3002/',
+                    verificationUrl: 'http://localhost:3002/verify/',
                     emailFrom: 'deepchand.prajapati@oodlestechnologies.com',
                     emailPassword: '*********',
-                    blockchainIp: 'http://127.0.0.1:8001',
-                    blockchainPort: '8001'
+                    blockchainIp: 'http://127.0.0.1:8002',
+                    blockchainPort: '8002'
                 }
                 config.roles = roles
                 config.accessLevels = accessLevels
