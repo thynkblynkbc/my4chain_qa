@@ -52,7 +52,7 @@ if(process.env.NODE_ENV == 'development')
 } else if (process.env.NODE_ENV == 'local'){
    host = 'localhost'
 } else {
-  Logger.info('No match of given NODE_ENV');
+  console.log('No match of given NODE_ENV');
 }
 
 global.knex = knexReq({
