@@ -48,13 +48,15 @@ if(process.env.NODE_ENV == 'development')
 } else if (process.env.NODE_ENV == 'production'){
   host = '10.0.0.4'
 } else if (process.env.NODE_ENV == 'qa'){
-   host = '10.0.0.5'
+   host = '10.0.0.4'
 } else if (process.env.NODE_ENV == 'local'){
    host = 'localhost'
 } else {
   console.log('No match of given NODE_ENV');
 }
 
+if(process.env.NODE_ENV == 'qa')
+{
 global.knex = knexReq({
     client: 'pg',
     useNullAsDefault: true,
@@ -63,9 +65,24 @@ global.knex = knexReq({
         port: "5432",
         user: 'oodles',
         password: 'oodles',
-        database: 'my4chain'
+        database: 'my4chainQa'
     }
 });
+} else
+{
+  global.knex = knexReq({
+      client: 'pg',
+      useNullAsDefault: true,
+      connection: {
+          host: host,
+          port: "5432",
+          user: 'oodles',
+          password: 'oodles',
+          database: 'my4chain'
+      }
+  });
+}
+
 var redis = require('redis');
 var port = 6379;
 var host = "127.0.0.1";
