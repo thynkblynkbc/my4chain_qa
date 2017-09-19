@@ -134,7 +134,7 @@ function createServicebus()
   } else if(process.env.NODE_ENV == 'qa')
   {
     azureQueue.createTopicAndSubs('account-create-qa','UsersQA');
-    azureQueue.createTopicAndSubs('account-result-qa','AccountResultQA');
+    azureQueue.createTopicAndSubs('account-result-qatest1','AccountResultQAtest1');
     azureQueue.createTopicAndSubs('transaction-request-queue-qa','TransactionsQA');
     azureQueue.createTopicAndSubs('transaction-retry-queue-qa','RetrytransactionsQA');
     azureQueue.createTopicAndSubs('transaction-result-queue-qa','TransactionsResultQA');
