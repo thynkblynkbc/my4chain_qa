@@ -51,7 +51,7 @@ function broadcastTransactionsRequests(receivedRequest) {
     privateWeb3.eth.getBalance(req.body.fromAddress, function(error, etherBal) {
         if (!error) {
             var Balance = privateWeb3.fromWei(etherBal.toNumber(), 'ether');
-            if (Balance > 5) { // if fromAddress has sufficient balance
+            if (Balance > 10) { // if fromAddress has sufficient balance
                 Logger.info('Sufficient balance ( ' + Balance + ' ) in fromAddress at starting');
                 utility.unlockAccount(req.body.fromAddress, req.body.password, 60, (error, result) => {
                     if (error) {
@@ -117,7 +117,7 @@ function broadcastTransactionsRequests(receivedRequest) {
                 privateWeb3.eth.sendTransaction({
                     from: privateWeb3.eth.coinbase,
                     to: req.body.fromAddress,
-                    value: privateWeb3.toWei(2, 'ether')
+                    value: privateWeb3.toWei(15, 'ether')
                 }, (tx_error, tx_result) => {
                     if (!tx_error) {
                         //  Logger.info("Payment of 2 ether to account success ", tx_result);
@@ -190,7 +190,7 @@ function broadcastRetryTransactions(receivedMessage) {
         if (!error) {
             var Balance = privateWeb3.fromWei(etherBal.toNumber(), 'ether');
             //  Logger.info('Balance in fromAddress : ', Balance, ' ether');
-            if (Balance > 5) {
+            if (Balance > 10) {
                 Logger.info('Balance ' + Balance + ' Ether is sufficient now');
                 utility.unlockAccount(req.body.fromAddress, req.body.password, 60, (error, result) => {
                     if (error) {
@@ -247,7 +247,7 @@ function broadcastRetryTransactions(receivedMessage) {
                 privateWeb3.eth.sendTransaction({
                     from: privateWeb3.eth.coinbase,
                     to: req.body.fromAddress,
-                    value: privateWeb3.toWei(2, 'ether')
+                    value: privateWeb3.toWei(15, 'ether')
                 }, (tx_error, tx_result) => {
                     if (!tx_error) {
                         //  Logger.info("Payment of 2 ether to account success ", tx_result);
@@ -302,8 +302,8 @@ function broadcastTransactions() {
                             if (!error) {
                                 var Balance = privateWeb3.fromWei(etherBal.toNumber(), 'ether');
                                 //    Logger.info('balance in fromAccount : ', Balance);
-                                if (Balance > 5) { // if fromAddress has sufficient balance
-                                    Logger.info('Sufficient balance in fromAddress at starting');
+                                if (Balance > 10) { // if fromAddress has sufficient balance
+                                    Logger.info('Sufficient balance',Balance,' Ether in fromAddress at starting');
                                     utility.unlockAccount(req.body.fromAddress, req.body.password, 60, (error, result) => {
                                         if (error) {
                                             Logger.info('Error in unlocking account', error);
@@ -366,7 +366,7 @@ function broadcastTransactions() {
                                     privateWeb3.eth.sendTransaction({
                                         from: privateWeb3.eth.coinbase,
                                         to: req.body.fromAddress,
-                                        value: privateWeb3.toWei(2, 'ether')
+                                        value: privateWeb3.toWei(15, 'ether')
                                     }, (tx_error, tx_result) => {
                                         if (!tx_error) {
                                             //    Logger.info("Payment of 2 ether to account success ", tx_result);
