@@ -4,6 +4,7 @@ var schemaPromise = knex.schema.createTableIfNotExists('TransactionDataLog', fun
     table.string('sendAddress');
     table.string('reciveAddress');
     table.string('transactionHash');
+    table.string('transactionId');
     table.dateTime('time').defaultTo(knex.fn.now());// who call the contract
     table.string('status');//function of contract method
 
@@ -25,6 +26,7 @@ TransactionDataLog.jsonSchema = {
     sendAddress: {type: 'string'},
     reciveAddress:{type:'string'},
     transactionHash:{type:'string'},
+    transactionId:{type:'string'},
     status:{type:'string'},
     data:{type:'string'}
   }

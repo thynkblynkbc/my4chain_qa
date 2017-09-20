@@ -116,7 +116,8 @@ class PrivateEthereumUtilities {
             sendAddress: data.senderAddress,
             reciveAddress: data.reciverAddress,
             transactionHash: data.transactionHash,
-            data: data.data
+            data: data.data,
+            transactionId: data.transactionId
         }).then(function(databaseReturn) {
             Logger.info("Transaction saved to DB", databaseReturn);
             return;
