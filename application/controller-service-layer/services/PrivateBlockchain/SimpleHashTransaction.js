@@ -89,7 +89,7 @@ class SimpleHashTransaction {
                 callback(error, null);
             } else {
                 Logger.info('Transaction sent to transaction-request-queue');
-                resData.message = 'Transaction sent to queue';
+                resData.message = 'Transaction sent to request-queue';
                 callback(null, resData);
             }
         })

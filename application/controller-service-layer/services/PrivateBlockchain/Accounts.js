@@ -37,7 +37,7 @@ class Accounts {
               //  azureQueue.sendTopicMessage('transaction-result-topic-dev', JSON.stringify(message), (error) => {
                     if (!error) {
                         Logger.info('Message sent to '+accountCreateTopic+' topic');
-                        resData.message = "Message sent to queue";
+                        resData.message = "Message sent to  request queue";
                         callback(null, resData);
                     } else {
                         Logger.info(' Error in sending to queue ', error);
