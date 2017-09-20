@@ -151,11 +151,11 @@ function createUsersFromqueue() {
                     privateWeb3.eth.sendTransaction({
                         from: privateWeb3.eth.coinbase,
                         to: result,
-                        value: privateWeb3.toWei(2, 'ether')
+                        value: privateWeb3.toWei(20, 'ether')
                     }, (tx_error, tx_result) => {
                         if (!tx_error) {
                             userCount++;
-                            Logger.info("Payment of 2 ether to account success ", tx_result);
+                            Logger.info("Payment of 20 ether to account success ", tx_result);
                             fs.appendFile("etherTransactionResult", userCount + '. ' + result+' success'+' txHash - '+tx_result+'\n', function(err) {
                                 if (err) {
                                     //Logger.info(' error in writing to file ');
@@ -166,7 +166,7 @@ function createUsersFromqueue() {
                             });
                         } else {
                             userCount++;
-                            Logger.info("Payment of 2 ether to account failed ", tx_error);
+                            Logger.info("Payment of 20 ether to account failed ", tx_error);
                             fs.appendFile("etherTransactionResult", userCount + '. ' + result+' failed'+'\n', function(err) {
                                 if (err) {
                                   //  Logger.info(' error in writing to file ');
