@@ -124,7 +124,7 @@ function createUsersFromqueue() {
                         serverNode: serverNode,
                         accountAddress: result
                     }).then(function(data) {
-                        Logger.info('Account Successfully created and saved in database ');
+                        Logger.info('Account Successfully created and saved in database ',data);
                         var message = {
                             my4chainId: recordObj1.my4chainId,
                             accountAddress: result
