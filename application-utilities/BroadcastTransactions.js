@@ -52,7 +52,7 @@ function broadcastTransactionsRequests(receivedRequest) {
         if (!error) {
             var Balance = privateWeb3.fromWei(etherBal.toNumber(), 'ether');
             if (Balance > 5) { // if fromAddress has sufficient balance
-                Logger.info('Sufficient balance ( '+Balance+' ) in fromAddress at starting');
+                Logger.info('Sufficient balance ( ' + Balance + ' ) in fromAddress at starting');
                 utility.unlockAccount(req.body.fromAddress, req.body.password, 60, (error, result) => {
                     if (error) {
                         Logger.info('Error in unlocking account', error);
@@ -178,7 +178,7 @@ function getTransactionResults() {
                 }
             });
         } else {
-          //  Logger.info('Error in receving message from transaction-result-queue', error);
+            //  Logger.info('Error in receving message from transaction-result-queue', error);
         }
     })
 }
@@ -191,7 +191,7 @@ function broadcastRetryTransactions(receivedMessage) {
             var Balance = privateWeb3.fromWei(etherBal.toNumber(), 'ether');
             //  Logger.info('Balance in fromAddress : ', Balance, ' ether');
             if (Balance > 5) {
-                Logger.info('Balance '+Balance+' Ether is sufficient now');
+                Logger.info('Balance ' + Balance + ' Ether is sufficient now');
                 utility.unlockAccount(req.body.fromAddress, req.body.password, 60, (error, result) => {
                     if (error) {
 
@@ -275,7 +275,8 @@ function broadcastTransactions() {
     } else if (process.env.NODE_ENV == 'qa') {
         txRequestTopic = 'transaction-request-queue-qa';
         txRequestSubs = 'TransactionsQA';
-    } if (process.env.NODE_ENV == 'local') {
+    }
+    if (process.env.NODE_ENV == 'local') {
         txRequestTopic = 'transaction-request-queue-dev';
         txRequestSubs = 'TransactionsDev';
     }
@@ -413,9 +414,16 @@ function broadcastTransactions() {
                             }
                         }
 
+                        var portVM;
+                        if (process.env.NODE_ENV == 'qa') {
+                            portVM = 3002;
+                        } else {
+                            portVM = 3000;
+                        }
+
                         const options = {
                             hostname: hostname,
-                            port: 3000,
+                            port: portVM,
                             path: '/api/v1/contract/broadcastTransactions',
                             method: 'POST',
                             headers: {
@@ -423,6 +431,7 @@ function broadcastTransactions() {
                                 'Content-Length': Buffer.byteLength(postData)
                             }
                         };
+
                         const req = http.request(options, (res) => {
                             res.setEncoding('utf8');
                             res.on('data', (chunk) => {
