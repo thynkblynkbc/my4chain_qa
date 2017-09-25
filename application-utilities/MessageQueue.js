@@ -9,7 +9,7 @@ if(process.env.NODE_ENV == 'development')
 } else if (process.env.NODE_ENV == 'qa'){
    accessKey = 'Endpoint=sb://qa-env-service-bus2.servicebus.windows.net/;SharedAccessKeyName=SendListen;SharedAccessKey=H+oS06TpOUKSovK0+aR/ZxdQB0KUpnVQvYN/aMt4K3g=';
 } else if (process.env.NODE_ENV == 'local'){
-     accessKey = 'Endpoint=sb://development-env-service-bus.servicebus.windows.net/;SharedAccessKeyName=SendListen;SharedAccessKey=zQtvLbohzDxtV32XE/1tisX+F6McJNu4RMW18BT8Y9U=';
+     accessKey = 'Endpoint=sb://local-test-servie-bus.servicebus.windows.net/;SharedAccessKeyName=SendListen;SharedAccessKey=BB7j2NAPtDXMstfCDM4lLUCt2Ja8H2IoZ7fNe4Rrt5k='
 }
 
 

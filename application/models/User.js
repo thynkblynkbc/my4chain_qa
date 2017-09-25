@@ -3,7 +3,7 @@ var schemaPromise = knex.schema.createTableIfNotExists('User', function(table) {
     table.string('my4chainId');
     table.string('ethPassword');
     table.string('serverNode');
-
+    //table.dateTime('time').defaultTo(knex.fn.now());// who call the contract
 
 }).then(function(data) {
     console.log("User Table added ");
@@ -18,6 +18,17 @@ knex.schema.hasColumn('User', 'accountAddress').then((isColumn) => {
         });
     }
 });
+
+knex.schema.hasColumn('User', 'time').then((isColumn) => {
+    if (isColumn != true) {
+        knex.schema.table('User', function(table) {
+          table.dateTime('time').defaultTo(knex.fn.now());
+        }).then(function(data) {
+            console.log("time Column added");
+        });
+    }
+});
+
 knex.schema.hasColumn('User', 'my4chainId').then((isColumn) => {
     if (isColumn != true) {
         knex.schema.table('User', function(table) {
