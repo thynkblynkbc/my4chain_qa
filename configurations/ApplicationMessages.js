@@ -5,11 +5,7 @@ var appErrorMessages = {
     errorMsgForLogger:"Exception in project: ",
     actionUnautherized:"Action is unauthorized"
 }
-
 var appSuccessMessage = {
-
 }
-
-
 module.exports.appErrorMessages = appErrorMessages;
 module.exports.appSuccessMessage = appSuccessMessage;
