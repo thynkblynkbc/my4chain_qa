@@ -1,32 +1,23 @@
 var azure = require('azure');
-
 var accessKey;
-if(process.env.NODE_ENV == 'development')
-{
-  accessKey = 'Endpoint=sb://development-env-service-bus.servicebus.windows.net/;SharedAccessKeyName=SendListen;SharedAccessKey=zQtvLbohzDxtV32XE/1tisX+F6McJNu4RMW18BT8Y9U=';
-} else if (process.env.NODE_ENV == 'production'){
+if (process.env.NODE_ENV == 'development') {
+    accessKey = 'Endpoint=sb://development-env-service-bus.servicebus.windows.net/;SharedAccessKeyName=SendListen;SharedAccessKey=zQtvLbohzDxtV32XE/1tisX+F6McJNu4RMW18BT8Y9U=';
+} else if (process.env.NODE_ENV == 'production') {
     accessKey = 'Endpoint=sb://chaintrailbc.servicebus.windows.net/;SharedAccessKeyName=SendListen;SharedAccessKey=PY6wDnyOLKgRNxOiwXBtTw/9uk8LR0BcCx4BXJvg2bs=';
-} else if (process.env.NODE_ENV == 'qa'){
-   accessKey = 'Endpoint=sb://qa-env-service-bus2.servicebus.windows.net/;SharedAccessKeyName=SendListen;SharedAccessKey=H+oS06TpOUKSovK0+aR/ZxdQB0KUpnVQvYN/aMt4K3g=';
-} else if (process.env.NODE_ENV == 'local'){
-     accessKey = 'Endpoint=sb://local-test-servie-bus.servicebus.windows.net/;SharedAccessKeyName=SendListen;SharedAccessKey=BB7j2NAPtDXMstfCDM4lLUCt2Ja8H2IoZ7fNe4Rrt5k='
+} else if (process.env.NODE_ENV == 'qa') {
+    accessKey = 'Endpoint=sb://qa-env-service-bus2.servicebus.windows.net/;SharedAccessKeyName=SendListen;SharedAccessKey=H+oS06TpOUKSovK0+aR/ZxdQB0KUpnVQvYN/aMt4K3g=';
+} else if (process.env.NODE_ENV == 'local') {
+    accessKey = 'Endpoint=sb://local-test-servie-bus.servicebus.windows.net/;SharedAccessKeyName=SendListen;SharedAccessKey=BB7j2NAPtDXMstfCDM4lLUCt2Ja8H2IoZ7fNe4Rrt5k='
 }
-
-
 var serviceBusService = azure.createServiceBusService(accessKey);
-
 module.exports = function() {
-
     var createTopicAndSubs = function(topic, subscription) {
         Logger.info('I am in create topic function');
         serviceBusService.createTopicIfNotExists(topic, function(error) {
             if (!error) {
-                // Queue exists
                 Logger.info(topic + " Topic created ");
-
                 serviceBusService.createSubscription(topic, subscription, function(error) {
                     if (!error) {
-                        // subscription created
                         Logger.info(subscription + ' subscription created under ' + topic);
                     } else {
                         Logger.info(' error in creating ' + subscription + ' subscription under ' + topic + ' topic', error);
@@ -36,9 +27,7 @@ module.exports = function() {
                 Logger.info("Error in creating topic " + topic, error);
             }
         });
-
     }
-
     var sendTopicMessage = function(topic, message, callback) {
         serviceBusService.sendTopicMessage(topic, message, function(error) {
             if (error) {
@@ -48,7 +37,6 @@ module.exports = function() {
             }
         })
     }
-
     var listTopics = function() {
         serviceBusService.listTopics(function(error, result, response) {
             if (error) {
@@ -59,7 +47,6 @@ module.exports = function() {
             }
         })
     }
-
     var deleteTopic = function(topicName) {
         serviceBusService.deleteTopic(topicName, function(error) {
             if (error) {
@@ -69,7 +56,6 @@ module.exports = function() {
             }
         });
     }
-
     var listSubscriptions = function() {
         serviceBusService.listSubscriptions(function(error, result, response) {
             if (error) {
@@ -80,9 +66,7 @@ module.exports = function() {
             }
         })
     }
-
     var receiveSubscriptionMessage = function(topic, subscription, callback) {
-
         //  Logger.info(' receveivedSubscriptionMessage called ');
         serviceBusService.receiveSubscriptionMessage(topic, subscription, {
             isPeekLock: true
@@ -95,7 +79,6 @@ module.exports = function() {
             }
         })
     }
-
     var deleteMessage = function(lockedMessage, callback) {
         serviceBusService.deleteMessage(lockedMessage, function(deleteError) {
             if (deleteError) {
@@ -105,7 +88,6 @@ module.exports = function() {
             }
         })
     }
-
     return {
         createTopicAndSubs: createTopicAndSubs,
         sendTopicMessage: sendTopicMessage,

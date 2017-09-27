@@ -6,8 +6,7 @@ var transporter = nodemailer.createTransport({
         pass: configurationHolder.config.emailPassword
     }
 });
-
-module.exports.email = function (fromEmail, toEmail, subject, emailBody) {
+module.exports.email = function(fromEmail, toEmail, subject, emailBody) {
     transporter.sendMail({
         from: fromEmail,
         to: toEmail,

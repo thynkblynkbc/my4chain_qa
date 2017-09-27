@@ -35,9 +35,6 @@ var errlogger = null;
          ],
          exitOnError: false
        });
-
 }
-
-
 module.exports.logger = logger;
 module.exports.errlogger = errlogger;
