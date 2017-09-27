@@ -1,9 +1,0 @@
-# Geth unlock user attach in server
-
-unlock_status=`geth --exec "loadScript('unlock.js')" attach http://localhost:8000`
-# ...do something interesting...
-if [ "$unlock_status" = true ] ; then
-    echo 'Accounts unlock successfully!'
-else
-   echo $unlock_status
-fi
