@@ -296,16 +296,6 @@
                 let smartSponsor = privateWeb3.eth.contract(selectData);
                 var contractInstance = smartSponsor.at(recordObj.contractAddress);
                 Logger.info("No account lock required ----------------");
-                // utility.unlockAccount(recordObj.adminAddress, recordObj.password, 30, (error, result) => {
-                //     if (error) {
-                //         callback(error, result);
-                //         return;
-                //     } else {
-                // utility.estimateGas(recordObj.adminAddress, bytecode, (error, gas) => {
-                //     if (error) {
-                //         callback(error, gas);
-                //         return;
-                //     } else {
                 recordObj.action = "getUserAction";
                 contractMethordCall.contractMethodCall(recordObj, contractInstance, callback);
             });
@@ -336,7 +326,6 @@
                 contractMethordCall.contractMethodCall(recordObj, contractInstance, callback, gas);
             });
         }
-
         changestate(req, res, callback) {
             let recordObj = req.body;
             let resData = {}
@@ -361,7 +350,6 @@
                                 contractMethordCall.contractMethodCall(recordObj, contractInstance, callback, gas);
                             }
                         });
-
                     });
                 }
             });
@@ -418,7 +406,6 @@
                                 this.callReviewMethod(recordObj, contractInstance, gas, callback);
                             }
                         });
-
                     });
                 }
             });
@@ -493,5 +480,4 @@
             });
         }
     }
-
     module.exports = new PrivateEthereumService();

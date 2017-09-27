@@ -1,37 +1,31 @@
 'use strict';
-
 class ContractMethordCall {
-
-  constructor (){
-
-    this.rolesInt ={};
-    this.rolesInt["CAN_ASSIGN"] = 1;
-    this.rolesInt["CAN_REVOKE"] =2;
-    this.rolesInt["CAN_ACCEPT"] = 3;
-    this.rolesInt["CAN_DECLINE"] = 4;
-    this.rolesInt["CAN_REVIEW"] = 5;
-    this.rolesInt["CAN_ACK"] =6;
-  }
-  covertStringRoleToInt(roles ,funcallback){
-    console.log("roles",roles);
-     let strRole = [];
-     if(roles.length > 0){
-     async.forEach(roles,(item,callback)=>{
-       if(this.rolesInt[item]){
-       strRole.push(this.rolesInt[item]);
-     }
-       callback();
-     },(err)=>{
-       console.log(strRole);
-       funcallback(strRole);
-
-
-     })
-   }else{
-     funcallback(strRole);
-   }
-
-  }
+    constructor() {
+        this.rolesInt = {};
+        this.rolesInt["CAN_ASSIGN"] = 1;
+        this.rolesInt["CAN_REVOKE"] = 2;
+        this.rolesInt["CAN_ACCEPT"] = 3;
+        this.rolesInt["CAN_DECLINE"] = 4;
+        this.rolesInt["CAN_REVIEW"] = 5;
+        this.rolesInt["CAN_ACK"] = 6;
+    }
+    covertStringRoleToInt(roles, funcallback) {
+        console.log("roles", roles);
+        let strRole = [];
+        if (roles.length > 0) {
+            async.forEach(roles, (item, callback) => {
+                if (this.rolesInt[item]) {
+                    strRole.push(this.rolesInt[item]);
+                }
+                callback();
+            }, (err) => {
+                console.log(strRole);
+                funcallback(strRole);
+            })
+        } else {
+            funcallback(strRole);
+        }
+    }
     callEvent(ss, callback, data) {
         var event = ss.usersLog(function(error, result) {
             if (!error) {
@@ -73,41 +67,28 @@ class ContractMethordCall {
         crypted += cipher.final(to);
         return crypted;
     }
-  contractLogSaveToDb(recordObj){
-      domain.ContractLog.query().insert({
-          contractAddress: recordObj.contractAddress,
-          transactionHash: recordObj.txnHash,
-          callerAddress: recordObj.accountAddress,
-          action:recordObj.action,
-          requestId:recordObj.requestId
-      }).then(function(databaseReturn) {
-          //Logger.info("Inserted data: ", databaseReturn);
-          // var arr = {};
-          // arr.contractAddress = contract.address;
-          // arr.txnHash = contract.transactionHash;
-          // arr.gasUsed = gas;
-          // //arr.tranHash = transactionHash;
-          // Logger.info("contractAddress: ", arr.contractAddress);
-          // callback(null, arr);
-      });
+    contractLogSaveToDb(recordObj) {
+        domain.ContractLog.query().insert({
+            contractAddress: recordObj.contractAddress,
+            transactionHash: recordObj.txnHash,
+            callerAddress: recordObj.accountAddress,
+            action: recordObj.action,
+            requestId: recordObj.requestId
+        }).then(function(databaseReturn) {});
     }
-
     decrypt(text, from, to, password) {
-            var decipher = crypto.createDecipher('aes-256-cbc', password);
-            var dec = decipher.update(text, from, to)
-            dec += decipher.final(to);
-            return dec;
-        }
-        // call different methord of smart contract
+        var decipher = crypto.createDecipher('aes-256-cbc', password);
+        var dec = decipher.update(text, from, to)
+        dec += decipher.final(to);
+        return dec;
+    }
+    // call different methord of smart contract
     contractMethodCall(recordObj, ss, callback) {
-      var gas =300000;
+        var gas = 300000;
         console.log("This is the action", recordObj.method);
         switch (recordObj.action) {
             case "getData":
-                ss.getData.call({
-                    // from: recordObj.adminAddress,
-                    // gas: gas
-                }, (err, data) => {
+                ss.getData.call({}, (err, data) => {
                     Logger.info("getUserAction: ", data);
                     var resData = {};
                     resData.userdetail = data;
@@ -116,13 +97,13 @@ class ContractMethordCall {
                 break;
             case "setData":
                 fs.readFile(publicdir + '/solidity/data.txt', 'utf8', function(err, data) {
-                 if (err) {
-                         console.log("error in reading file: ", err);
-                         return;
-                     } else {
-                       console.log("data: ",typeof data,data.length,data,JSON.stringify(data));
-                       recordObj.data=JSON.stringify(data);
-                        console.log("recordObj.data: ",recordObj.data.length);
+                    if (err) {
+                        console.log("error in reading file: ", err);
+                        return;
+                    } else {
+                        console.log("data: ", typeof data, data.length, data, JSON.stringify(data));
+                        recordObj.data = JSON.stringify(data);
+                        console.log("recordObj.data: ", recordObj.data.length);
                         ss.setData.estimateGas(recordObj.data, {
                             from: recordObj.adminAddress
                         }, (err, gasActual) => {
@@ -140,8 +121,8 @@ class ContractMethordCall {
                                 callback(err, err);
                             }
                         });
-                      }
-                  });
+                    }
+                });
 
                 break;
             case "getEther":
@@ -154,9 +135,9 @@ class ContractMethordCall {
                 });
                 break;
             case "usersLog":
-            Logger.info("from",recordObj.from,"to  ",recordObj.to);
-                 recordObj.from=recordObj.from?recordObj.from:"";
-                 recordObj.to=recordObj.to?recordObj.to:"";
+                Logger.info("from", recordObj.from, "to  ", recordObj.to);
+                recordObj.from = recordObj.from ? recordObj.from : "";
+                recordObj.to = recordObj.to ? recordObj.to : "";
                 var event = ss.usersLog({
                     _from: recordObj.from,
                     _to: recordObj.to
@@ -164,108 +145,67 @@ class ContractMethordCall {
                     fromBlock: 0,
                     toBlock: 'latest'
                 });
-                // event.watch(function(error, result) {
-                //
-                // });
                 var result = event.get(function(error, logs) {
-                  var logError = {};
-                //  console.log("error",error,logs)
-                  if(logs.length <= 0){
-                    logError.object = "No log for this from and to account . Please remove from and to if you don't known."
-                    callback(null, logError);
-                  }else{
-                      callback(error, logs);
-                  }
-                });
-                event.stopWatching(function(err,data){
-                  console.log("error in stop watching");
-                });
-                break;
-              case "modifierLog":
-                Logger.info("from",recordObj.from,"to  ",recordObj.to);
-                     recordObj.from=recordObj.from?recordObj.from:"";
-                    // recordObj.to=recordObj.to?recordObj.to:"";
-                    var event = ss.fileModifyLog({
-                        _from: recordObj.from
-                  //      ,_to: recordObj.to
-                    }, {
-                        fromBlock: 0,
-                        toBlock: 'latest'
-                    });
-                    // event.watch(function(error, result) {
-                    //
-                    // });
-                    var result = event.get(function(error, logs) {
-                      var logError = {};
-                    //  console.log("error",error,logs);
-                      if(logs.length <= 0){
+                    var logError = {};
+                    if (logs.length <= 0) {
                         logError.object = "No log for this from and to account . Please remove from and to if you don't known."
                         callback(null, logError);
-                      }else{
-                          callback(error, logs);
-                      }
-                    });
-                    event.stopWatching(function(err,data){
-                      console.log("error in stop watching");
-                    });
-                    break;
-
+                    } else {
+                        callback(error, logs);
+                    }
+                });
+                event.stopWatching(function(err, data) {
+                    console.log("error in stop watching");
+                });
+                break;
+            case "modifierLog":
+                Logger.info("from", recordObj.from, "to  ", recordObj.to);
+                recordObj.from = recordObj.from ? recordObj.from : "";
+                var event = ss.fileModifyLog({
+                    _from: recordObj.from
+                }, {
+                    fromBlock: 0,
+                    toBlock: 'latest'
+                });
+                var result = event.get(function(error, logs) {
+                    var logError = {};
+                    if (logs.length <= 0) {
+                        logError.object = "No log for this from and to account . Please remove from and to if you don't known."
+                        callback(null, logError);
+                    } else {
+                        callback(error, logs);
+                    }
+                });
+                event.stopWatching(function(err, data) {
+                    console.log("error in stop watching");
+                });
+                break;
             case "assignAction":
-                //gasPrice: 11067000000000000
-                  Logger.info("gasActual2: ",recordObj.memberAddress);
-                  Logger.info(new Date());
-                  this.covertStringRoleToInt(recordObj.role,(intArray)=>{
+                Logger.info("gasActual2: ", recordObj.memberAddress);
+                Logger.info(new Date());
+                this.covertStringRoleToInt(recordObj.role, (intArray) => {
                     var resData = {};
                     Logger.info("to estimate");
-                //    try{
-                // ss.assignAction.estimateGas(recordObj.memberAddress, intArray, {
-                //     from: recordObj.accountAddress
-                // }, (err, gasActual) => {
-                //
-                //     Logger.info("gasActual1: ", gasActual);
-                //     Logger.info(new Date());
-                //     if (!err) {
-                        ss.assignAction(recordObj.memberAddress, intArray, {
-                            from: recordObj.accountAddress,
-                            gas: 1000000
-                        }, (err, data) => {
-                          if(!err){
-                          //console.log("err",err,"data",data)
+                    ss.assignAction(recordObj.memberAddress, intArray, {
+                        from: recordObj.accountAddress,
+                        gas: 1000000
+                    }, (err, data) => {
+                        if (!err) {
                             Logger.info(new Date());
                             resData.txnHash = data;
                             recordObj.txnHash = data;
                             this.contractLogSaveToDb(recordObj);
                             callback(null, resData);
-                          }else{
+                        } else {
                             resData = new Error(err);
                             resData.status = 403;
                             callback(resData)
-                          }
-                            //this.MethodCallBack(err, data, ss, callback, "assignAction");
-                        });
-
-            //   } else {
-            //     callback(err, err);
-            //   }
-            //
-            // });
-
-          // }catch(catchErr){
-          //       Logger.info("error ");
-          //   Logger.info(configurationHolder.errorMessage.errorMsgForLogger+catchErr);
-          //   resData = new Error(catchErr);
-          //     resData.status = 409;
-          //
-          //     callback(resData, null);
-          //     return;
-          // }
-
-          });
-              break;
+                        }
+                    });
+                });
+                break;
             case "getUserAction":
-                ss.getUserAction.call(recordObj.accountAddress,{
-                    //from:recordObj.accountAddress
-                }, (err, data) => {
+                ss.getUserAction.call(recordObj.accountAddress, {}, (err, data) => {
                     Logger.info("getUserAction: ", data);
                     var resData = {};
                     resData.userdetail = data;
@@ -275,88 +215,78 @@ class ContractMethordCall {
                 break;
             case "removeAction":
                 Logger.info("inside remove action");
-                this.covertStringRoleToInt(recordObj.role,(intArray)=>{
-              ss.removeAction.estimateGas(recordObj.memberAddress, intArray, {
-                  from: recordObj.accountAddress
-              }, (err, gasActual) => {
-                  console.log("gasActual: ", gasActual);
-                  if (!err) {
-                ss.removeAction(recordObj.memberAddress, intArray, {
-                    from: recordObj.accountAddress,
-                    gas: gas
-                }, (err, data) => {
-                    var resData = {};
-                    resData.txnHash = data;
-                    recordObj.txnHash = data;
-                    this.contractLogSaveToDb(recordObj);
-                    callback(null, resData);
-                    //this.MethodCallBack(err, data, ss, callback, "");
-                });
-              } else {
-                  callback(err, err);
-              }
-
-                  });
-
+                this.covertStringRoleToInt(recordObj.role, (intArray) => {
+                    ss.removeAction.estimateGas(recordObj.memberAddress, intArray, {
+                        from: recordObj.accountAddress
+                    }, (err, gasActual) => {
+                        console.log("gasActual: ", gasActual);
+                        if (!err) {
+                            ss.removeAction(recordObj.memberAddress, intArray, {
+                                from: recordObj.accountAddress,
+                                gas: gas
+                            }, (err, data) => {
+                                var resData = {};
+                                resData.txnHash = data;
+                                recordObj.txnHash = data;
+                                this.contractLogSaveToDb(recordObj);
+                                callback(null, resData);
+                            });
+                        } else {
+                            callback(err, err);
+                        }
+                    });
                 });
                 break;
             case "acknowledge":
-            ss.acknowledge.estimateGas({
-                from: recordObj.accountAddress
-            }, (err, gasActual) => {
-               let resData = {};
-                //console.log("gasActual: ", gasActual);
-                if (!err) {
-                ss.acknowledge({
-                    from: recordObj.accountAddress,
-                    gas: gasActual
-                }, (err, data) => {
-                  //console.log(err,data)
-                  if(err){
-                    resData = new Error(err);
-                    resData.status = 403;
-                    callback(resData);
-                  }else{
-                  resData.txnHash = data;
-                  recordObj.txnHash = data;
-                  this.contractLogSaveToDb(recordObj);
-                  callback(null, resData);
-                }
-                  //this.MethodCallBack(err, data, ss, callback, "acknowledge");
+                ss.acknowledge.estimateGas({
+                    from: recordObj.accountAddress
+                }, (err, gasActual) => {
+                    let resData = {};
+                    if (!err) {
+                        ss.acknowledge({
+                            from: recordObj.accountAddress,
+                            gas: gasActual
+                        }, (err, data) => {
+                            if (err) {
+                                resData = new Error(err);
+                                resData.status = 403;
+                                callback(resData);
+                            } else {
+                                resData.txnHash = data;
+                                recordObj.txnHash = data;
+                                this.contractLogSaveToDb(recordObj);
+                                callback(null, resData);
+                            }
+                        });
+                    } else {
+                        resData = new Error(err);
+                        resData.status = 403;
+                        callback(resData);
+                    }
                 });
-              }else{
-                resData = new Error(err);
-                resData.status = 403;
-                callback(resData);
-              }
-              });
                 break;
             case "sign":
-            ss.sign.estimateGas({
-                from: recordObj.accountAddress
-            }, (err, gasActual) => {
-               let resData = {};
-                //console.log("gasActual: ", gasActual);
-                if (!err) {
-                ss.sign({
-                    from: recordObj.accountAddress,
-                    gas: gas
-                }, (err, data) => {
-                  console.log("errr",err)
-                  resData.txnHash = data;
-                  recordObj.txnHash = data;
-                  this.contractLogSaveToDb(recordObj);
-                  callback(null, resData);
-                // this.MethodCallBack(err, data, ss, callback, "sign");
+                ss.sign.estimateGas({
+                    from: recordObj.accountAddress
+                }, (err, gasActual) => {
+                    let resData = {};
+                    if (!err) {
+                        ss.sign({
+                            from: recordObj.accountAddress,
+                            gas: gas
+                        }, (err, data) => {
+                            console.log("errr", err)
+                            resData.txnHash = data;
+                            recordObj.txnHash = data;
+                            this.contractLogSaveToDb(recordObj);
+                            callback(null, resData);
+                        });
+                    } else {
+                        resData = new Error(err);
+                        resData.status = 500;
+                        callback(resData);
+                    }
                 });
-              }else{
-
-                resData = new Error(err);
-                resData.status = 500;
-                  callback(resData);
-              }
-            });
-
                 break;
             case "decline":
                 ss.decline({
@@ -368,31 +298,14 @@ class ContractMethordCall {
                     recordObj.txnHash = data;
                     this.contractLogSaveToDb(recordObj);
                     callback(null, resData);
-                    //this.MethodCallBack(err, data, ss, callback, "decline");
                 });
                 break;
-            // case "expire":
-            //     ss.expire.call({
-            //         from: recordObj.accountAddress,
-            //         gas: gas
-            //     }, (err, data) => {
-            //         Logger.info("expire: ", data);
-            //         var resData = {};
-            //         resData.isExpire = data;
-            //         callback(null, resData);
-            //     });
-            //     break;
             default:
                 var arr = {};
                 arr.message = "Method does not exit";
                 callback(null, arr);
                 break;
-
         }
-
     }
-
-
 }
-
 module.exports = new ContractMethordCall();

@@ -1,25 +1,18 @@
 'use strict';
-
 class PrivateEthereumExtra {
-
-    constructor() {
-
-    }
+    constructor() {}
     privateImageHashGenerate(req, res, callback) {
         var key = 'oodles';
         var algorithm = 'sha256';
         var imagePath = req.files.file.path;
         // step 1 -------------Generate hash of image
-
         fs.readFile(imagePath, (err, imageData) => {
             var firstHash = crypto.createHmac(algorithm, key).update(imageData).digest('hex');
             Logger.info("hash of image: ", firstHash);
-
             // step 2 -------Generate
             var secondkey = '1234';
             var secondHash = crypto.createHmac(algorithm, secondkey).update(firstHash).digest('hex');
             Logger.info("secondHash: ", secondHash);
-
             var arr = {};
             arr.secondHash = secondHash;
             arr.encrypt = utility.encrypt(secondHash, 'hex', 'hex', 'oodles');
@@ -27,7 +20,6 @@ class PrivateEthereumExtra {
             callback(null, arr);
         });
     }
-
     fileHashToContract(fileHash, recordObj, callback) {
         let contractAddress = recordObj.contractAddress;
         let adminAddress = recordObj.adminAddress;
@@ -48,10 +40,6 @@ class PrivateEthereumExtra {
                             callback(error, gas);
                             return;
                         } else {
-                            // method execution on contract
-                            //callback(null,fileHash);
-                            // var input=new Buffer(result.input.slice(2),'hex');
-                            // resData.data=utility.decrypt(input).toString('utf8');
                             fileHash = "" + fileHash;
                             console.log("fileHash: ", typeof fileHash);
                             ss.addFileHash.estimateGas(fileHash, {
@@ -79,13 +67,7 @@ class PrivateEthereumExtra {
             });
         });
     }
-
-
     storeRequestConfirmation(requestid, tx_result) {
-        // redisClient.hmset(requestid,tx_result,0,function(err,object){
-        //   if(err){ console.log("adding Hmset Error"); }
-        //   else{ console.log("Added succesfully"); console.log(object); }
-        // });
         var data = {
             tranHash: tx_result,
             confirm: 0
@@ -109,7 +91,5 @@ class PrivateEthereumExtra {
             }
         });
     }
-
 }
-
 module.exports = new PrivateEthereumExtra();
