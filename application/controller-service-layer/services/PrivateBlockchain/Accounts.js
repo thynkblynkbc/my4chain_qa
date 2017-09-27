@@ -1,5 +1,5 @@
 'use strict';
-var byPassRequest = require('./../../../../application-utilities/byPassRequests.js');
+var byPassRequest = require('./../../../../application-utilities/ByPassRequests.js');
 class Accounts {
     constructor() {}
     // to create a new account in blockchain
