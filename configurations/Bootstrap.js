@@ -9,7 +9,6 @@ var Person = require('../application/models/PersonDetail');
 //var ConfirmationOfRequest = require('../application-utilities/cron/ConfirmationOfRequest');
 var getContractAddress = require('../application-utilities/cron/GetContractAddress');
 var publishData = require('../application-utilities/cron/PromisePublishContractData');
-var createUnlockAccount = require('../application-utilities/cron/CreateUnlockAccount');
 //  publishData=Promise.promisify(publishData);
 var initApp = function() {
 
@@ -18,8 +17,6 @@ var initApp = function() {
     startPrivateWeb3Ethereum();
     createContractAbi();
     createPerson();
-
-    //createUnlockAccount.excuteFunction();
 
     //   bootApplication();
     //  confirmRequestCRON.
