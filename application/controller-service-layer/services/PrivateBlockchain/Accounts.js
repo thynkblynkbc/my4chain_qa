@@ -1,9 +1,7 @@
 'use strict';
 var byPassRequest = require('./../../../../application-utilities/byPassRequests.js');
-
 class Accounts {
     constructor() {}
-
     // to create a new account in blockchain
     createAccount(recordObj, res, callback) {
         var resData = {};
@@ -11,7 +9,6 @@ class Accounts {
         domain.User.query().where({
             'my4chainId': recordObj.my4chainId
         }).select().then(function(userData) {
-
             if (userData.length > 0) {
                 resData.message = "My4chainId already exists";
                 callback(resData, null);
@@ -20,7 +17,6 @@ class Accounts {
                     my4chainId: recordObj.my4chainId,
                     ethPassword: recordObj.ethPassword
                 }
-
                 var accountCreateTopic;
                 if (process.env.NODE_ENV == 'development') {
                     accountCreateTopic = 'account-create-dev';
@@ -31,12 +27,10 @@ class Accounts {
                 } else if (process.env.NODE_ENV == 'local') {
                     accountCreateTopic = 'account-create-dev';
                 }
-
                 console.log('create account request format before sending to account-create ' + JSON.stringify(message));
                 azureQueue.sendTopicMessage(accountCreateTopic, JSON.stringify(message), (error) => {
-              //  azureQueue.sendTopicMessage('transaction-result-topic-dev', JSON.stringify(message), (error) => {
                     if (!error) {
-                        Logger.info('Message sent to '+accountCreateTopic+' topic');
+                        Logger.info('Message sent to ' + accountCreateTopic + ' topic');
                         resData.message = "Message sent to  request queue";
                         callback(null, resData);
                     } else {
@@ -47,12 +41,10 @@ class Accounts {
             }
         })
     }
-
     // to create a new account in blockchain
     createimportAccount(recordObj, res, callback) {
         var resData = {};
         var http = require('http');
-        //	Logger.info("privateWeb3.personal",privateWeb3.personal.newAccount);
         Logger.info("In CreateAccount  controller");
         var crypto = require('crypto')
         var privateKey;
@@ -61,13 +53,11 @@ class Accounts {
             var headers = {
                 'Content-Type': 'application/json'
             }
-
             var options = {
                 url: "http://localhost:8000",
                 method: 'POST',
                 headers: headers
             }
-
             var req = http.request(options, function(res) {
                 console.log('Status: ' + res.statusCode);
                 console.log('Headers: ' + JSON.stringify(res.headers));
@@ -101,7 +91,6 @@ class Accounts {
         });
     }
     //  send ether to other account
-
     privateSendether(req, res, callback) {
         var reqData = req.body;
         var requestid = req.params.requestid;
@@ -110,54 +99,42 @@ class Accounts {
         var password = reqData.password;
         var amount = reqData.amount;
         var resData = {};
-Logger.info('I am in sendEhter method');
-
-
-  privateWeb3.personal.unlockAccount(req.body.fromAddress, password, 0, function(error, result1) {
-        domain.User.query().where({
-                'accountAddress': req.body.fromAddress
-            }).select('serverNode')
-            .then((userData) => {
-              Logger.info('User data from db - ',userData);
-              var walletServerNode = userData[0].serverNode;
-        if (walletServerNode == currentServerNode) {
-            privateWeb3.eth.sendTransaction({
-                from: fromAddress,
-                to: toAddress,
-                value: privateWeb3.toWei(amount, 'ether')
-            }, (tx_error, tx_result) => {
-                if (!tx_error) {
-                    resData.transactionResult = tx_result;
-                    callback(null, resData);
-                } else {
-                    callback(tx_error);
-                }
-            });
-        } else {
-            Logger.info('I am in else block of sendEther');
-            var path = '/api/v1/contract/sendether/123';
-            var postData = req.body;
-            byPassRequest(walletServerNode, path, postData, (response) => {
-              if(!response.error)
-              {
-                resData.transactionResult = response.object.transactionResult;
-                callback(null, resData);
-              } else {
-                callback(response.object.message);
-              }
-            });
-        }
-      })
-    })
-
-
-
-
+        Logger.info('I am in sendEhter method');
+        privateWeb3.personal.unlockAccount(req.body.fromAddress, password, 0, function(error, result1) {
+            domain.User.query().where({
+                    'accountAddress': req.body.fromAddress
+                }).select('serverNode')
+                .then((userData) => {
+                    Logger.info('User data from db - ', userData);
+                    var walletServerNode = userData[0].serverNode;
+                    if (walletServerNode == currentServerNode) {
+                        privateWeb3.eth.sendTransaction({
+                            from: fromAddress,
+                            to: toAddress,
+                            value: privateWeb3.toWei(amount, 'ether')
+                        }, (tx_error, tx_result) => {
+                            if (!tx_error) {
+                                resData.transactionResult = tx_result;
+                                callback(null, resData);
+                            } else {
+                                callback(tx_error);
+                            }
+                        });
+                    } else {
+                        Logger.info('I am in else block of sendEther');
+                        var path = '/api/v1/contract/sendether/123';
+                        var postData = req.body;
+                        byPassRequest(walletServerNode, path, postData, (response) => {
+                            if (!response.error) {
+                                resData.transactionResult = response.object.transactionResult;
+                                callback(null, resData);
+                            } else {
+                                callback(response.object.message);
+                            }
+                        });
+                    }
+                })
+        })
     }
-
-
-
-
-
 }
 module.exports = new Accounts();
