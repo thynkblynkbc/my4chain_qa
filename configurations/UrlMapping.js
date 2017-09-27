@@ -138,24 +138,6 @@
 	                json: views.jsonView
 	            }
 	        }],
-	        /* --------------------------------------------------------------------------------------- */
-	        // get data from the message queue
-	        // 5	used when we have azure message queue to receive the message
-	        "/api/v1/queue/reciveMessageQueue": [{
-	            method: "GET",
-	            action: controllers.messageQueueController.reciveMessageQueue,
-	            views: {
-	                json: views.jsonView
-	            }
-	        }],
-	        // 6	used to  send the data to the azure message queue
-	        "/api/v1/queue/sendToQueue": [{
-	            method: "GET",
-	            action: controllers.messageQueueController.sendMessageQueue,
-	            views: {
-	                json: views.jsonView
-	            }
-	        }],
 	        /* ------------------------------------------------------------------------------------ */
 	        // 7	send ether to other account
 	        "/api/v1/contract/sendether/:requestid": [{
