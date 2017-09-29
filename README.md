@@ -16,5 +16,5 @@ Install below dependcies on system :
 
 6. Install node
 
-  node version on production server - node v4.2.6
-  npm version on production server - npm v3.5.2
+  node version on all environments (dev/prod/qa) server - node v4.2.6
+  npm version on all environments (dev/prod/qa) server - npm v3.5.2
