@@ -3,20 +3,20 @@
       switch (process.env.NODE_ENV) {
           case 'production':
               var db = process.env.DATABASE_URL || 'postgres://oodles:oodles@10.0.0.4:5432/my4chain';
-              return checkMongooseConnection(db)
+              return checkDatabaseConnection(db)
           case 'qa':
               var db = process.env.DATABASE_URL || 'postgres://oodles:oodles@10.0.0.4:5432/my4chainqa';
-              return checkMongooseConnection(db)
+              return checkDatabaseConnection(db)
           case 'development':
               var db = process.env.DATABASE_URL || 'postgres://oodles:oodles@10.0.0.4:5432/my4chain';
-              return checkMongooseConnection(db)
+              return checkDatabaseConnection(db)
           case 'test':
               var db = process.env.DATABASE_URL || 'postgres://oodles:oodles@localhost:5432/my4chain';
-              return checkMongooseConnection(db)
+              return checkDatabaseConnection(db)
       }
   }
 
-  function checkMongooseConnection(db) {
+  function checkDatabaseConnection(db) {
       const client = new pg.Client(db);
       client.connect(function(err) {
           if (err) throw err;

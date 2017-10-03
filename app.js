@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 
-var mongoosemask = require('mongoosemask');
+//var mongoosemask = require('mongoosemask');
 global.configurationHolder = require('./configurations/DependencyInclude.js');
 global.app = module.exports = express();
 var bodyParser = require('body-parser');
@@ -21,11 +21,11 @@ global.router = express.Router();
 global.publicdir = __dirname;
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/upload'));
-app.use(mongoosemask(function(result, mask, done) {
-    var masked = mask(result, []);
-    if (masked.object) {}
-    done(null, masked);
-}));
+// app.use(mongoosemask(function(result, mask, done) {
+//     var masked = mask(result, []);
+//     if (masked.object) {}
+//     done(null, masked);
+// }));
 process.on('uncaughtException', function(err) {
     console.error(err);
     Logger.info("error uncaughtException", err);
