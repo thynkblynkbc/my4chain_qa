@@ -73,7 +73,7 @@ function getUsersResultFromqueue() {
 
             //  console.log(' result obj '+JSON.stringify(resultObj,null,2));
             userCount++;
-            fs.appendFile("CreateAccountResult", userCount + '. ' + resultObj +'  enqueueTime - '+receivedMessage.brokerProperties.EnqueuedTimeUtc+'\n', function(err) {
+            fs.appendFile("CreateAccountResult", userCount + '. ' + resultObj +'  reqEnqueueTime - '+receivedMessage.brokerProperties.EnqueuedTimeUtc+'\n', function(err) {
                 if (err) {
                     Logger.info(' error in writing to file ');
                     return console.log(err);

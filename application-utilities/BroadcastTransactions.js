@@ -37,10 +37,10 @@ setInterval(function() {
     broadcastTransactions();
 }, 1000)
 
-// setInterval(function() {
-//     //  Logger.info(' counter :: ',counter);
-//     getTransactionResults();
-// }, 1000)
+ setInterval(function() {
+     //  Logger.info(' counter :: ',counter);
+     getTransactionResults();
+ }, 1000)
 
 var transactionCount = 0;
 
@@ -154,7 +154,7 @@ function getTransactionResults() {
         txResultSubs = 'TransactionsResultQA';
     } else if (process.env.NODE_ENV == 'local') {
         resultTopicName = 'transaction-result-queue-local';
-        txResultSubs = 'TransactionsResultDev';
+        txResultSubs = 'TransactionsResultLocal';
     }
 
     azureQueue.receiveSubscriptionMessage(resultTopicName, txResultSubs, (error, receivedMessage) => {
@@ -163,7 +163,7 @@ function getTransactionResults() {
             var transactionsResult = JSON.parse(receivedMessage.body);
             transactionsResult = JSON.stringify(transactionsResult);
             transactionCount++;
-            fs.appendFile("transactionsResult", transactionCount + '. ' + transactionsResult + '\n', function(err) {
+            fs.appendFile("transactionsResult", transactionCount + '. ' + transactionsResult +' transactionEnqueueTime '+receivedMessage.brokerProperties.EnqueuedTimeUtc+ '\n', function(err) {
                 if (err) {
                     Logger.info('Error in writing to file ');
                     return console.log(err);
@@ -278,7 +278,7 @@ function broadcastTransactions() {
     }
     if (process.env.NODE_ENV == 'local') {
         txRequestTopic = 'transaction-request-queue-local';
-        txRequestSubs = 'TransactionsDev';
+        txRequestSubs = 'TransactionsLocal';
     }
 
     azureQueue.receiveSubscriptionMessage(txRequestTopic, txRequestSubs, (error, receivedMessage) => {
@@ -393,7 +393,7 @@ function broadcastTransactions() {
                         var querystring = require('querystring');
                         const postData = querystring.stringify(receivedMessage);
 
-                        var hostname = gethost()
+                        var hostname = gethost();
 
                         function gethost() {
                             switch (serverNode) {
