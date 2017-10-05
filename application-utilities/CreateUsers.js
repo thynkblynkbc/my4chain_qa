@@ -14,9 +14,9 @@ setInterval(function() {
     createUsersFromqueue();
 }, 1000);
 
-setInterval(function() {
-    getUsersResultFromqueue();
-}, 1000);
+// setInterval(function() {
+//     getUsersResultFromqueue();
+// }, 1000);
 
 
   var accountResultTopic;
