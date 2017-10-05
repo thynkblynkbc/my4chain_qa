@@ -4,7 +4,6 @@ var schemaPromise = knex.schema.createTableIfNotExists('User', function(table) {
     table.string('ethPassword');
     table.string('serverNode');
 }).then(function(data) {
-    console.log("User Table added ");
 });
 knex.schema.hasColumn('User', 'accountAddress').then((isColumn) => {
     if (isColumn != true) {

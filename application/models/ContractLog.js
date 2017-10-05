@@ -8,7 +8,6 @@ var schemaPromise = knex.schema.createTableIfNotExists('ContractLog', function(t
     table.string('action');
     table.string('requestId');
 }).then(function(data) {
-    console.log("ContractLog Table added ");
     knex.schema.hasColumn('ContractLog', 'confirmation').then((isColumn) => {
         if (isColumn != true) {
             knex.schema.table('ContractLog', function(table) {

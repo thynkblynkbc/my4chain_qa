@@ -2,7 +2,6 @@ var schemaPromise = knex.schema.createTableIfNotExists('Person', function(table)
     table.increments('id').primary();
     table.string('firstName');
 }).then(function(data) {
-    console.log("Person Table added");
 });
 
 function Person() {

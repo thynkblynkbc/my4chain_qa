@@ -12,15 +12,15 @@ if (process.env.NODE_ENV == 'development') {
 var serviceBusService = azure.createServiceBusService(accessKey);
 module.exports = function() {
     var createTopicAndSubs = function(topic, subscription) {
-        Logger.info('I am in create topic function');
+       // Logger.info('I am in create topic function');
         serviceBusService.createTopicIfNotExists(topic, function(error) {
             if (!error) {
-                Logger.info(topic + " Topic created ");
+               // Logger.info(topic + " Topic created ");
                 serviceBusService.createSubscription(topic, subscription, function(error) {
                     if (!error) {
                         Logger.info(subscription + ' subscription created under ' + topic);
                     } else {
-                        Logger.info(' error in creating ' + subscription + ' subscription under ' + topic + ' topic', error);
+                       // Logger.info(' error in creating ' + subscription + ' subscription under ' + topic + ' topic', error);
                     }
                 });
             } else {

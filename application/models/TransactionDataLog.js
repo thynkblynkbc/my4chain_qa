@@ -8,7 +8,6 @@ var schemaPromise = knex.schema.createTableIfNotExists('TransactionDataLog', fun
     table.dateTime('time').defaultTo(knex.fn.now());
     table.string('status');
 }).then(function(data) {
-    console.log("TransactionDataLog Table added ");
 });
 
 function TransactionDataLog() {
