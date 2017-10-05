@@ -24,7 +24,7 @@ stompClient.connect(function(sessionId) {
             broadcastRetryTransactions(body);
         })
     } else if (process.env.NODE_ENV == 'local') {
-        stompClient.subscribe('/queue/transaction-retry-queue-dev', function(body, headers) {
+        stompClient.subscribe('/queue/transaction-retry-queue-local', function(body, headers) {
             //  Logger.info(' Message receveived from transaction-retry-queue at ' + new Date() + body, headers);
             broadcastRetryTransactions(body);
         })
@@ -88,7 +88,7 @@ function broadcastTransactionsRequests(receivedRequest) {
                                 } else if (process.env.NODE_ENV == 'qa') {
                                     topicName = 'transaction-result-queue-qa';
                                 } else if (process.env.NODE_ENV == 'local') {
-                                    topicName = 'transaction-result-queue-dev';
+                                    topicName = 'transaction-result-queue-local';
                                 }
 
                                 azureQueue.sendTopicMessage(topicName, JSON.stringify(message), (error) => {
@@ -153,7 +153,7 @@ function getTransactionResults() {
         resultTopicName = 'transaction-result-queue-qa';
         txResultSubs = 'TransactionsResultQA';
     } else if (process.env.NODE_ENV == 'local') {
-        resultTopicName = 'transaction-result-queue-dev';
+        resultTopicName = 'transaction-result-queue-local';
         txResultSubs = 'TransactionsResultDev';
     }
 
@@ -227,7 +227,7 @@ function broadcastRetryTransactions(receivedMessage) {
                                 } else if (process.env.NODE_ENV == 'qa') {
                                     txResultTopic = 'transaction-result-queue-qa';
                                 } else if (process.env.NODE_ENV == 'local') {
-                                    txResultTopic = 'transaction-result-queue-dev';
+                                    txResultTopic = 'transaction-result-queue-local';
                                 }
                                 azureQueue.sendTopicMessage(txResultTopic, JSON.stringify(message), (error) => {
                                     if (error) {
@@ -277,7 +277,7 @@ function broadcastTransactions() {
         txRequestSubs = 'TransactionsQA';
     }
     if (process.env.NODE_ENV == 'local') {
-        txRequestTopic = 'transaction-request-queue-dev';
+        txRequestTopic = 'transaction-request-queue-local';
         txRequestSubs = 'TransactionsDev';
     }
 
@@ -339,7 +339,7 @@ function broadcastTransactions() {
                                                     } else if (process.env.NODE_ENV == 'qa') {
                                                         txResultTopic1 = 'transaction-result-queue-qa';
                                                     } else if (process.env.NODE_ENV == 'local') {
-                                                        txResultTopic1 = 'transaction-result-queue-dev';
+                                                        txResultTopic1 = 'transaction-result-queue-local';
                                                     }
                                                     azureQueue.sendTopicMessage(txResultTopic1, JSON.stringify(message), (error) => {
                                                         if (error) {

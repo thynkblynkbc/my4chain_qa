@@ -12,11 +12,11 @@ var counter = 0;
 setInterval(function() {
     counter++;
     createUsersFromqueue();
-}, 1000)
+}, 1000);
 
 setInterval(function() {
-  //  getUsersResultFromqueue();
-}, 1000)
+    getUsersResultFromqueue();
+}, 1000);
 
 
   var accountResultTopic;
@@ -31,8 +31,8 @@ setInterval(function() {
       accountResultTopic = 'account-result-qa';
       accountResultSub = 'AccountResultQA';
   } else if (process.env.NODE_ENV == 'local') {
-      accountResultTopic = 'account-result-dev';
-      accountResultSub = 'AccountResultDev';
+      accountResultTopic = 'account-result-local';
+      accountResultSub = 'AccountResultLocal';
   }
 
 var serverip = ifaces.eth0[0].address;
@@ -73,7 +73,7 @@ function getUsersResultFromqueue() {
 
             //  console.log(' result obj '+JSON.stringify(resultObj,null,2));
             userCount++;
-            fs.appendFile("CreateAccountResult", userCount + '. ' + resultObj +'  timestamp - '+new Date()+'\n', function(err) {
+            fs.appendFile("CreateAccountResult", userCount + '. ' + resultObj +'  enqueueTime - '+receivedMessage.brokerProperties.EnqueuedTimeUtc+'\n', function(err) {
                 if (err) {
                     Logger.info(' error in writing to file ');
                     return console.log(err);
@@ -104,8 +104,8 @@ function createUsersFromqueue() {
       accountCreateTopic = 'account-create-qa';
       accountCreateSub = 'UsersQA';
   } else if (process.env.NODE_ENV == 'local') {
-      accountCreateTopic = 'account-create-dev';
-      accountCreateSub = 'UsersDev';
+      accountCreateTopic = 'account-create-local';
+      accountCreateSub = 'UsersLocal';
   }
 
     azureQueue.receiveSubscriptionMessage(accountCreateTopic, accountCreateSub, (error, receivedMessage) => {

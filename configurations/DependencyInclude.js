@@ -100,12 +100,11 @@ function createServicebus() {
         azureQueue.createTopicAndSubs('transaction-retry-queue-qa', 'RetrytransactionsQA');
         azureQueue.createTopicAndSubs('transaction-result-queue-qa', 'TransactionsResultQA');
     } else if (process.env.NODE_ENV == 'local') {
-        azureQueue.createTopicAndSubs('account-result-dev1', 'AccountResultDev1');
-        azureQueue.createTopicAndSubs('account-create-dev', 'UsersDev');
-        azureQueue.createTopicAndSubs('account-result-dev', 'AccountResultDev');
-        azureQueue.createTopicAndSubs('transaction-request-queue-dev', 'TransactionsDev');
-        azureQueue.createTopicAndSubs('transaction-retry-queue-dev', 'RetrytransactionsDev');
-        azureQueue.createTopicAndSubs('transaction-result-queue-dev', 'TransactionsResultDev');
+        azureQueue.createTopicAndSubs('account-create-local', 'UsersLocal');
+        azureQueue.createTopicAndSubs('account-result-local', 'AccountResultLocal');
+        azureQueue.createTopicAndSubs('transaction-request-queue-local', 'TransactionsLocal');
+        azureQueue.createTopicAndSubs('transaction-retry-queue-local', 'RetrytransactionsLocal');
+        azureQueue.createTopicAndSubs('transaction-result-queue-local', 'TransactionsResultLocal');
     }
 }
 createServicebus();

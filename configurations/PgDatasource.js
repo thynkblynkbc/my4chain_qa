@@ -10,7 +10,7 @@
           case 'development':
               var db = process.env.DATABASE_URL || 'postgres://oodles:oodles@10.0.0.4:5432/my4chain';
               return checkDatabaseConnection(db)
-          case 'test':
+          case 'local':
               var db = process.env.DATABASE_URL || 'postgres://oodles:oodles@localhost:5432/my4chain';
               return checkDatabaseConnection(db)
       }

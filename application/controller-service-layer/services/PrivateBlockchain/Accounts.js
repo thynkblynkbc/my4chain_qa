@@ -25,7 +25,7 @@ class Accounts {
                 } else if (process.env.NODE_ENV == 'qa') {
                     accountCreateTopic = 'account-create-qa';
                 } else if (process.env.NODE_ENV == 'local') {
-                    accountCreateTopic = 'account-create-dev';
+                    accountCreateTopic = 'account-create-local';
                 }
                 console.log('create account request format before sending to account-create ' + JSON.stringify(message));
                 azureQueue.sendTopicMessage(accountCreateTopic, JSON.stringify(message), (error) => {

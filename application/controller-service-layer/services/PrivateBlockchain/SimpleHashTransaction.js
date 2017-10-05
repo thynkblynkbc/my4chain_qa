@@ -61,7 +61,7 @@ class SimpleHashTransaction {
         } else if (process.env.NODE_ENV == 'qa') {
             txRequestTopic = 'transaction-request-queue-qa';
         } else if (process.env.NODE_ENV == 'local') {
-            txRequestTopic = 'transaction-request-queue-dev';
+            txRequestTopic = 'transaction-request-queue-local';
         }
         azureQueue.sendTopicMessage(txRequestTopic, JSON.stringify(message), (error) => {
             if (error) {
