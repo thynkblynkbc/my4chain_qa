@@ -26,4 +26,4 @@ Install below dependcies on system :
 
 7. Different environments :
    There are 4 below different environments -
-   1. local  2. development 3. qa  4. production
+   (1) local    (2) development   (3) qa    (4) production
