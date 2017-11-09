@@ -8,8 +8,8 @@ Install below dependcies on system :
 2. Install postgres database [ Command - sudo apt-get install postgresql postgresql-contrib ]
   postgres version on production server v9.5.8
 
-  Connect to postgreSQL - sudo -u postgres psql postgres
-  Create new role  -  CREATE USER username PASSWORD 'pswd';
+  Connect to postgreSQL - sudo -u postgres psql postgres<br />
+  Create new role  -  CREATE USER username PASSWORD 'pswd';<br />
   Create database  -  CREATE DATABASE my4chain with owner=username;
 
 
@@ -21,9 +21,9 @@ Install below dependcies on system :
 
 6. Install node
 
-  node version on all environments (dev/prod/qa) server - node v4.2.6
-  npm version on all environments (dev/prod/qa) server - npm v3.5.2
+  node version on all environments (dev/prod/qa) server - node v4.2.6<br />
+  npm version on all environments (dev/prod/qa) server - npm v3.5.2<br />
 
-7. Different environments :
-   There are 4 below different environments -
+7. Different environments :<br />
+   There are 4 below different environments -<br />
    (1) local    (2) development   (3) qa    (4) production
