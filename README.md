@@ -11,7 +11,7 @@ Install below dependcies on system :
   Connect to postgreSQL - sudo -u postgres psql postgres
   Create new role  -  CREATE USER username PASSWORD 'pswd';
   Create database  -  CREATE DATABASE my4chain with owner=username;
-  
+
 
 3. Download go-ethereum-v1.5.9 and make build from downloaded repository [ Url - https://geth.ethereum.org/downloads/ depending on system os ]. You can change the difficulty or keep dificulty constant. We have kept difficulty constant as 0x10
 
@@ -23,3 +23,7 @@ Install below dependcies on system :
 
   node version on all environments (dev/prod/qa) server - node v4.2.6
   npm version on all environments (dev/prod/qa) server - npm v3.5.2
+
+7. Different environments :
+   There are 4 below different environments -
+   1. local  2. development 3. qa  4. production
