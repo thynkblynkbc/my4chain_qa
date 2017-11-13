@@ -1,6 +1,5 @@
 var schemaPromise = knex.schema.createTableIfNotExists('User', function(table) {
     table.increments('id').primary();
-    table.string('my4chainId');
     table.string('ethPassword');
     table.string('serverNode');
 }).then(function(data) {
@@ -28,6 +27,7 @@ knex.schema.hasColumn('User', 'my4chainId').then((isColumn) => {
     if (isColumn != true) {
         knex.schema.table('User', function(table) {
             table.string('my4chainId');
+            table.unique('my4chainId');
         }).then(function(data) {
             console.log("my4chainId Column added");
         });
