@@ -1,7 +1,10 @@
 'use strict';
 var fs = require('fs');
 var os = require('os');
+var Joi = require('joi');
+var util = require('util');
 var ifaces = os.networkInterfaces();
+
 
 // azureQueue.deleteTopic('transaction-request-queue');
 // azureQueue.deleteTopic('transaction-retry-queue');
@@ -55,7 +58,7 @@ function getserverNode() {
             return 'blkchain_server4';
             break;
         default:
-            return 'local';
+            return 'blkchain_local';
     }
 }
 
@@ -94,6 +97,7 @@ function getUsersResultFromqueue() {
 function createUsersFromqueue() {
   var accountCreateTopic;
   var accountCreateSub;
+  var resData = {};
   if (process.env.NODE_ENV == 'development') {
       accountCreateTopic = 'account-create-dev';
       accountCreateSub = 'UsersDev';
@@ -108,66 +112,63 @@ function createUsersFromqueue() {
       accountCreateSub = 'UsersLocal';
   }
 
+
     azureQueue.receiveSubscriptionMessage(accountCreateTopic, accountCreateSub, (error, receivedMessage) => {
         if (error) {
-            //    Logger.info('Error in receiving message from TopicCreateAccount to create users ', error);
+              //  Logger.info('Error in receiving message from TopicCreateAccount to create users ', error);
         } else {
-                Logger.info(' Message received from topic - '+accountCreateTopic+' sub - '+accountCreateSub+'to create user account ', receivedMessage);
+              // Logger.info('STEP 0 : Message received from topic - '+accountCreateTopic+' sub - '+accountCreateSub+'to create user account ', receivedMessage);
             var recordObj1 = JSON.parse(receivedMessage.body);
-            //    Logger.info(' recordObj1 -- ',recordObj1);
-            privateWeb3.personal.newAccount(recordObj1.ethPassword, function(error, result) {
-                if (!error) {
+            var brokerProperties = receivedMessage.brokerProperties;
+            var valMy4chainId = recordObj1.my4chainId;
+            var valEthPassword = recordObj1.ethPassword;
+            var valApiTimestamp = recordObj1.apiTimestamp;
+            const schema = {
+              my4chainId: Joi.number().required(),
+              ethPassword: Joi.string().guid().required(),
+              apiTimestamp: Joi.date().required(),
+            }
+            Joi.validate(recordObj1, schema, function (err, value) {
+              if(!err)
+              {
+                  //Logger.info('SCHEMA VERIFIED');
+                  domain.User.query().where({
+                      'my4chainId': valMy4chainId
+                  }).select().then(function(userData) {
+                    if (userData.length > 0) {
+                      fs.appendFile("CreateAccountLog",new Date().toString() + " : Duplicate data " + util.inspect(userData) + ' \n', function(err) {
+                          if (err) {
+                            //  Logger.info(' error in writing to file ');
+                              return console.log(err);
+                          } else {
+                            //  console.log("CreateAccount result written to file");
+                          }
+                      });
 
-                    domain.User.query().insert({
-                        my4chainId: recordObj1.my4chainId,
-                        ethPassword: recordObj1.ethPassword,
-                        serverNode: serverNode,
-                        accountAddress: result
-                    }).then(function(data) {
-                        Logger.info('Account Successfully created and saved in database ',data);
-                        var message = {
-                            my4chainId: recordObj1.my4chainId,
-                            accountAddress: result
-                        }
-
-                      //  console.log(' stringified - ' + JSON.stringify(message));
-                        //azureQueue.sendTopicMessage(accountResultTopic, JSON.stringify(message), (error) => {
-                          //azureQueue.sendTopicMessage('transaction-result-topic-dev', JSON.stringify(message), (error) => {
-                          azureQueue.sendTopicMessage(accountResultTopic, JSON.stringify(message), (error) => {
-                            if (!error) {
-                                Logger.info('Message sent to result'+accountResultTopic+' queue');
-                                azureQueue.deleteMessage(receivedMessage, function(deleteError) {
-                                    if (!deleteError) {
-                                        // Message deleted
-                                        console.log('Message has been deleted from account-create queue ');
-                                    }
-                                })
-                            } else {
-                                Logger.info('Error in sending to'+accountResultTopic+' queue ', error);
-                            }
-                        })
-                    });
-
-                    privateWeb3.eth.sendTransaction({
-                        from: privateWeb3.eth.coinbase,
-                        to: result,
-                        value: privateWeb3.toWei(20, 'ether')
-                    }, (tx_error, tx_result) => {
-                        if (!tx_error) {
-                            userCount++;
-                            Logger.info("Payment of 20 ether to account success ", tx_result);
-                            fs.appendFile("etherTransactionResult", userCount + '. ' + result+' success'+' txHash - '+tx_result+'\n', function(err) {
-                                if (err) {
-                                    //Logger.info(' error in writing to file ');
-                                    return console.log(err);
-                                } else {
-                                  //  console.log("etherTransactionResult written to file");
-                                }
-                            });
-                        } else {
-                            userCount++;
-                            Logger.info("Payment of 20 ether to account failed ", tx_error);
-                            fs.appendFile("etherTransactionResult", userCount + '. ' + result+' failed'+'\n', function(err) {
+                      var message = {
+                          my4chainId: valMy4chainId,
+                          accountAddress: userData.accountAddress
+                      }
+                      azureQueue.sendTopicMessage(accountResultTopic, JSON.stringify(message), (error) => {
+                      if (!error) {
+                        //  Logger.info('STEP 2 : Message sent to result ' + accountResultTopic + ' queue');
+                          azureQueue.deleteMessage(receivedMessage, function(deleteError) {
+                              if (!deleteError) {
+                                  // Message deleted
+                                  //  Logger.info('STEP 3 :  Message has been deleted from account-create queue ');
+                                  fs.appendFile("CreateAccountLog",new Date().toString() + " : " + util.inspect(receivedMessage) + ' Message has been deleted from account-create queue \n', function(err) {
+                                      if (err) {
+                                        //  Logger.info(' error in writing to file ');
+                                          return console.log(err);
+                                      } else {
+                                        //  console.log("CreateAccount result written to file");
+                                      }
+                                  });
+                              }
+                          })
+                      } else {
+                            //Logger.info('STEP 4 :  Error in sending to ' + accountResultTopic+' queue '+ error);
+                            fs.appendFile("CreateAccountLog", new Date().toString() + " : " +'Error in sending to ' + accountResultTopic+' queue '+ error+'\n', function(err) {
                                 if (err) {
                                   //  Logger.info(' error in writing to file ');
                                     return console.log(err);
@@ -176,11 +177,124 @@ function createUsersFromqueue() {
                                 }
                             });
                         }
-                    });
+                      })
+                    } else {
+                        //Logger.info('IN CREATE NEW ACCOUND');
+                          privateWeb3.personal.newAccount(recordObj1.ethPassword, function(error, result) {
+                          if (!error) {
+                            fs.appendFile("CreateAccountLog",new Date().toString() + " : " + util.inspect(result) + ' Account Created Successfully \n', function(err) {
+                                if (err) {
+                                  //  Logger.info(' error in writing to file ');
+                                    return console.log(err);
+                                } else {
+                                  //  console.log("CreateAccount result written to file");
+                                }
+                            });
+                            var objInsertQuery = {
+                                my4chainId: recordObj1.my4chainId,
+                                ethPassword: recordObj1.ethPassword,
+                                serverNode: serverNode,
+                                accountAddress: result,
+                                apiTimestamp : recordObj1.apiTimestamp
+                            };
+                              Logger.info('IN INSERT DB object : ',objInsertQuery);
+                              domain.User.query().insert(objInsertQuery).then(function(DbQueryResponce) {
+                                //Logger.info('object ERROR-------------------: ',DbQueryResponce);
+                                //Logger.info('object DATA ----------------------------: ',data);
 
-                } else {
-                    Logger.info(' error ', error);
-                }
+                                  if (DbQueryResponce)
+                                  {
+                                    //  Logger.info('STEP 1 : Account Successfully created and saved in database ');
+                                      var message = {
+                                          my4chainId: recordObj1.my4chainId,
+                                          accountAddress: result
+                                      }
+                                      azureQueue.sendTopicMessage(accountResultTopic, JSON.stringify(message), (error) => {
+                                      if (!error) {
+                                        //  Logger.info('STEP 2 : Message sent to result ' + accountResultTopic + ' queue');
+                                          azureQueue.deleteMessage(receivedMessage, function(deleteError) {
+                                              if (!deleteError) {
+                                                  // Message deleted
+                                                  //  Logger.info('STEP 3 :  Message has been deleted from account-create queue ');
+                                                  fs.appendFile("CreateAccountLog",new Date().toString() + " : " + util.inspect(receivedMessage) + ' Message has been deleted from account-create queue \n', function(err) {
+                                                      if (err) {
+                                                        //  Logger.info(' error in writing to file ');
+                                                          return console.log(err);
+                                                      } else {
+                                                        //  console.log("CreateAccount result written to file");
+                                                      }
+                                                  });
+                                              }
+                                          })
+                                      } else {
+                                          //Logger.info('STEP 4 :  Error in sending to ' + accountResultTopic+' queue '+ error);
+                                          fs.appendFile("CreateAccountLog", new Date().toString() + " : " +'Error in sending to ' + accountResultTopic+' queue '+ error+'\n', function(err) {
+                                              if (err) {
+                                                //  Logger.info(' error in writing to file ');
+                                                  return console.log(err);
+                                              } else {
+                                                //  console.log("CreateAccount result written to file");
+                                              }
+                                          });
+                                      }
+                                    })
+                                  }
+                              },function(error){
+                                Logger.info("In error Info")
+                              })
+
+                              privateWeb3.eth.sendTransaction({
+                                  from: privateWeb3.eth.coinbase,
+                                  to: result,
+                                  value: privateWeb3.toWei(20, 'ether')
+                              }, (tx_error, tx_result) => {
+                                  if (!tx_error) {
+                                      userCount++;
+                                      Logger.info("STEP PAYMENT : Payment of 20 ether to account success ", tx_result);
+                                      fs.appendFile("etherTransactionResult", userCount + '. ' + result+' success'+' txHash - '+tx_result+'\n', function(err) {
+                                          if (err) {
+                                              //Logger.info(' error in writing to file ');
+                                              return console.log(err);
+                                          } else {
+                                            //  console.log("etherTransactionResult written to file");
+                                          }
+                                      });
+                                  } else {
+                                      userCount++;
+                                      Logger.info("STEP 6 : Payment of 20 ether to account failed ", tx_error);
+                                      fs.appendFile("etherTransactionResult",new Date().toString() + " : " + userCount + '. ' + result+' failed'+'\n', function(err) {
+                                          if (err) {
+                                            //  Logger.info(' error in writing to file ');
+                                              return console.log(err);
+                                          } else {
+                                            //  console.log("CreateAccount result written to file");
+                                          }
+                                      });
+                                  }
+                              });
+
+
+                          } else {
+                              Logger.info('Error :', error);
+                          }
+                      });
+                    }
+                }).catch(error => {
+                  //resData.message = "ERROR in request. Please send the data in format {\"my4chainId\" :\"bigint\",\"ethPassword\":\"GUID\",\"apiTimestamp\":\"2017-11-16 18:32:32\"." + error;
+                  //console.log(resData.message );
+                    Logger.info("Error in query");
+                })
+              }else {
+                Logger.info("STEP 7 : Schema validation Failed " + err);
+                fs.appendFile("CreateAccountLog", new Date().toString() + ' : Schema validation Failed ' + err+'\n', function(err) {
+                    if (err) {
+                      //  Logger.info(' error in writing to file ');
+                        return console.log(err);
+                    } else {
+                      //  console.log("CreateAccount result written to file");
+                    }
+                });
+              }
             });
         }
     })

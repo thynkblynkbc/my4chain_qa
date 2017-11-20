@@ -34,7 +34,19 @@ if (process.env.NODE_ENV == 'development') {
 } else {
     console.log('No match of given NODE_ENV');
 }
-if (process.env.NODE_ENV == 'qa') {
+if (process.env.NODE_ENV == 'production') {
+    global.knex = knexReq({
+        client: 'pg',
+        useNullAsDefault: true,
+        connection: {
+            host: host,
+            port: "5432",
+            user: 'oodles',
+            password: 'oodles',
+            database: 'my4chain'
+        }
+    });
+}else if (process.env.NODE_ENV == 'qa') {
     global.knex = knexReq({
         client: 'pg',
         useNullAsDefault: true,
@@ -46,7 +58,7 @@ if (process.env.NODE_ENV == 'qa') {
             database: 'my4chainqa'
         }
     });
-} else {
+} else if (process.env.NODE_ENV == 'development') {
     global.knex = knexReq({
         client: 'pg',
         useNullAsDefault: true,
@@ -55,6 +67,18 @@ if (process.env.NODE_ENV == 'qa') {
             port: "5432",
             user: 'oodles',
             password: 'oodles',
+            database: 'my4chainqa'
+        }
+    });
+}else {
+    global.knex = knexReq({
+        client: 'pg',
+        useNullAsDefault: true,
+        connection: {
+            host: host,
+            port: "5432",
+            user: 'neeraj',
+            password: '123456',
             database: 'my4chain'
         }
     });

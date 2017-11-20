@@ -1,10 +1,21 @@
 var schemaPromise = knex.schema.createTableIfNotExists('User', function(table) {
-    table.increments('id').primary();
-    table.string('my4chainId');
-    table.string('ethPassword');
-    table.string('serverNode');
+    table.increments('id').primary('User_pkey');
+    table.bigInteger('my4chainId').unique("user_my4chainId_unique").notNullable();
+    table.uuid('ethPassword').notNullable();
+    table.string('serverNode',255).notNullable();
+    table.string('fileWriteStatus',255);
+    table.timestamp('time').defaultTo(knex.fn.now());
+    table.string('privateKey',255);
+    table.string('accountAddress',255).unique('user_accountaddress_unique').notNullable();
+    table.timestamp('apiTimestamp').notNullable();;
+
 }).then(function(data) {
 });
+function User() {
+    Model.apply(this, arguments);
+}
+User.tableName = 'User';
+/*
 knex.schema.hasColumn('User', 'accountAddress').then((isColumn) => {
     if (isColumn != true) {
         knex.schema.table('User', function(table) {
@@ -13,8 +24,13 @@ knex.schema.hasColumn('User', 'accountAddress').then((isColumn) => {
         }).then(function(data) {
             console.log("accountAddress Column added");
         });
+    }else {
+      knex.schema.alterTable('User', function(t) {
+          t.unique('email')
+        })
     }
 });
+
 knex.schema.hasColumn('User', 'time').then((isColumn) => {
     if (isColumn != true) {
         knex.schema.table('User', function(table) {
@@ -95,7 +111,7 @@ User.jsonSchema = {
             type: 'string'
         },
     }
-};
+};*/
 // Basic ES6 compatible prototypal inheritance.
 Model.extend(User);
 module.exports = User;

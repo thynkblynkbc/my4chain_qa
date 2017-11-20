@@ -3,8 +3,9 @@ var Joi = require('joi');
 module.exports = {
     createAccount: {
         body: {
-            my4chainId: Joi.string().required(),
-            ethPassword: Joi.string().required()
+            my4chainId: Joi.number().required(),
+            ethPassword: Joi.string().guid().required(),
+            apiTimestamp: Joi.date().required(),
         }
     },
     privateSendether: {
