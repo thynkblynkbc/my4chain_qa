@@ -286,12 +286,29 @@ function createUsersFromqueue() {
                 })
               }else {
                 Logger.info("STEP 7 : Schema validation Failed " + err);
-                fs.appendFile("CreateAccountLog", new Date().toString() + ' : Schema validation Failed ' + err+'\n', function(err) {
+                fs.appendFile("CreateAccountLog","==================================" + new Date().toString() + ' : Schema validation Failed For Data' + util.inspect(recordObj1) + " Error LOG : "+ err+'\n', function(err) {
                     if (err) {
                       //  Logger.info(' error in writing to file ');
                         return console.log(err);
                     } else {
-                      //  console.log("CreateAccount result written to file");
+                      if(brokerProperties.DeliveryCount>4)
+                      {
+                        azureQueue.deleteMessage(receivedMessage, function(deleteError) {
+                            if (!deleteError) {
+                                // Message deleted
+                                //  Logger.info('STEP 3 :  Message has been deleted from account-create queue ');
+                                fs.appendFile("CreateAccountLog",new Date().toString() + " : " + util.inspect(receivedMessage) + ' Message has been deleted from account-create queue After 5 retry \n', function(err) {
+                                    if (err) {
+                                      //  Logger.info(' error in writing to file ');
+                                        return console.log(err);
+                                    } else {
+                                      //  console.log("CreateAccount result written to file");
+                                    }
+                                });
+                            }
+                        })
+                        //  console.log("CreateAccount result written to file");
+                      }
                     }
                 });
               }
