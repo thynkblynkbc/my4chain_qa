@@ -1,10 +1,20 @@
 'use strict';
 var Joi = require('joi');
+var fs = require('fs');
+var util = require('util');
+
 var byPassRequest = require('./../../../../application-utilities/ByPassRequests.js');
 class Accounts {
     constructor() {}
     // to create a new account in blockchain
     createAccount(recordObj, res, callback) {
+        var newDate = new Date();
+        var year = newDate.getFullYear();
+        var month = newDate.getMonth()+1;
+        var day = newDate.getDate();
+        var ErrorLogfileName = "CreateAccountFailureLog_" + day +"_"+month+"_"+year;
+        var SuccessLogfileName = "CreateAccountSuccessLog_" + day +"_"+month+"_"+year;
+
         var resData = {};
         var accountCreateTopic;
         var valMy4chainId = recordObj.my4chainId;
@@ -38,6 +48,15 @@ class Accounts {
             }).select().then(function(userData) {
                 if (userData.length > 0) {
                     resData.message = "My4chainId already exists";
+                    fs.appendFile(ErrorLogfileName,new Date().toString() +
+                            " : My4chainId "+ recordObj.my4chainId +' already exists \n', function(err) {
+                        if (err) {
+                          //  Logger.info(' error in writing to file ');
+                            return console.log(err);
+                        } else {
+                          //  console.log("CreateAccount result written to file");
+                        }
+                    });
                     callback(resData, null);
                 } else {
                     var message = {
@@ -51,9 +70,27 @@ class Accounts {
                         if (!error) {
                             Logger.info('Message sent to ' + accountCreateTopic + ' topic');
                             resData.message = "Message sent to  request queue";
+
+                            fs.appendFile(SuccessLogfileName,new Date().toString() + " : Message sent to  request queue :" + util.inspect(message) + ' \n', function(err) {
+                                if (err) {
+                                  //  Logger.info(' error in writing to file ');
+                                    return console.log(err);
+                                } else {
+                                  //  console.log("CreateAccount result written to file");
+                                }
+                            });
+
                             callback(null, resData);
                         } else {
                             Logger.info(' Error in sending to queue ', error);
+                            fs.appendFile(ErrorLogfileName,new Date().toString() + " : Error in sending to queue:" + util.inspect(message) + ' \n', function(err) {
+                                if (err) {
+                                  //  Logger.info(' error in writing to file ');
+                                    return console.log(err);
+                                } else {
+                                  //  console.log("CreateAccount result written to file");
+                                }
+                            });
                             callback(error, null);
                         }
                     })
@@ -63,24 +100,29 @@ class Accounts {
               //var errorStr = {"message":{"\"my4chainId\":\"bigint\",\"ethPassword\":\"sting(255)\",\"apiTimestamp\":\"2017-11-16 18:32:32\""}};
               var errorStr ={"message":"ERROR in request. Please send the data in format {\"my4chainId\" :\"bigint\",\"ethPassword\":\"GUID\",\"apiTimestamp\":\"2017-11-16 18:32:32\""};
               console.log("ERROR in request. Please send the data in format "+errorStr);
-              //errorStr.message = 'heloo error';
-              //errorStr.errors = 'extendedMessage heloo error';
+              fs.appendFile(ErrorLogfileName,new Date().toString() +
+                      " : ERROR in request. Please send the data in format :" + util.inspect(message) + ' \n', function(err) {
+                  if (err) {
+                      return console.log(err);
+                  } else {
+                  }
+              });
               callback(errorStr);
             })
-
           }else {
             Logger.info("Schema validation Failed");
+            fs.appendFile(ErrorLogfileName,"================================ \n" +
+            new Date().toString() + " : Schema validation Failed for Object In CREATEACCOUNT :" + util.inspect(recordObj) + ' \n', function(err) {
+                if (err) {
+                  //  Logger.info(' error in writing to file ');
+                    return console.log(err);
+                } else {
+                  //  console.log("CreateAccount result written to file");
+                }
+            });
             callback(err);
           }
-
-
         });
-
-
-
-
-
-
     }
     // to create a new account in blockchain
     createimportAccount(recordObj, res, callback) {

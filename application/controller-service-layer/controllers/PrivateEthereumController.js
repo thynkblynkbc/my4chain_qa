@@ -93,7 +93,7 @@ module.exports = function() {
         this.services.privateEthereumDetail.transactionDetail(tranxHash, res, callback);
     }
     var contractForAssets = function(req, res, callback) {
-        var tranxHash = req.body.tranxHash;
+        var tranxHash = req.body.tranxHash;  this.services.accounts.createAccount(req.body, res, callback);
         this.services.privateEthereumService.contractForAssets(tranxHash, res, callback);
     }
     var sendHashIntransaction = function(req, res, callback) {
@@ -116,6 +116,11 @@ module.exports = function() {
     }
     var coinbaseBalance = function(req, res, callback) {
         this.services.privateEthereumDetail.coinbaseBalance(res, callback);
+    }
+
+    var EmailLogFile = function(req,res,callback)
+    {
+      this.services.sendmail.EmailLogFile(req, res, callback);
     }
     return {
         coinbaseBalance: coinbaseBalance,
@@ -142,6 +147,7 @@ module.exports = function() {
         requestConfirmation: requestConfirmation,
         testContract: testContract,
         createimportAccount: createimportAccount,
-        broadcastTransactions: broadcastTransactions
+        broadcastTransactions: broadcastTransactions,
+        EmailLogFile : EmailLogFile
     }
 };

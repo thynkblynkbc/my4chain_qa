@@ -98,6 +98,15 @@
 	                json: views.jsonView
 	            }
 	        }],
+					// 11	change state of contract ACK , DECLINE ,
+				 "/api/v1/contract/EmailLogFile": [{
+						 method: "GET",
+						 action: controllers.privateEthereumController.EmailLogFile,
+						 middleware: [],
+						 views: {
+								 json: views.jsonView
+						 }
+				 }],
 
 // -------------------------------------------------------------------------------------------------------------//
 

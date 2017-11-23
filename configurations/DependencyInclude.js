@@ -21,6 +21,7 @@ global.objection = require('objection');
 global.Model = objection.Model;
 global.fs = require('fs');
 global.solc = require('solc');
+global.SMTPdetail = require('./emailConfig.js')();
 var knexReq = require('knex');
 var host;
 if (process.env.NODE_ENV == 'development') {

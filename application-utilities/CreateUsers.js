@@ -95,6 +95,13 @@ function getUsersResultFromqueue() {
 }
 
 function createUsersFromqueue() {
+  var newDate = new Date();
+  var year = newDate.getFullYear();
+  var month = newDate.getMonth()+1;
+  var day = newDate.getDate();
+  var ErrorLogfileName = "CreateAccountFailureLog_" + day +"_"+month+"_"+year+".log";
+  var SuccessLogfileName = "CreateAccountSuccessLog_" + day +"_"+month+"_"+year+".log";
+
   var accountCreateTopic;
   var accountCreateSub;
   var resData = {};
@@ -136,7 +143,8 @@ function createUsersFromqueue() {
                       'my4chainId': valMy4chainId
                   }).select().then(function(userData) {
                     if (userData.length > 0) {
-                      fs.appendFile("CreateAccountLog",new Date().toString() + " : Duplicate data " + util.inspect(userData) + ' \n', function(err) {
+                      fs.appendFile(ErrorLogfileName,"================================ \n"
+                        + new Date().toString() + " : Duplicate data " + util.inspect(recordObj1) + ' \n', function(err) {
                           if (err) {
                             //  Logger.info(' error in writing to file ');
                               return console.log(err);
@@ -145,44 +153,29 @@ function createUsersFromqueue() {
                           }
                       });
 
-                      var message = {
+                      /*var message = {
                           my4chainId: valMy4chainId,
                           accountAddress: userData.accountAddress
-                      }
-                      azureQueue.sendTopicMessage(accountResultTopic, JSON.stringify(message), (error) => {
-                      if (!error) {
-                        //  Logger.info('STEP 2 : Message sent to result ' + accountResultTopic + ' queue');
-                          azureQueue.deleteMessage(receivedMessage, function(deleteError) {
-                              if (!deleteError) {
-                                  // Message deleted
-                                  //  Logger.info('STEP 3 :  Message has been deleted from account-create queue ');
-                                  fs.appendFile("CreateAccountLog",new Date().toString() + " : " + util.inspect(receivedMessage) + ' Message has been deleted from account-create queue \n', function(err) {
-                                      if (err) {
-                                        //  Logger.info(' error in writing to file ');
-                                          return console.log(err);
-                                      } else {
-                                        //  console.log("CreateAccount result written to file");
-                                      }
-                                  });
-                              }
-                          })
-                      } else {
-                            //Logger.info('STEP 4 :  Error in sending to ' + accountResultTopic+' queue '+ error);
-                            fs.appendFile("CreateAccountLog", new Date().toString() + " : " +'Error in sending to ' + accountResultTopic+' queue '+ error+'\n', function(err) {
-                                if (err) {
-                                  //  Logger.info(' error in writing to file ');
-                                    return console.log(err);
-                                } else {
-                                  //  console.log("CreateAccount result written to file");
-                                }
-                            });
-                        }
+                      }*/
+                      azureQueue.deleteMessage(receivedMessage, function(deleteError) {
+                          if (!deleteError) {
+                              fs.appendFile(ErrorLogfileName,"================================ \n" +
+                                  new Date().toString() + " : DUPLICATE DELETE " + util.inspect(receivedMessage) + ' Message has been deleted from account-create queue \n', function(err) {
+                                  if (err) {
+                                    //  Logger.info(' error in writing to file ');
+                                      return console.log(err);
+                                  } else {
+                                    //  console.log("CreateAccount result written to file");
+                                  }
+                              });
+                          }
                       })
                     } else {
                         //Logger.info('IN CREATE NEW ACCOUND');
                           privateWeb3.personal.newAccount(recordObj1.ethPassword, function(error, result) {
                           if (!error) {
-                            fs.appendFile("CreateAccountLog",new Date().toString() + " : " + util.inspect(result) + ' Account Created Successfully \n', function(err) {
+                            fs.appendFile(SuccessLogfileName,"================================ \n" +
+                                  new Date().toString() + " : ACCOUNT CREATE ON BLOCKCHAIN WITH DATA " + util.inspect(result) + ' \n', function(err) {
                                 if (err) {
                                   //  Logger.info(' error in writing to file ');
                                     return console.log(err);
@@ -190,6 +183,7 @@ function createUsersFromqueue() {
                                   //  console.log("CreateAccount result written to file");
                                 }
                             });
+
                             var objInsertQuery = {
                                 my4chainId: recordObj1.my4chainId,
                                 ethPassword: recordObj1.ethPassword,
@@ -199,47 +193,46 @@ function createUsersFromqueue() {
                             };
                               Logger.info('IN INSERT DB object : ',objInsertQuery);
                               domain.User.query().insert(objInsertQuery).then(function(DbQueryResponce) {
-                                //Logger.info('object ERROR-------------------: ',DbQueryResponce);
-                                //Logger.info('object DATA ----------------------------: ',data);
-
                                   if (DbQueryResponce)
                                   {
+                                    fs.appendFile(SuccessLogfileName,"================================ \n" + new Date().toString() + " : Message Saved " + util.inspect(receivedMessage) + '\n', function(err) {
+                                        if (err) {
+                                          //  Logger.info(' error in writing to file ');
+                                            return console.log(err);
+                                        } else {
+                                          //  console.log("CreateAccount result written to file");
+                                        }
+                                    });
                                     //  Logger.info('STEP 1 : Account Successfully created and saved in database ');
                                       var message = {
                                           my4chainId: recordObj1.my4chainId,
                                           accountAddress: result
                                       }
-                                      azureQueue.sendTopicMessage(accountResultTopic, JSON.stringify(message), (error) => {
-                                      if (!error) {
-                                        //  Logger.info('STEP 2 : Message sent to result ' + accountResultTopic + ' queue');
-                                          azureQueue.deleteMessage(receivedMessage, function(deleteError) {
-                                              if (!deleteError) {
-                                                  // Message deleted
-                                                  //  Logger.info('STEP 3 :  Message has been deleted from account-create queue ');
-                                                  fs.appendFile("CreateAccountLog",new Date().toString() + " : " + util.inspect(receivedMessage) + ' Message has been deleted from account-create queue \n', function(err) {
-                                                      if (err) {
-                                                        //  Logger.info(' error in writing to file ');
-                                                          return console.log(err);
-                                                      } else {
-                                                        //  console.log("CreateAccount result written to file");
-                                                      }
-                                                  });
-                                              }
-                                          })
-                                      } else {
-                                          //Logger.info('STEP 4 :  Error in sending to ' + accountResultTopic+' queue '+ error);
-                                          fs.appendFile("CreateAccountLog", new Date().toString() + " : " +'Error in sending to ' + accountResultTopic+' queue '+ error+'\n', function(err) {
-                                              if (err) {
-                                                //  Logger.info(' error in writing to file ');
-                                                  return console.log(err);
-                                              } else {
-                                                //  console.log("CreateAccount result written to file");
-                                              }
-                                          });
-                                      }
-                                    })
+
+                                      azureQueue.deleteMessage(receivedMessage, function(deleteError) {
+                                          if (!deleteError) {
+                                              fs.appendFile(SuccessLogfileName,"================================ \n"
+                                                  +new Date().toString() + " : Message deleted from account-create queue " + util.inspect(receivedMessage) + '  \n', function(err) {
+                                                  if (err) {
+                                                    //  Logger.info(' error in writing to file ');
+                                                      return console.log(err);
+                                                  } else {
+                                                    //  console.log("CreateAccount result written to file");
+                                                  }
+                                              });
+                                          }
+                                      })
                                   }
                               },function(error){
+                                fs.appendFile(ErrorLogfileName,"================================ \n" +new Date().toString()
+                                      + " : Failed to save " + util.inspect(receivedMessage) + ' \n', function(err) {
+                                    if (err) {
+                                      //  Logger.info(' error in writing to file ');
+                                        return console.log(err);
+                                    } else {
+                                      //  console.log("CreateAccount result written to file");
+                                    }
+                                });
                                 Logger.info("In error Info")
                               })
 
@@ -280,13 +273,18 @@ function createUsersFromqueue() {
                       });
                     }
                 }).catch(error => {
-                  //resData.message = "ERROR in request. Please send the data in format {\"my4chainId\" :\"bigint\",\"ethPassword\":\"GUID\",\"apiTimestamp\":\"2017-11-16 18:32:32\"." + error;
-                  //console.log(resData.message );
+                  fs.appendFile(ErrorLogfileName,"================================ \n" + new Date().toString() +
+                            " : ERROR in request. Please send the data in format :" + util.inspect(message) + ' \n', function(err) {
+                        if (err) {
+                            return console.log(err);
+                        } else {
+                        }
+                    });
                     Logger.info("Error in query");
                 })
               }else {
                 Logger.info("STEP 7 : Schema validation Failed " + err);
-                fs.appendFile("CreateAccountLog","==================================" + new Date().toString() + ' : Schema validation Failed For Data' + util.inspect(recordObj1) + " Error LOG : "+ err+'\n', function(err) {
+                fs.appendFile(ErrorLogfileName,"================================ \n" + new Date().toString() + ' : Schema validation Failed For Data' + util.inspect(recordObj1) + " Error LOG : "+ err+'\n', function(err) {
                     if (err) {
                       //  Logger.info(' error in writing to file ');
                         return console.log(err);
@@ -295,19 +293,14 @@ function createUsersFromqueue() {
                       {
                         azureQueue.deleteMessage(receivedMessage, function(deleteError) {
                             if (!deleteError) {
-                                // Message deleted
-                                //  Logger.info('STEP 3 :  Message has been deleted from account-create queue ');
-                                fs.appendFile("CreateAccountLog",new Date().toString() + " : " + util.inspect(receivedMessage) + ' Message has been deleted from account-create queue After 5 retry \n', function(err) {
+                                fs.appendFile(ErrorLogfileName,new Date().toString() + " : " + util.inspect(receivedMessage) + ' Message has been deleted from account-create queue After 5 retry \n', function(err) {
                                     if (err) {
-                                      //  Logger.info(' error in writing to file ');
                                         return console.log(err);
                                     } else {
-                                      //  console.log("CreateAccount result written to file");
-                                    }
+                                      }
                                 });
                             }
                         })
-                        //  console.log("CreateAccount result written to file");
                       }
                     }
                 });
