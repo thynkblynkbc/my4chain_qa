@@ -1,3 +1,4 @@
+'use strict';
 var nodemailer = require('nodemailer');
 var util = require('util');
 var emailOptionsByCron = require(__dirname+'/../../../../configurations/emailConfig.js');
