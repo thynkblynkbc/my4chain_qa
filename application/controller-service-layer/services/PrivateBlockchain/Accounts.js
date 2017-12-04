@@ -12,8 +12,8 @@ class Accounts {
         var year = newDate.getFullYear();
         var month = newDate.getMonth()+1;
         var day = newDate.getDate();
-        var ErrorLogfileName = "CreateAccountFailureLog_" + day +"_"+month+"_"+year;
-        var SuccessLogfileName = "CreateAccountSuccessLog_" + day +"_"+month+"_"+year;
+        var ErrorLogfileName = "CreateAccountFailureLog_" + day +"_"+month+"_"+year+".log";
+        var SuccessLogfileName = "CreateAccountSuccessLog_" + day +"_"+month+"_"+year+".log";
 
         var resData = {};
         var accountCreateTopic;
