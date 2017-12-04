@@ -10,7 +10,11 @@ var schemaPromise = knex.schema.createTableIfNotExists('User', function(table) {
     table.timestamp('apiTimestamp').notNullable();;
 
 }).then(function(data) {
-});
+}).catch(function(rej) {
+    //here when you reject the promise
+    //console.log(rej);
+  });
+
 function User() {
     Model.apply(this, arguments);
 }
