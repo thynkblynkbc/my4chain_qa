@@ -4,7 +4,7 @@ var emailOptionsByCron = require(__dirname+'/../../../../configurations/emailCon
 //var options=require("../configurations/emailConfig.js")();
 
 class sendmail {
-
+    constructor() {}
   EmailLogFile(recordObj, res, callback) {
 
     var options = global.SMTPdetail;
