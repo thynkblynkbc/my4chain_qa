@@ -12,6 +12,8 @@ module.exports=function(){
           pass: 'my4chain@blockchain'
       },
       sender:'my4chainblockchain@gmail.com',
+      receiver : 'vinayak.mali@thynkblynk.com,devendark@thynkblynk.com',
+      //receiver:'alam.aftab@oodlestechnologies.com',
       subject:"my4chain // log file // ",
       message:"<HTML><HEAD><Title></title></head><Body><p>Dear Sir/Madam</p><p>Greetings of the day.</p>" +
               "<p>Please find the log file attached here for my4chain.</p>" +
