@@ -119,10 +119,11 @@ function createUsersFromqueue() {
       accountCreateSub = 'UsersLocal';
   }
 
+    //Logger.info('IN Create Account From CreateUser');
 
     azureQueue.receiveSubscriptionMessage(accountCreateTopic, accountCreateSub, (error, receivedMessage) => {
         if (error) {
-              //  Logger.info('Error in receiving message from TopicCreateAccount to create users ', error);
+                //Logger.info('Error in receiving message from TopicCreateAccount to create users ', error);
         } else {
               // Logger.info('STEP 0 : Message received from topic - '+accountCreateTopic+' sub - '+accountCreateSub+'to create user account ', receivedMessage);
             var recordObj1 = JSON.parse(receivedMessage.body);
@@ -158,7 +159,7 @@ function createUsersFromqueue() {
                           accountAddress: userData.accountAddress
                       }*/
                       azureQueue.deleteMessage(receivedMessage, function(deleteError) {
-                          if (!deleteError) {
+                          if (!delrecordObj1eteError) {
                               fs.appendFile(ErrorLogfileName,"================================ \n" +
                                   new Date().toString() + " : DUPLICATE DELETE " + util.inspect(receivedMessage) + ' Message has been deleted from account-create queue \n', function(err) {
                                   if (err) {
@@ -215,7 +216,7 @@ function createUsersFromqueue() {
                                           azureQueue.deleteMessage(receivedMessage, function(deleteError) {
                                               if (!deleteError) {
                                                   fs.appendFile(SuccessLogfileName,"================================ \n"
-                                                      +new Date().toString() + " : Message deleted from account-create queue " + util.inspect(receivedMessage) + '  \n', function(err) {
+                                                      +new Date().toString() + " : Message deleted from account-create queue and send to account-result queue" + util.inspect(receivedMessage) + '  \n', function(err) {
                                                       if (err) {
                                                         //  Logger.info(' error in writing to file ');
                                                           return console.log(err);
@@ -298,13 +299,13 @@ function createUsersFromqueue() {
                 })
               }else {
                 Logger.info("STEP 7 : Schema validation Failed " + err);
-                fs.appendFile(ErrorLogfileName,"================================ \n" + new Date().toString() + ' : Schema validation Failed For Data' + util.inspect(recordObj1) + " Error LOG : "+ err+'\n', function(err) {
-                    if (err) {
+                fs.appendFile(ErrorLogfileName,"================================ \n STEP 7 :" + new Date().toString() + ' : Schema validation Failed For Data' + util.inspect(recordObj1) + " Error LOG : "+ err+'\n', function(err) {
+                    //if (err) {
                       //  Logger.info(' error in writing to file ');
-                        return console.log(err);
-                    } else {
-                      if(brokerProperties.DeliveryCount>4)
-                      {
+                        //return console.log(err);
+                    //} else {
+                      //if(brokerProperties.DeliveryCount>4)
+                      //{
                         azureQueue.deleteMessage(receivedMessage, function(deleteError) {
                             if (!deleteError) {
                                 fs.appendFile(ErrorLogfileName,new Date().toString() + " : " + util.inspect(receivedMessage) + ' Message has been deleted from account-create queue After 5 retry \n', function(err) {
@@ -315,8 +316,8 @@ function createUsersFromqueue() {
                                 });
                             }
                         })
-                      }
-                    }
+                    //  }
+                  //  }
                 });
               }
             });
